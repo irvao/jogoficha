@@ -6,10 +6,12 @@
 // ---------- regras (mexa aqui pra deixar mais fácil ou mais difícil) ----------
 const REGRAS = {
   situacoesPorDia: 8,
-  dificuldade: 12,        // d20 + nota >= 12 é sucesso
+  dificuldade: 16,        // d20 + nota >= 16 é sucesso (nota 10 acerta 75%, nota 4 acerta 45%)
   vidaInicial: 100,
   bateriaInicial: 100,
   bonusPorSucesso: 10,
+  desgasteVida: 8,        // o dia cansa: perde isso a cada situação, ganhando ou não
+  desgasteBateria: 8,
 };
 
 // ---------- estado da partida ----------
@@ -156,8 +158,8 @@ function resolver(opcao, nota, dado) {
 
   const dVida = efeito.vida * mult;
   const dBateria = efeito.bateria * mult;
-  estado.vida = limitar(estado.vida + dVida);
-  estado.bateria = limitar(estado.bateria + dBateria);
+  estado.vida = limitar(estado.vida + dVida - REGRAS.desgasteVida);
+  estado.bateria = limitar(estado.bateria + dBateria - REGRAS.desgasteBateria);
   if (sucesso) estado.sucessos++;
   estado.historico.push({ sucesso, dado });
 
@@ -173,6 +175,7 @@ function resolver(opcao, nota, dado) {
   if (dVida) partes.push(`<span class="${dVida > 0 ? "mais" : "menos"}">${dVida > 0 ? "+" : ""}${dVida} Vida</span>`);
   if (dBateria) partes.push(`<span class="${dBateria > 0 ? "mais" : "menos"}">${dBateria > 0 ? "+" : ""}${dBateria} Bateria</span>`);
   if (!partes.length) partes.push(`<span>nada mudou</span>`);
+  partes.push(`<span class="cansaco">cansaço do dia -${REGRAS.desgasteVida} / -${REGRAS.desgasteBateria}</span>`);
   $("res-delta").innerHTML = partes.join(" &nbsp; ");
 
   const alvo = dVida ? { medidor: "vida", delta: dVida } : dBateria ? { medidor: "bateria", delta: dBateria } : null;
@@ -196,11 +199,11 @@ function terminar(colapso) {
     titulo = "Apagou no sofá"; texto = "O corpo desligou antes do dia acabar. A forja fica pra amanhã.";
   } else if (colapso) {
     titulo = "Bloqueou todo mundo"; texto = "A bateria social zerou. Você está na forja, celular no modo avião, e está tudo bem.";
-  } else if (score >= 240) {
+  } else if (score >= 220) {
     titulo = "Dia lendário"; texto = "Nada te pegou de surpresa. Nem o cavalo. Você já estava preparado antes de acordar.";
-  } else if (score >= 190) {
+  } else if (score >= 170) {
     titulo = "Senhor da Fortaleza"; texto = "Alguns arranhões, nenhuma derrota. A casa continua de pé e a faca continua afiada.";
-  } else if (score >= 130) {
+  } else if (score >= 110) {
     titulo = "Sobreviveu"; texto = "Não foi bonito, mas foi. Amanhã tem mais.";
   } else {
     titulo = "Melhor voltar pra cama"; texto = "Hoje o dado não gostou de você. Acontece. A bigorna entende.";
