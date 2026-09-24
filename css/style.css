@@ -161,6 +161,22 @@ body {
   margin-top: 4px;
   letter-spacing: .06em;
 }
+.btn-jogar {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #1a120a;
+  background: linear-gradient(180deg, var(--gold2), var(--gold));
+  padding: 8px 16px;
+  box-shadow: 0 0 14px rgba(217, 164, 65, .35);
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-jogar:hover { transform: translateY(-2px); box-shadow: 0 0 22px rgba(217, 164, 65, .6); }
 
 /* ---------- título de seção ---------- */
 .h1 {
