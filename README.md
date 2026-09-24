@@ -16,7 +16,7 @@ jogoficha/
 │   └── ficha.js        # lógica: monta a página e anima
 └── assets/img/
     ├── retrato.jpg     # retrato do personagem
-    └── icones/         # um emblema por categoria
+    └── *.png           # um emblema por categoria
 ```
 
 ## Como mudar a ficha

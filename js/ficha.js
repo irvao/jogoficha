@@ -77,7 +77,7 @@ function montarPaineis() {
 
     painel.innerHTML = `
       <h3 class="panel-title">
-        <img src="assets/img/icones/${cat.id}.png" alt="">
+        <img src="assets/img/${cat.id}.png" alt="">
         <span>
           <span class="ttl">${cat.titulo}</span>
           <span class="cnt">${cat.habilidades.length} habilidades</span>
