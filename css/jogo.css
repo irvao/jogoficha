@@ -155,6 +155,7 @@ body {
 .resultado-delta { font-family: var(--display); font-size: 14px; letter-spacing: .08em; }
 .resultado-delta .mais { color: var(--bom); }
 .resultado-delta .menos { color: var(--ruim); }
+.resultado-delta .cansaco { color: var(--dim); font-size: 12px; display: block; margin-top: 4px; letter-spacing: .06em; }
 
 /* ---------- tela fim ---------- */
 .tela-fim { text-align: center; display: grid; justify-items: center; gap: 14px; }
