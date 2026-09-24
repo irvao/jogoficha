@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Um Dia na Fortaleza</title>
+  <meta name="description" content="Mini jogo de escolhas com as habilidades do Ferreiro-Estrategista.">
+  <link rel="icon" href="assets/img/d20.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="css/jogo.css">
+</head>
+<body>
+
+  <!-- Fundo: cena atual (troca conforme a situação) -->
+  <div class="cena" id="cena"></div>
+  <div class="cena-veu"></div>
+
+  <!-- Barra de cima: medidores -->
+  <header class="hud" id="hud" hidden>
+    <div class="medidor" id="med-vida">
+      <img src="assets/img/vida.png" alt="">
+      <div class="medidor-corpo">
+        <div class="medidor-rotulo">VIDA <span id="vida-num">100</span></div>
+        <div class="medidor-barra"><i id="vida-barra" style="width:100%"></i></div>
+      </div>
+    </div>
+    <div class="progresso" id="progresso">1 / 8</div>
+    <div class="medidor" id="med-bateria">
+      <img src="assets/img/bateria.png" alt="">
+      <div class="medidor-corpo">
+        <div class="medidor-rotulo">BATERIA SOCIAL <span id="bateria-num">100</span></div>
+        <div class="medidor-barra"><i id="bateria-barra" style="width:100%"></i></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="palco">
+
+    <!-- TELA 1: início -->
+    <section class="tela tela-inicio" id="tela-inicio">
+      <img class="retrato" src="assets/img/retrato.jpg" alt="Retrato do personagem">
+      <h1 class="titulo">Um Dia na Fortaleza</h1>
+      <p class="subtitulo">Oito situações. Três escolhas cada. Um dado de vinte lados entre você e a paz.</p>
+      <div class="regras">
+        <div><b>Vida</b> é o corpo. <b>Bateria Social</b> é a paciência com gente.</div>
+        <div>Cada escolha usa uma habilidade da ficha. Rola o d20, soma a nota. <b>12 ou mais</b> é sucesso.</div>
+        <div>Dado <b>20</b> dobra o ganho. Dado <b>1</b> dobra a perda. Zerou qualquer medidor, o dia acaba.</div>
+      </div>
+      <button class="botao" id="btn-comecar">Começar o dia</button>
+      <a class="link-ficha" href="index.html">ver a ficha do personagem</a>
+    </section>
+
+    <!-- TELA 2: situação -->
+    <section class="tela tela-situacao" id="tela-situacao" hidden>
+      <div class="cartao">
+        <div class="cartao-topo">
+          <span class="cartao-num" id="sit-num">1</span>
+          <h2 class="cartao-titulo" id="sit-titulo"></h2>
+        </div>
+        <p class="cartao-texto" id="sit-texto"></p>
+        <div class="opcoes" id="opcoes"></div>
+      </div>
+    </section>
+
+    <!-- TELA 3: dado + resultado -->
+    <section class="tela tela-dado" id="tela-dado" hidden>
+      <div class="dado-area">
+        <div class="dado" id="dado">
+          <img src="assets/img/d20.png" alt="">
+          <span class="dado-num" id="dado-num">?</span>
+        </div>
+        <div class="dado-conta" id="dado-conta"></div>
+      </div>
+      <div class="resultado" id="resultado" hidden>
+        <div class="resultado-selo" id="res-selo"></div>
+        <p class="resultado-frase" id="res-frase"></p>
+        <div class="resultado-delta" id="res-delta"></div>
+        <button class="botao" id="btn-proxima">Continuar</button>
+      </div>
+    </section>
+
+    <!-- TELA 4: fim -->
+    <section class="tela tela-fim" id="tela-fim" hidden>
+      <div class="fim-titulo-mini">FIM DO DIA</div>
+      <h2 class="fim-titulo" id="fim-titulo"></h2>
+      <p class="fim-texto" id="fim-texto"></p>
+      <div class="placar">
+        <div><span>Vida</span><b id="fim-vida"></b></div>
+        <div><span>Bateria</span><b id="fim-bateria"></b></div>
+        <div><span>Sucessos</span><b id="fim-sucessos"></b></div>
+        <div class="placar-total"><span>Score</span><b id="fim-score"></b></div>
+      </div>
+      <div class="recorde" id="recorde"></div>
+      <button class="botao" id="btn-denovo">Viver outro dia</button>
+    </section>
+
+  </main>
+
+  <script src="js/dados.js"></script>
+  <script src="js/situacoes.js"></script>
+  <script src="js/jogo.js"></script>
+</body>
+</html>
