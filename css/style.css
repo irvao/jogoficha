@@ -1,0 +1,335 @@
+/* =====================================================================
+   STYLE.CSS - visual da ficha (tema "forja": grafite, cobre e dourado)
+   As cores ficam em variáveis no :root; pra mudar o tema, mude ali.
+   ===================================================================== */
+
+:root {
+  color-scheme: dark;
+  --bg: #0e0b09;
+  --panel: #1a1512;
+  --panel2: #221b16;
+  --line: #3a2e24;
+  --ink: #e8dcc8;
+  --muted: #9a8873;
+  --dim: #6a5b4c;
+  --gold: #d9a441;
+  --gold2: #f3cf7a;
+  --copper: #b8683a;
+  --copper2: #e08a55;
+  --low: #5a4f45;
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.4;
+  background-image:
+    radial-gradient(ellipse at 15% 0%, rgba(217, 164, 65, .10), transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(184, 104, 58, .10), transparent 45%);
+  min-height: 100vh;
+}
+
+/* faíscas de fundo */
+#faiscas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-block: 28px 40px;
+  padding-inline: 16px;
+}
+
+/* ---------- cabeçalho ---------- */
+.hud {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 22px;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  padding: 18px 22px;
+  position: relative;
+  animation: surgir .8s ease-out both;
+}
+.hud::before, .hud::after {
+  content: "";
+  position: absolute;
+  left: 10px; right: 10px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: .6;
+}
+.hud::before { top: 5px; }
+.hud::after { bottom: 5px; }
+
+.portrait-frame {
+  position: relative;
+  width: 200px;
+  max-width: 100%;
+}
+.portrait {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  border: 2px solid var(--copper);
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+  animation: brilho 4s ease-in-out infinite;
+}
+@keyframes brilho {
+  0%, 100% { box-shadow: 0 0 12px rgba(217, 164, 65, .15); }
+  50%      { box-shadow: 0 0 26px rgba(224, 138, 85, .45); }
+}
+
+.name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(30px, 5vw, 44px);
+  letter-spacing: .06em;
+  color: var(--gold2);
+  line-height: 1;
+  margin: 0;
+  text-wrap: balance;
+}
+.class {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: .14em;
+  color: var(--copper2);
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+.sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 6px;
+  letter-spacing: .04em;
+}
+.lore {
+  margin: 12px 0 0;
+  font-size: 14.5px;
+  font-style: italic;
+  border-left: 2px solid var(--copper);
+  padding: 6px 12px;
+  background: rgba(184, 104, 58, .07);
+  max-width: 60ch;
+}
+
+.lvl {
+  text-align: center;
+  border: 1px solid var(--gold);
+  padding: 12px 18px;
+  background: rgba(217, 164, 65, .06);
+  min-width: 110px;
+}
+.lvl .t {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: .35em;
+  color: var(--muted);
+}
+.lvl .n {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--gold2);
+  font-variant-numeric: tabular-nums;
+}
+.lvl .b {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 4px;
+  letter-spacing: .06em;
+}
+
+/* ---------- título de seção ---------- */
+.h1 {
+  font-family: var(--display);
+  font-weight: 500;
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: .5em;
+  color: var(--muted);
+  margin: 26px 0 14px;
+}
+
+/* ---------- grade de painéis ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 14px 16px 12px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .6s ease var(--atraso, 0ms), transform .6s ease var(--atraso, 0ms);
+}
+.panel.visivel {
+  opacity: 1;
+  transform: none;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  font-weight: normal;
+}
+.panel-title img {
+  width: 58px;
+  height: 58px;
+  flex: none;
+  filter: drop-shadow(0 0 6px rgba(217, 164, 65, .35));
+  transition: transform .3s ease;
+}
+.panel:hover .panel-title img { transform: scale(1.08) rotate(-4deg); }
+.panel-title .ttl {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .16em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.panel-title .cnt {
+  display: block;
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--dim);
+  margin-top: 3px;
+}
+
+/* ---------- linha de habilidade ---------- */
+.skill {
+  display: grid;
+  grid-template-columns: 1fr 120px 26px;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 14.5px;
+  border-radius: 2px;
+  transition: background .2s;
+}
+.skill:hover { background: rgba(217, 164, 65, .06); }
+
+.bar {
+  height: 9px;
+  background: #0b0907;
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.bar i {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg, #8a4a26, var(--copper2));
+  transition: width 1s cubic-bezier(.2, .8, .2, 1) var(--atraso, 0ms);
+}
+.panel.visivel .bar i { width: var(--largura); }
+.bar.max i {
+  background: linear-gradient(90deg, #b8862c, var(--gold2));
+  box-shadow: 0 0 8px rgba(243, 207, 122, .55);
+}
+.bar.low i { background: linear-gradient(90deg, #3f3630, var(--low)); }
+
+/* reflexo passando na barra dourada */
+.bar.max::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 30%;
+  left: -40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .35), transparent);
+  animation: reflexo 3.5s ease-in-out infinite;
+}
+@keyframes reflexo {
+  0%, 60% { left: -40%; }
+  100%    { left: 110%; }
+}
+
+.val {
+  text-align: right;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.val.max { color: var(--gold2); }
+.val.low { color: var(--dim); }
+
+/* ---------- traços ---------- */
+.traits { margin-top: 14px; }
+.trait {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 14.5px;
+}
+.trait:last-child { border-bottom: 0; }
+.trait b {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: .06em;
+  color: var(--gold);
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: .3em;
+  color: var(--dim);
+}
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- celular ---------- */
+@media (max-width: 640px) {
+  .hud { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  .lore { text-align: left; }
+  .grid { grid-template-columns: 1fr; }
+  .trait { grid-template-columns: 1fr; gap: 2px; }
+}
+
+/* quem pediu menos movimento no sistema, recebe a ficha parada */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .panel { opacity: 1; transform: none; }
+  .bar i { width: var(--largura); }
+}

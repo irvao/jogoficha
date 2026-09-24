@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ficha do Ferreiro-Estrategista</title>
+  <meta name="description" content="Ficha de personagem estilo RPG com as habilidades do Irving.">
+  <link rel="icon" href="assets/img/icones/oficios.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Faíscas de fundo (desenhadas pelo JavaScript num canvas) -->
+  <canvas id="faiscas" aria-hidden="true"></canvas>
+
+  <div class="wrap">
+
+    <header class="hud">
+      <div class="portrait-frame">
+        <img class="portrait" src="assets/img/retrato.jpg" alt="Retrato de Irving como ferreiro, com faca forjada na mão">
+      </div>
+      <div class="hud-text">
+        <h1 class="name" id="nome"></h1>
+        <div class="class" id="classe"></div>
+        <div class="sub" id="subtitulo"></div>
+        <p class="lore" id="lore"></p>
+      </div>
+      <div class="lvl">
+        <div class="t">NÍVEL</div>
+        <div class="n" id="nivel" data-alvo="0">0</div>
+        <div class="b" id="total-skills"></div>
+      </div>
+    </header>
+
+    <h2 class="h1">ÍNDICE DE HABILIDADES</h2>
+
+    <!-- Os painéis de habilidades são montados pelo JavaScript a partir de js/dados.js -->
+    <main class="grid" id="grid"></main>
+
+    <section class="panel traits" id="tracos">
+      <h3 class="panel-title">
+        <span class="ttl">Traços de classe</span>
+        <span class="cnt">passivos</span>
+      </h3>
+      <div id="lista-tracos"></div>
+    </section>
+
+    <footer class="foot">
+      <span>FICHA DE PERSONAGEM</span>
+      <span id="rodape-nivel"></span>
+    </footer>
+
+  </div>
+
+  <!-- Ordem importa: primeiro os dados, depois o script que usa os dados -->
+  <script src="js/dados.js"></script>
+  <script src="js/ficha.js"></script>
+</body>
+</html>
