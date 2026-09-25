@@ -122,8 +122,10 @@ Responda só com este JSON:
 
 // ---------- 2) narrar o resultado e montar a próxima cena ----------
 async function resolverAcao(est, situacao, acao, rolagem, proxima) {
+  const podeFicar = (est.cenasNoLugar || 1) < REGRAS.maxCenasMesmoLugar;
   let permitidos = LUGARES.filter((l) => l.id !== est.lugar)
     .map((l) => `${l.id}: ${l.desc}`).join("\n");
+  if (podeFicar) permitidos = `${est.lugar}: FICAR no lugar atual (${nomeLugar(est.lugar)})\n` + permitidos;
   if (est.itens.includes("maquina-do-tempo")) {
     permitidos += `\ntunel-do-tempo: ${CENAS_EXTRAS["tunel-do-tempo"].desc} (use SÓ se o Irving usar a máquina do tempo nesta ação)`;
   }
@@ -135,10 +137,14 @@ async function resolverAcao(est, situacao, acao, rolagem, proxima) {
     const extras = [];
     if (proxima.item) extras.push(`Na próxima cena o Irving ENCONTRA e pega este item: "${proxima.item.nome}". Mostre isso de um jeito divertido na "situacao" (não revele o efeito secreto).`);
     if (proxima.adversidade) extras.push(`Na próxima cena ACONTECE isto: "${proxima.adversidade.texto}". Coloque isso na "situacao".`);
-    blocoProxima = `Depois do resultado, o Irving vai parar num NOVO lugar. Escolha o que faz mais sentido (ou o mais absurdo e engraçado) pelo que aconteceu. Lugares possíveis (use o id exato):
+    const regraFicar = podeFicar
+      ? `O Irving PODE continuar no mesmo lugar se a história pedir: a situação ainda não se resolveu, ele está preso ou cercado, a conversa continua, a falha deixou ele ali, ou o jogador quis ficar. Nesse caso use o id do lugar atual (${est.lugar}) e mostre a situação evoluindo ali (algo novo acontece, nunca repita a mesma cena). Se a ação levou ele pra outro canto, troque de lugar. Ele já está há ${est.cenasNoLugar || 1} cena(s) seguida(s) neste lugar.`
+      : `O Irving já ficou tempo demais neste lugar: agora ele OBRIGATORIAMENTE vai para outro lugar.`;
+    blocoProxima = `Depois do resultado, decida onde o Irving está na próxima cena. ${regraFicar}
+Escolha o que faz mais sentido (ou o mais absurdo e engraçado) pelo que aconteceu. Lugares possíveis (use o id exato):
 ${permitidos}
 ${extras.join("\n")}
-Na "situacao", descreva o novo lugar e o que está acontecendo lá, e termine com um gancho do tipo "O que o Irving faz?". A padaria NÃO é um lugar possível ainda: o Irving está sempre a caminho.`;
+Na "situacao", descreva o lugar e o que está acontecendo lá agora, e termine com um gancho do tipo "O que o Irving faz?". A padaria NÃO é um lugar possível ainda: o Irving está sempre a caminho.`;
   }
 
   const pedido = `${descreverEstado(est)}

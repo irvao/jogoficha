@@ -13,6 +13,7 @@ const REGRAS = {
   chanceItem: 0.10,        // 10% de achar item em cada lugar
   chanceAdversidade: 0.10, // 10% de acontecer adversidade em cada lugar
   maxItens: 3,
+  maxCenasMesmoLugar: 3,   // o narrador pode segurar o Irving no mesmo lugar por até 3 cenas seguidas
 };
 
 // ---------- LUGARES ----------
