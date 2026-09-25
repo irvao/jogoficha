@@ -7,7 +7,7 @@
 
 CENAS["feira"] = {
   chegadas: [
-    "Eis a feira livre, campo de batalha de lonas azuis. Feirantes bradam como arautos: \"Olha a promoção, freguˆez!\" O cheiro de pastel paira no ar como uma bêncão.",
+    "Eis a feira livre, campo de batalha de lonas azuis. Feirantes bradam como arautos: \"Olha a promoção, freguês!\" O cheiro de pastel paira no ar como uma bêncão.",
     "Caixotes de laranja, pilhas de chuchu e um exército de carrinhos de compras. É hora da xepa, e as vovós avançam com a fúria de uma cavalaria.",
   ],
   opcoes: [
@@ -16,7 +16,7 @@ CENAS["feira"] = {
       vai: "casa-do-norte", p: { "quase-feliz": 1, filosofico: 1 }, cara: "feliz" },
 
     { t: "Perguntar ao feirante da padaria",
-      r: "\"Padaria? Segue o cheiro do pão, freguˆez!\" O Irving fareja o ar como um cão de caça, e o aroma o conduz até uma loja cheia de fornos.",
+      r: "\"Padaria? Segue o cheiro do pão, freguês!\" O Irving fareja o ar como um cão de caça, e o aroma o conduz até uma loja cheia de fornos.",
       vai: "loja-eletro-padaria", p: { feliz: 2, "quase-feliz": 1 }, cara: "determinado" },
 
     { t: "Pagar um pastel com os 100 reais",
@@ -66,7 +66,7 @@ CENAS["feira"] = {
 
     { t: "Furar a fila do pastel",
       risco: 12,
-      r: "Audácia de cavaleiro! O pasteleiro declara o Irving \"freguˆez número um milhão\". O prêmio: uma visita à fábrica de chocolate do cunhado dele.",
+      r: "Audácia de cavaleiro! O pasteleiro declara o Irving \"freguês número um milhão\". O prêmio: uma visita à fábrica de chocolate do cunhado dele.",
       vai: "fabrica-chocolate", p: { feliz: 2, "quase-feliz": 1 }, cara: "feliz",
       falha: { r: "As vovós da fila não perdoam. Sombrinhas voam, a confusão chama a polícia, e o Irving ganha uma carona de viatura.",
                vida: -15, vai: "prisao", p: { prisao: 3 }, cara: "assustado" } },
@@ -76,7 +76,7 @@ CENAS["feira"] = {
       vai: "sorveteria", p: { "quase-feliz": 2, filosofico: 1 }, cara: "triste" },
 
     { t: "Provar o queijo na barraca",
-      r: "O feirante estende uma lasca na ponta da faca: \"Prova, freguˆez!\" O Irving prova, elogia em versos e ganha o pedaço inteiro de brinde.",
+      r: "O feirante estende uma lasca na ponta da faca: \"Prova, freguês!\" O Irving prova, elogia em versos e ganha o pedaço inteiro de brinde.",
       vai: "fica", ganha: "queijo", p: { "quase-feliz": 2 }, cara: "feliz" },
 
     { t: "Aceitar um floral da barraca natural",
