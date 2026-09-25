@@ -43,7 +43,7 @@ CENAS["feira"] = {
       r: "O vira-lata dispara com o pastel na boca. O Irving persegue o ladrão por vielas tortuosas até um beco escuro, onde o cão some.",
       vai: "beco-perigoso", p: { "quase-feliz": 2, prisao: 1 }, cara: "bravo" },
 
-    { t: "Pechinchar a dúvia de laranja",
+    { t: "Pechinchar a dúzia de laranja",
       r: "Negociação épica! O feirante cede, e a multidão ergue o Irving nos ombros como um general. Carregado pela massa, ele desemboca num leilão de gado.",
       vai: "leilao-gado", p: { "rei-misto": 2, banana: 1 }, cara: "determinado" },
 
