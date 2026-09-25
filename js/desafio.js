@@ -176,6 +176,13 @@ function comecar() {
   };
   // toda partida tem pelo menos 1 item: se até esta cena (2ª a 4ª) nada apareceu, um item aparece com certeza
   est.cenaItemGarantido = 2 + Math.floor(Math.random() * 3);
+  // metade das partidas tem adversidade: a primeira vem com certeza numa cena entre a 2ª e a 5ª
+  est.temAdversidade = Math.random() < REGRAS.chancePartidaComAdversidade;
+  est.cenaAdvGarantida = 2 + Math.floor(Math.random() * 4);
+  // toda partida tem 1 chefe, numa cena sorteada da 2ª até a última (nunca na casa)
+  est.chefe = sortear(CHEFES);
+  est.cenaChefe = 2 + Math.floor(Math.random() * (est.totalCenas - 1));
+  est.chefeFeito = false;
   document.body.classList.remove("morte");
   $("tela-inicio").hidden = true;
   $("tela-final").hidden = true;
@@ -185,7 +192,7 @@ function comecar() {
   entrarNaCena("casa-irving", INTRO, "determinado");
 }
 
-async function entrarNaCena(lugar, situacao, expr) {
+async function entrarNaCena(lugar, situacao, expr, chefe) {
   const mesmoLugar = est.lugar === lugar && est.cena > 1;
   est.lugar = lugar;
   est.situacao = situacao;
@@ -199,6 +206,101 @@ async function entrarNaCena(lugar, situacao, expr) {
   atualizarHud();
   $("campo-acao").value = "";
   await escrever([{ txt: situacao, digitar: true }]);
+  if (chefe) return iniciarDuelo(chefe);
+  estadoCaixa("acao");
+  if (window.matchMedia("(pointer: fine)").matches) $("campo-acao").focus();
+  rolarCaixa();
+}
+
+// ---------- chefe: duelo de pedra, papel e tesoura ----------
+let duelo = null;
+async function iniciarDuelo(chefe) {
+  est.chefeFeito = true;
+  duelo = { chefe, pontosIrving: 0, pontosChefe: 0, jogada: 0, travado: false };
+  await esperar(900);
+  $("chefe-img").src = chefe.img;
+  $("chefe-img").alt = chefe.nome;
+  $("duelo-nome").textContent = chefe.nome;
+  $("placar-nome").textContent = chefe.nome;
+  $("duelo-fim").hidden = true;
+  $("baloes").hidden = false;
+  $("duelo-jogada").innerHTML = "Escolha sua jogada. Quem fizer <b>2 pontos</b> vence!";
+  atualizarPlacar();
+  $("duelo").hidden = false;
+  cara("determinado", "pulo");
+}
+function atualizarPlacar() {
+  $("placar-ir").textContent = duelo.pontosIrving;
+  $("placar-ch").textContent = duelo.pontosChefe;
+}
+async function jogarDuelo(escolha) {
+  if (!duelo || duelo.travado) return;
+  duelo.travado = true;
+  document.querySelectorAll(".balao").forEach((b) => b.classList.toggle("escolhido", b.dataset.j === escolha));
+  const vil = duelo.chefe.sequencia[duelo.jogada % duelo.chefe.sequencia.length];
+  duelo.jogada++;
+  const eu = JOGADAS[escolha], ele = JOGADAS[vil];
+  let msg;
+  if (escolha === vil) { duelo.pontosIrving++; msg = "Empate! Vantagem do Irving: o ponto é dele!"; cara("feliz", "pulo"); }
+  else if (eu.ganhaDe === vil) { duelo.pontosIrving++; msg = "Ponto do Irving!"; cara("feliz", "pulo"); }
+  else { duelo.pontosChefe++; msg = `Ponto ${doChefe(duelo.chefe)}!`; cara("assustado", "tremor"); }
+  $("duelo-jogada").innerHTML = `<span class=\"lance\">${eu.emoji} ${eu.nome}</span> x <span class=\"lance\">${ele.emoji} ${ele.nome}</span><br><b>${msg}</b>`;
+  atualizarPlacar();
+  await esperar(1300);
+  document.querySelectorAll(".balao").forEach((b) => b.classList.remove("escolhido"));
+  if (duelo.pontosIrving >= 2 || duelo.pontosChefe >= 2) return fimDuelo(duelo.pontosIrving >= 2);
+  duelo.travado = false;
+}
+function fimDuelo(venceu) {
+  const chefe = duelo.chefe;
+  $("baloes").hidden = true;
+  const selo = $("duelo-selo");
+  selo.className = "dado-selo " + (venceu ? "bom" : "ruim");
+  selo.textContent = venceu ? "VITÓRIA!" : "DERROTA!";
+  let premio, resumo;
+  const tags = [];
+  if (venceu) {
+    const livres = ITENS.filter((i) => !est.itens.includes(i.id));
+    if (est.itens.length < REGRAS.maxItens && livres.length) {
+      const item = sortear(livres);
+      est.itens.push(item.id);
+      if (!est.itensJaTidos.includes(item.id)) est.itensJaTidos.push(item.id);
+      est.itemNovo = item.id;
+      premio = `${oChefe(chefe)} foi derrotad${chefe.genero} e deixou cair: <b>${item.nome}</b>!`;
+      resumo = `${oChefe(chefe)} foi derrotad${chefe.genero} no duelo de pedra, papel e tesoura! Como espólio, o Irving ganhou: ${item.nome}.`;
+      tags.push({ txt: `ganhou: ${item.nome}`, cls: "mais" });
+    } else {
+      premio = `${oChefe(chefe)} foi derrotad${chefe.genero}! Mas a mochila está cheia e o espólio ficou pra trás.`;
+      resumo = `${oChefe(chefe)} foi derrotad${chefe.genero} no duelo de pedra, papel e tesoura! Mas a mochila estava cheia e o espólio ficou pra trás.`;
+    }
+    cara("feliz", "pulo");
+  } else {
+    const dano = REGRAS_CHEFE.danoDerrota;
+    est.vida = limitar(est.vida - dano, 0, 100);
+    premio = `${oChefe(chefe)} venceu. O Irving perdeu <b>${dano} de Vida</b>.`;
+    resumo = `${oChefe(chefe)} venceu o duelo de pedra, papel e tesoura e o Irving saiu ferido (-${dano} de Vida).`;
+    tags.push({ txt: `-${dano} Vida`, cls: "menos" });
+    cara("triste", "tremor");
+  }
+  $("duelo-premio").innerHTML = premio;
+  $("duelo-fim").hidden = false;
+  $("btn-duelo-ok").focus({ preventScroll: true });
+  duelo.resultado = { venceu, resumo, tags };
+}
+async function sairDuelo() {
+  const { resumo, tags, venceu } = duelo.resultado;
+  $("duelo").hidden = true;
+  est.historico.push({ lugar: nomeLugar(est.lugar), acao: `duelo de pedra, papel e tesoura contra ${duelo.chefe.nome}`, resumo });
+  duelo = null;
+  atualizarHud(!venceu);
+  if (est.itemNovo) {
+    const it = ITENS.find((i) => i.id === est.itemNovo);
+    setTimeout(() => mostrarAchado(it), 300);
+  }
+  if (est.vida <= 0) return mostrarFinal("morte");
+  mostrarDelta(tags);
+  est.situacao = `${est.situacao}\n\n${resumo} O que o Irving faz agora?`;
+  await escrever([{ txt: `${resumo}\n\nO que o Irving faz agora?`, digitar: true }]);
   estadoCaixa("acao");
   if (window.matchMedia("(pointer: fine)").matches) $("campo-acao").focus();
   rolarCaixa();
@@ -285,12 +387,15 @@ function sortearProxima() {
       const livres = ITENS.filter((i) => !est.itens.includes(i.id));
       item = sortear(livres);
     }
-    if (Math.random() < REGRAS.chanceAdversidade) {
+    const advGarantida = est.temAdversidade && est.advAparecidas.length === 0 && est.cena + 1 >= est.cenaAdvGarantida;
+    const advExtra = est.temAdversidade && est.advAparecidas.length > 0 && Math.random() < REGRAS.chanceAdversidade;
+    if (advGarantida || advExtra) {
       const livres = ADVERSIDADES.filter((a) => !est.adversidades.includes(a.id));
       if (livres.length) adversidade = sortear(livres);
     }
   }
-  return { ultima, item, adversidade };
+  const chefe = !ultima && !est.chefeFeito && est.cena + 1 === est.cenaChefe ? est.chefe : null;
+  return { ultima, item, adversidade, chefe };
 }
 
 async function passoResolver(acao, av, rolagem, proxima) {
@@ -308,7 +413,7 @@ async function passoResolver(acao, av, rolagem, proxima) {
 function aplicarResultado(acao, rolagem, proxima, r) {
   // vida (dentro de limites por tipo de resultado)
   // a Vida nunca aumenta: o dia só desgasta
-  const faixas = { critico: [0, 0], sucesso: [-8, 0], falha: [-20, -8], desastre: [-40, -20], impossivel: [-15, -5] };
+  const faixas = { critico: [0, 0], sucesso: [-8, 0], falha: [-25, -12], desastre: [-45, -25], impossivel: [-15, -5] };
   const [mn, mx] = faixas[rolagem.tipo];
   const dVida = limitar(r.vida, mn, mx);
   est.vida = limitar(est.vida + dVida, 0, 100);
@@ -353,6 +458,7 @@ function aplicarResultado(acao, rolagem, proxima, r) {
   const valido = destino === "tunel-do-tempo" ? tinhaMaquina : (LUGARES.some((l) => l.id === destino) || destino === est.lugar);
   const podeFicar = est.cenasNoLugar < REGRAS.maxCenasMesmoLugar;
   if (!valido || (destino === est.lugar && !podeFicar)) destino = sortear(LUGARES.filter((l) => l.id !== est.lugar && !est.visitados.includes(l.id))).id;
+  if (proxima.chefe && destino === "casa-irving") destino = sortear(LUGARES.filter((l) => l.id !== "casa-irving" && l.id !== est.lugar)).id;
 
   proximoPasso = () => {
     est.cena++;
@@ -367,9 +473,11 @@ function aplicarResultado(acao, rolagem, proxima, r) {
     if (proxima.adversidade) {
       est.adversidades.push(proxima.adversidade.id);
       if (!est.advAparecidas.includes(proxima.adversidade.id)) est.advAparecidas.push(proxima.adversidade.id);
+      // se também achou item, o aviso da adversidade vem depois do item
+      setTimeout(() => mostrarAlerta(proxima.adversidade), proxima.item ? 4700 : 900);
     }
     const sit = r.situacao || "O Irving chega num lugar novo e olha em volta, confuso. O que ele faz?";
-    entrarNaCena(destino, sit, r.expressao);
+    entrarNaCena(destino, sit, r.expressao, proxima.chefe);
   };
 }
 let proximoPasso = null;
@@ -383,8 +491,18 @@ function mostrarAchado(item) {
   setTimeout(() => { a.hidden = true; }, 3700);
 }
 
+function mostrarAlerta(adv) {
+  const a = $("alerta");
+  a.hidden = true; void a.offsetWidth;
+  $("alerta-texto").textContent = adv.texto + "!";
+  a.hidden = false;
+  setTimeout(() => { a.hidden = true; }, 4700);
+}
+
 // ---------- finais ----------
 function sortearFinal() {
+  // chegou ao fim do dia com o misto quente na mochila: sempre Misto em dupla
+  if (est.itens.includes("misto-quente")) return "misto-dupla";
   const marcas = new Set([
     ...est.visitados,
     ...est.itensJaTidos.map((i) => "item:" + i),
@@ -398,7 +516,6 @@ function sortearFinal() {
     sorte -= pesos[i];
     if (sorte <= 0) { escolhido = FINAIS_SORTEIO[i]; break; }
   }
-  if (escolhido === "feliz" && est.itens.includes("misto-quente")) escolhido = "misto-dupla";
   return escolhido;
 }
 
@@ -467,6 +584,8 @@ document.addEventListener("DOMContentLoaded", () => {
     vv.addEventListener("scroll", ajustarTeclado);
     $("campo-acao").addEventListener("blur", () => setTimeout(() => { window.scrollTo(0, 0); ajustarTeclado(); }, 100));
   }
+  document.querySelectorAll(".balao").forEach((b) => b.addEventListener("click", () => jogarDuelo(b.dataset.j)));
+  $("btn-duelo-ok").addEventListener("click", sairDuelo);
   $("btn-continuar").addEventListener("click", () => { const p = proximoPasso; proximoPasso = null; if (p) p(); });
   $("btn-tentar").addEventListener("click", () => { const p = passoPendente; passoPendente = null; if (p) p(); });
   $("caixa").addEventListener("click", (e) => { if (digitando && !e.target.closest("form, button")) digitando.pular = true; });

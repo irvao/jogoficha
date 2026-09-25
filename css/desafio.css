@@ -257,6 +257,58 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .dado-selo.ruim { background: #ff8b8b; animation: carimbo .4s cubic-bezier(.2,1.8,.4,1); }
 @keyframes carimbo { from { transform: scale(2.2) rotate(-12deg); opacity: 0; } }
 
+/* ---------- duelo contra chefe ---------- */
+.duelo {
+  position: fixed; inset: 0; z-index: 7;
+  background: radial-gradient(circle at 65% 45%, rgba(120,20,20,.35), rgba(0,0,0,.75));
+  animation: dueloEntra .5s ease;
+}
+@keyframes dueloEntra { from { opacity: 0; } }
+.chefe-img {
+  position: absolute; right: 1vw; top: 8dvh;
+  width: min(62vw, 900px); max-height: 62dvh; object-fit: contain; object-position: top right;
+  filter: drop-shadow(0 0 3px rgba(0,0,0,.7)) drop-shadow(-10px 14px 18px rgba(0,0,0,.6));
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+  animation: chefeEntra .7s cubic-bezier(.2,1.5,.4,1);
+}
+@keyframes chefeEntra { from { transform: translateX(40%) scale(.8); opacity: 0; } }
+.duelo-painel {
+  position: absolute; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%);
+  width: min(640px, calc(100% - 24px));
+  background: var(--papel); border: 4px solid var(--tinta); border-radius: 22px; box-shadow: 0 8px 0 var(--tinta);
+  padding: 14px 18px 18px; text-align: center;
+}
+.duelo-titulo {
+  font-family: var(--titulo); font-size: 40px; line-height: 1; letter-spacing: 2px; color: var(--vermelho);
+  -webkit-text-stroke: 2px var(--tinta); paint-order: stroke fill; text-shadow: 0 4px 0 var(--tinta); transform: rotate(-2deg);
+}
+.duelo-nome { font-family: var(--titulo); font-size: 26px; letter-spacing: 1px; margin-top: 2px; }
+.duelo-placar { font-weight: 900; font-size: 18px; margin: 6px 0; }
+.duelo-placar b { display: inline-block; min-width: 1.6em; font-family: var(--titulo); font-size: 30px; background: var(--mostarda); border: var(--borda); border-radius: 10px; padding: 0 6px; }
+.duelo-placar span { margin: 0 6px; }
+.duelo-placar em { font-style: normal; }
+.duelo-jogada { min-height: 2.8em; font-size: 17px; line-height: 1.4; }
+.duelo-jogada .lance { font-size: 20px; font-weight: 900; }
+.baloes { display: flex; justify-content: center; gap: 16px; margin-top: 10px; }
+.balao {
+  position: relative; width: 104px; height: 88px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
+  background: #fff; border: var(--borda); border-radius: 50% / 46%; box-shadow: 0 5px 0 var(--tinta);
+  transition: transform .1s, background .15s;
+}
+.balao::after {
+  content: ""; position: absolute; bottom: -14px; left: 26%;
+  border: 9px solid transparent; border-top: 14px solid var(--tinta);
+}
+.balao span { font-size: 38px; line-height: 1.1; }
+.balao small { font-weight: 900; font-size: 13px; }
+.balao:hover { background: #fff3c4; transform: translateY(-3px) rotate(-2deg); }
+.balao:active { transform: translateY(3px); }
+.balao.escolhido { background: var(--mostarda); transform: scale(1.08); }
+.duelo-fim p { font-size: 17px; margin: 10px 0 12px; }
+.duelo-fim .dado-selo { display: inline-block; font-size: 42px; }
+
 /* ---------- item encontrado ---------- */
 .achado {
   position: fixed; z-index: 8; left: 50%; top: 84px; transform: translateX(-50%);
@@ -274,6 +326,33 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
   20%, 85% { transform: translate(-50%, 0) scale(1); opacity: 1; }
   100% { transform: translate(-50%, -20px); opacity: 0; }
 }
+
+/* ---------- aviso de adversidade ---------- */
+.alerta {
+  position: fixed; z-index: 8; left: 50%; top: 84px; transform: translateX(-50%);
+  width: min(560px, calc(100vw - 32px));
+  display: flex; align-items: center; gap: 12px;
+  background: #ffe1d6; border: var(--borda); border-color: #c0392b; border-radius: 16px; box-shadow: var(--sombra);
+  padding: 10px 18px 10px 12px;
+  animation: alerta 4.6s ease forwards;
+}
+.alerta-icone { font-size: 44px; line-height: 1; animation: sacode .5s ease 3; }
+.alerta small { display: block; font-family: var(--titulo); font-size: 22px; color: #c0392b; letter-spacing: 1px; text-transform: uppercase; }
+.alerta b { font-size: 18px; font-weight: 800; line-height: 1.25; }
+@keyframes alerta {
+  0% { transform: translate(-50%, -30px) scale(.6); opacity: 0; }
+  8% { transform: translate(-50%, 0) scale(1.08); opacity: 1; }
+  14%, 88% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -20px); opacity: 0; }
+}
+@keyframes sacode { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
+@media (max-width: 700px) {
+  .alerta { top: 64px; }
+  .alerta-icone { font-size: 34px; }
+  .alerta small { font-size: 18px; }
+  .alerta b { font-size: 15px; }
+}
+body.com-teclado .alerta { display: none; }
 
 /* ---------- final ---------- */
 .final {
@@ -340,6 +419,12 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
   .inicio-texto { font-size: 16px; }
   .final-cartao { padding: 18px 16px; max-height: 66dvh; }
   .achado { top: 64px; }
+  .duelo { background: radial-gradient(circle at 60% 30%, rgba(120,20,20,.45), rgba(0,0,0,.85)); }
+  .chefe-img { width: 100vw; max-height: 46dvh; right: 0; top: 8dvh; object-position: top center; }
+  .duelo-titulo { font-size: 32px; }
+  .balao { width: 92px; height: 80px; }
+  .balao span { font-size: 32px; }
+  .baloes { gap: 10px; }
   .achado b { font-size: 22px; }
   .achado img { width: 48px; height: 48px; }
 }
