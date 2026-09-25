@@ -236,7 +236,7 @@ CENAS["caixa-papelao"] = {
 
     { t: "Soprar o apito lá de dentro",
       precisa: "apito",
-      r: "Píii! Um guarda abre a caixa, jura que o Irving é um mágico e o leva direto a um palco de karaokê pra fazer o número de encerramento.",
+      r: "Píiií! Um guarda abre a caixa, jura que o Irving é um mágico e o leva direto a um palco de karaokê pra fazer o número de encerramento.",
       vai: "karaoke", p: { famoso: 2 }, cara: "feliz" },
 
     { t: "Acender um fósforo pra ver melhor",
