@@ -56,12 +56,19 @@ function novaPartida() {
   est.cenaItemGarantido = 2 + Math.floor(Math.random() * 3);
   est.temAdversidade = Math.random() < REGRAS.chancePartidaComAdversidade;
   est.cenaAdvGarantida = 2 + Math.floor(Math.random() * 4);
-  est.chefe = sortear(CHEFES.filter((c) => c.ativo !== false));
+  // chefe de quiz só entra no sorteio quando tiver pelo menos 3 perguntas
+  est.chefe = sortear(CHEFES.filter((c) => chefeValido(c) && !c.gatilho));
+  est.gatilhosFeitos = [];
   est.cenaChefe = 2 + Math.floor(Math.random() * (est.totalCenas - 1));
   est.chefeFeito = false;
   est.npcsFeitos = [];          // NPCs que já apareceram nesta partida
   est.vendedorFeito = false;    // o NPC da Casa do Norte só aparece uma vez por partida
   return est;
+}
+
+function chefeValido(c) {
+  // chefe de quiz só entra quando tiver pelo menos 3 perguntas
+  return c.ativo !== false && (c.tipo !== "quiz" || (c.perguntas || []).length >= REGRAS.perguntasQuiz);
 }
 
 // ---------- quais opções podem aparecer ----------
@@ -108,6 +115,13 @@ function opcoesDaCena(est) {
   const lugarEsc = [...especiais.slice(0, 1), ...comuns].slice(0, vagas);
   escolhidas.push(...lugarEsc, ...itensEsc);
 
+  // 3b) última cena: 2 opções de desfecho, que levam direto aos finais que estão vencendo
+  if (est.desfechos) {
+    const fins = est.desfechos.map((f) => ({ id: "fim:" + f, desfecho: true, o: { t: PONTE_FINAL[f].t, r: PONTE_FINAL[f].r, fim: f, p: {} } }));
+    while (escolhidas.length + fins.length > total) escolhidas.pop();
+    escolhidas.push(...fins);
+  }
+
   // 4) completa com coringas
   if (escolhidas.length < total) {
     const gerais = embaralhar(refs(OPCOES_GERAIS, "geral").filter(livre));
@@ -116,7 +130,7 @@ function opcoesDaCena(est) {
 
   // problemas aparecem primeiro; o resto vem embaralhado
   const lista = escolhidas.slice(0, total);
-  const ordem = [...lista.filter((r) => r.id.startsWith("adv:")), ...embaralhar(lista.filter((r) => !r.id.startsWith("adv:")))];
+  const ordem = [...lista.filter((r) => r.id.startsWith("adv:")), ...embaralhar(lista.filter((r) => !r.id.startsWith("adv:") && !r.desfecho)), ...lista.filter((r) => r.desfecho)];
   return ordem;
 }
 
@@ -155,6 +169,16 @@ function aplicarEscolha(est, ref, valorDado) {
   const dVida = arriscada && !sucesso ? Math.round(escrito * REGRAS.danoFalha) : escrito;
   est.vida = limitar(est.vida + dVida, 0, 100);
   if (dVida) tags.push({ txt: `${dVida} Vida`, cls: "menos" });
+  // itens que curam (pinga, queijo, yakult, antialérgico): a única forma de a Vida subir
+  let curou = 0;
+  if (ef.cura > 0) {
+    const antes = est.vida;
+    est.vida = limitar(est.vida + ef.cura, 0, 100);
+    curou = est.vida - antes;
+    tags.push({ txt: curou ? `+${curou} Vida` : "Vida já está cheia", cls: "mais" });
+  }
+  // tapa-olho duplo: a próxima cena fica toda escura
+  if (ef.efeito === "vendado") est.vendarProxima = true;
 
   let texto = ef.r;
 
@@ -163,6 +187,11 @@ function aplicarEscolha(est, ref, valorDado) {
     est.itens = est.itens.filter((x) => x !== ef.perde);
     if (ef.perde === "chapeu") est.marcas = est.marcas.filter((m) => m !== "chapeu");
     tags.push({ txt: `perdeu: ${nomeItem(ef.perde)}`, cls: "menos" });
+  }
+  // item usado some da mochila (mas continua na memória da partida e conta pros finais)
+  if (base.precisa && !base.mantem && base.precisa !== ef.ganha && est.itens.includes(base.precisa)) {
+    est.itens = est.itens.filter((x) => x !== base.precisa);
+    tags.push({ txt: `usou: ${nomeItem(base.precisa)}`, cls: "neutra" });
   }
   let itemNovo = null;
   if (ef.ganha && !est.itens.includes(ef.ganha)) {
@@ -187,18 +216,23 @@ function aplicarEscolha(est, ref, valorDado) {
   est.escolhas.push({ t: base.t, p: ef.p || {}, lugar: est.lugar });
 
   // chapéu maneiro
-  if (est.marcas.includes("chapeu") && est.itens.includes("chapeu") && base.marca !== "chapeu") texto += " " + sortear(FRASES_CHAPEU);
+  if (est.marcas.includes("chapeu") && base.marca !== "chapeu") texto += " " + sortear(FRASES_CHAPEU);
 
   // o que vem depois
   let fim = null;
   if (est.vida <= 0) fim = "morte";
-  else if (ef.fim) fim = ef.fim;
-  else if (est.cena >= est.totalCenas) fim = calcularFinal(est);
+  else if (ef.fim) fim = ef.fim === "feliz" && est.itens.includes("misto-quente") ? "misto-dupla" : ef.fim;
+  else if (est.cena >= est.totalCenas) {
+    fim = calcularFinal(est);
+    // ponte: a última escolha já leva o Irving pro final, sem cair "do nada"
+    const ponte = PONTE_FINAL[fim === "misto-dupla" ? "feliz" : fim];
+    if (ponte) texto += "\n\n" + ponte.r;
+  }
 
   const destino = fim ? null : resolverDestino(est, ef.vai);
-  const cara = ef.cara || (arriscada ? (sucesso ? "feliz" : sortear(["assustado", "bravo"])) : dVida <= -10 ? "assustado" : dVida < 0 ? "confuso" : "determinado");
+  const cara = ef.cara || (curou ? "feliz" : arriscada ? (sucesso ? "feliz" : sortear(["assustado", "bravo"])) : dVida <= -10 ? "assustado" : dVida < 0 ? "confuso" : "determinado");
 
-  return { texto, tags, fim, destino, fica: destino === est.lugar, cara, arriscada, sucesso, itemNovo, dVida };
+  return { texto, tags, fim, destino, fica: destino === est.lugar, cara, arriscada, sucesso, itemNovo, dVida, curou };
 }
 
 // ---------- ir para a próxima cena ----------
@@ -211,7 +245,14 @@ function avancarCena(est, destino) {
   if (!est.visitados.includes(destino)) est.visitados.push(destino);
 
   const partes = [];
-  if (!mesmo) {
+  // tapa-olho duplo: uma cena no escuro, depois ele tira
+  const tirouVenda = est.vendado;
+  est.vendado = !!est.vendarProxima;
+  est.vendarProxima = false;
+  if (tirouVenda) partes.push("O Irving arranca o tapa-olho duplo, que já estava apertando as orelhas. A luz volta!");
+  if (est.vendado) {
+    partes.push("Tudo escuro. Com o tapa-olho duplo, o Irving não enxerga NADA. Só ouve sons estranhos ao redor... mas, por algum milagre, as opções continuam claras na mente dele.");
+  } else if (!mesmo || tirouVenda) {
     const c = CENAS[destino];
     partes.push(c ? sortear(c.chegadas) : `O Irving chega em ${nomeLugar(destino)}.`);
   }
@@ -254,9 +295,16 @@ function avancarCena(est, destino) {
     }
   }
 
-  // chefe (nunca na casa do Irving: se cair lá, fica pra próxima cena)
+  // chefe especial de lugar (ex.: Senhor do Tempo, só no túnel do tempo)
   let chefe = null;
-  if (!est.chefeFeito && est.cena >= est.cenaChefe) {
+  const especial = CHEFES.find((c) => chefeValido(c) && c.gatilho === destino && !est.gatilhosFeitos.includes(c.id));
+  if (especial) {
+    chefe = especial;
+    est.gatilhosFeitos.push(especial.id);
+    partes.push(especial.entrada);
+  }
+  // chefe da partida (nunca na casa do Irving: se cair lá, fica pra próxima cena)
+  if (!chefe && !est.chefeFeito && est.cena >= est.cenaChefe) {
     if (destino === "casa-irving" || destino === "cama-irving") {
       if (est.cena < est.totalCenas) est.cenaChefe = est.cena + 1;
     } else {
@@ -264,6 +312,17 @@ function avancarCena(est, destino) {
       est.chefeFeito = true;
       partes.push(chefe.entrada || ENTRADA_CHEFE[chefe.id] || `${oChefe(chefe)} surge e desafia o Irving para um duelo!`);
     }
+  }
+
+  // reta final: na penúltima cena aparece uma pista do final que está vencendo;
+  // na última, o dia avisa que está acabando e 2 opções de desfecho entram na cena
+  est.desfechos = null;
+  if (est.cena === est.totalCenas - 1) {
+    const [lider] = lideresFinais(est, 1);
+    if (PONTE_FINAL[lider]) partes.push(PONTE_FINAL[lider].pista);
+  } else if (est.cena === est.totalCenas) {
+    est.desfechos = lideresFinais(est, 2);
+    partes.push("O dia está chegando ao fim, e o destino do Irving começa a se desenhar...");
   }
 
   // Casa do Norte: o vendedor oferece 1 de 3 itens (uma vez por partida)
@@ -286,7 +345,7 @@ function avancarCena(est, destino) {
     }
   }
 
-  return { texto: partes.join("\n\n"), mesmo, item, adversidade, chefe, npc, vendedor, tags, morreu: est.vida <= 0 };
+  return { texto: partes.join("\n\n"), mesmo, item, adversidade, chefe, npc, vendedor, tags, vendado: est.vendado, morreu: est.vida <= 0 };
 }
 
 // ---------- duelo contra o chefe ----------
@@ -306,18 +365,19 @@ function resultadoDuelo(est, venceu) {
 }
 
 // ---------- NPC: venceu o desafio, ganha item ----------
-function resultadoNpc(est, npc, venceu) {
-  if (!venceu) {
-    const dano = npc.dano || 0;
-    if (dano) est.vida = limitar(est.vida - dano, 0, 100);
-    return { item: null, dano };
-  }
-  if (est.itens.length >= REGRAS.maxItens) return { item: null, cheia: true };
+function resultadoNpc(est, npc, venceu, resp) {
+  resp = resp || {};
+  const dano = resp.dano !== undefined ? resp.dano : venceu ? 0 : npc.dano || 0;
+  if (dano) est.vida = limitar(est.vida - dano, 0, 100);
+  const adv = resp.adv ? ativarAdversidade(est, resp.adv) : null;
+  const vai = resp.vai || null;
+  if (!venceu || resp.premio === false) return { item: null, dano, adv, vai };
+  if (est.itens.length >= REGRAS.maxItens) return { item: null, cheia: true, dano, adv, vai };
   let item = npc.premio && !est.itens.includes(npc.premio) ? ITENS.find((i) => i.id === npc.premio) : null;
   if (!item) item = sortear(ITENS.filter((i) => !est.itens.includes(i.id)));
   est.itens.push(item.id);
   if (!est.itensJaTidos.includes(item.id)) est.itensJaTidos.push(item.id);
-  return { item };
+  return { item, dano, adv, vai };
 }
 
 // ---------- Casa do Norte: pegar o presente (deixar = item que sai da mochila cheia) ----------
@@ -331,11 +391,32 @@ function pegarPresente(est, itemId, deixar) {
 }
 
 // ---------- quiz: sorteia 3 perguntas e embaralha as respostas ----------
+// certa: número (1, 2 ou 3), lista de números ([1, 2]) ou "todas".
+// A resposta também pode ser um objeto com efeitos: { txt, ok, fala, dano, adv, vai }.
 function montarQuiz(perguntas, quantas) {
   return embaralhar(perguntas).slice(0, quantas).map((q) => {
-    const ordem = embaralhar(q.respostas.map((txt, i) => ({ txt, certa: i === q.certa - 1 })));
-    return { p: q.p, respostas: ordem };
+    const certas = q.certa === "todas" ? q.respostas.map((_, i) => i) : [].concat(q.certa || []).map((n) => n - 1);
+    const lista = q.respostas.map((r, i) => (typeof r === "string" ? { txt: r, certa: certas.includes(i) } : { ...r, certa: r.ok !== undefined ? !!r.ok : certas.includes(i) }));
+    return { p: q.p, respostas: q.embaralhar === false ? lista : embaralhar(lista) };
   });
+}
+// sorteia o desafio do NPC já montado
+function desafioNpc(npc) {
+  const d = npc.desafios ? sortear(npc.desafios) : npc.desafio;
+  return d.tipo === "adivinha" ? d : { ...montarQuiz([d], 1)[0], tipo: "pergunta" };
+}
+// problema novo vindo de um NPC (ex.: o coach faz o Irving desmaiar)
+function ativarAdversidade(est, id) {
+  const a = ADVERSIDADES.find((x) => x.id === id);
+  if (!a || est.adversidades.includes(id)) return null;
+  est.adversidades.push(id);
+  if (!est.advAparecidas.includes(id)) est.advAparecidas.push(id);
+  return a;
+}
+// os finais com mais pontos agora (pra direcionar a reta final)
+function lideresFinais(est, n) {
+  const pl = placarFinais(est);
+  return Object.keys(pl).sort((a, b) => pl[b] - pl[a] || Math.random() - 0.5).slice(0, n);
 }
 
 // ---------- o final ----------
