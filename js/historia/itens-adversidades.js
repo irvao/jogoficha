@@ -686,7 +686,7 @@ OPCOES_ADV["alienigena"] = {
     { t: "Desparafusar o disco voador", precisaAdv: "alienigena", precisa: "chave-de-fenda", resolve: "alienigena",
       r: "Flutuando no raio verde, o Irving desparafusa uma plaquinha do disco. Algo faz PLEC. O disco solta fumaça, pede desculpas e vai embora mancando.",
       vai: "fica", p: { "alem-tempo": 2, "rei-misto": 1 }, cara: "determinado" },
-];
+  ],
 };
 
 OPCOES_ADV["camarao"] = {
