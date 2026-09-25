@@ -132,6 +132,10 @@ CENAS["uber"] = {
     { t: "Olhar pela janela",
       r: "O mesmo poste passa três vezes. O mesmo cachorro. A mesma senhora de guarda-chuva. O Irving pisca e há violinos tocando.",
       vai: "novela-mexicana", p: { matrix: 2 }, cara: "assustado" },
+
+    { t: "Aceitar o floral do motorista",
+      r: "O motorista abre o porta-luvas: dezenas de vidrinhos. \"Floral de Bach, fórmula Urgências. Pra passageiro apressado.\" Entrega um ao Irving com sorriso nota 5.",
+      vai: "fica", ganha: "floral", p: { filosofico: 1, "hora-errada": 1 }, cara: "confuso" },
   ],
 };
 
@@ -272,6 +276,10 @@ CENAS["cristo-redentor"] = {
       cenaMin: 5,
       r: "Exausto, o Irving senta aos pés do Cristo e fecha os olhos. Ao longe, um bater de asas se aproxima, trazendo algo quentinho.",
       fim: "milagre", cara: "cansado" },
+
+    { t: "Filmar a vista com a Tekpix", precisa: "tekpix",
+      r: "O Irving filma o Rio de braços abertos, igual ao Cristo. Um sagui entra na cena e faz pose. O vídeo viraliza, e turistas do mundo inteiro pedem autógrafo.",
+      vai: "fica", p: { famoso: 3, filosofico: 1 }, cara: "feliz" },
   ],
 };
 
@@ -403,6 +411,10 @@ CENAS["campo-futebol"] = {
     { t: "Fazer amizade com a torcida rival",
       r: "A torcida visitante veio do Peru. Eles ensinam três músicas, dão um abraço coletivo e levam o Irving junto no ônibus.",
       vai: "excursao-peruanos", marca: "amigo-peruanos", p: { filosofico: 2 }, cara: "feliz" },
+
+    { t: "Puxar a torcida com a caixa de som", precisa: "caixa-de-som",
+      r: "O Irving liga a caixa de som no meio do gramado. Sessenta mil torcedores cantam e pulam no ritmo dele. O juiz esquece o jogo e pede autógrafo.",
+      vai: "fica", p: { famoso: 2, "rei-misto": 2 }, cara: "feliz" },
   ],
 };
 
@@ -470,6 +482,14 @@ CENAS["quermesse"] = {
     { t: "Perguntar de que santo é a festa",
       r: "'Santo Honorato, padroeiro dos padeiros!', diz o festeiro. Hoje é o dia dele, e toda padaria da cidade fechou pra vir à festa. O Irving olha em volta: são todos padeiros.",
       vai: "fica", p: { "dia-errado": 3 }, cara: "assustado" },
+
+    { t: "Ganhar uma pinga na pescaria",
+      r: "O Irving lança a vara e fisga um peixinho de papel. O prêmio: uma garrafinha de pinga com laço de fita. A quermesse inteira aplaude o pescador.",
+      vai: "fica", ganha: "pinga", p: { "dia-errado": 1, filosofico: 1 }, cara: "feliz" },
+
+    { t: "Ganhar a caixa de som no bingo",
+      r: "\"Bingo!\", grita o Irving, sem saber como. O prêmio é uma caixa de som que toca forró sozinha. Ele a coloca no ombro como um trovador moderno.",
+      vai: "fica", ganha: "caixa-de-som", p: { famoso: 2 }, cara: "feliz" },
   ],
 };
 
@@ -538,5 +558,16 @@ CENAS["luta-boxe"] = {
       cenaMin: 4,
       r: "Um... dois... três... No sete, o Irving já ronca. O juiz chega ao dez, e o herói nem ouve o gongo final.",
       fim: "sono", cara: "cansado" },
+
+    { t: "Ganhar um nunchaku do treinador",
+      r: "O treinador tira da mochila um nunchaku antigo: \"Não vale no boxe, mas vale na vida.\" O Irving o recebe como herdeiro de uma tradição milenar.",
+      vai: "fica", ganha: "nunchaku", p: { "rei-misto": 1, filosofico: 1 }, cara: "determinado" },
+
+    { t: "Girar o nunchaku no ringue", precisa: "nunchaku",
+      risco: 9,
+      r: "O Irving gira o nunchaku com gritos de filme antigo. A geladeira duplex arregala os olhos, joga a toalha e desce do ringue. Vitória por intimidação!",
+      vai: "fica", marca: "campeao", p: { "rei-misto": 3 }, cara: "determinado",
+      falha: { r: "O nunchaku dá uma volta a mais e quica no próprio boné do Irving. Ele vê estrelinhas e acorda sendo carregado pra fora do ringue.",
+               vida: -15, vai: ["hospital", "lugar-escuro"], p: { amnesia: 2 }, cara: "confuso" } },
   ],
 };
