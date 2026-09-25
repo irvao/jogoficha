@@ -2,61 +2,113 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Ficha do Ferreiro-Estrategista</title>
-  <meta name="description" content="Ficha de personagem estilo RPG com as habilidades do Irving.">
-  <link rel="icon" href="assets/img/oficios.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Desafio do Irving</title>
+  <meta name="description" content="Um dia na vida do Irving. Objetivo: tomar café da manhã na padaria. O que pode dar errado?">
+  <meta name="theme-color" content="#1b1b1f">
+  <link rel="icon" href="assets/desafio/itens/item-09-misto-quente.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Source+Sans+3:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@500;700;800;900&display=swap">
+  <link rel="stylesheet" href="css/desafio.css">
 </head>
 <body>
 
-  <!-- Faíscas de fundo (desenhadas pelo JavaScript num canvas) -->
-  <canvas id="faiscas" aria-hidden="true"></canvas>
+  <!-- Cenário (duas camadas pra fazer a troca suave) -->
+  <div class="fundo" id="fundo-a"></div>
+  <div class="fundo" id="fundo-b"></div>
+  <div class="fundo-veu"></div>
 
-  <div class="wrap">
+  <!-- Irving -->
+  <img class="irving" id="irving" src="assets/desafio/irving/irving-feliz.webp" alt="Irving">
 
-    <header class="hud">
-      <div class="portrait-frame">
-        <img class="portrait" src="assets/img/retrato.jpg" alt="Retrato de Irving como ferreiro, com faca forjada na mão">
-      </div>
-      <div class="hud-text">
-        <h1 class="name" id="nome"></h1>
-        <div class="class" id="classe"></div>
-        <div class="sub" id="subtitulo"></div>
-        <p class="lore" id="lore"></p>
-      </div>
-      <div class="lvl">
-        <div class="t">NÍVEL</div>
-        <div class="n" id="nivel" data-alvo="0">0</div>
-        <div class="b" id="total-skills"></div>
-        <a class="btn-jogar" href="jogo.html">Jogar</a>
-      </div>
-    </header>
+  <!-- Barra de cima: vida, cena e mochila -->
+  <header class="hud" id="hud" hidden>
+    <div class="vida" id="vida">
+      <img src="assets/desafio/ui/coracao.webp" alt="">
+      <div class="vida-barra"><i id="vida-barra"></i></div>
+      <b id="vida-num">100</b>
+    </div>
+    <div class="hud-cena" id="hud-cena">Cena 1</div>
+    <div class="mochila" id="mochila" aria-label="Mochila (até 3 itens)"></div>
+  </header>
 
-    <h2 class="h1">ÍNDICE DE HABILIDADES</h2>
+  <!-- Placa com o nome do lugar -->
+  <div class="placa" id="placa" hidden></div>
 
-    <!-- Os painéis de habilidades são montados pelo JavaScript a partir de js/dados.js -->
-    <main class="grid" id="grid"></main>
+  <!-- TELA DE INÍCIO -->
+  <section class="inicio" id="tela-inicio">
+    <div class="inicio-caixa">
+      <div class="inicio-pre">um dia na vida do</div>
+      <h1 class="logo">Desafio do Irving</h1>
+      <p class="inicio-texto">O Irving acordou com uma ideia brilhante: <b>tomar café da manhã na padaria</b>. O que pode dar errado?</p>
+      <ul class="inicio-regras">
+        <li><b>Escreva</b> o que o Irving faz. Qualquer coisa.</li>
+        <li>O narrador decide a <b>dificuldade</b>. O <b>d20</b> decide o resto.</li>
+        <li>Cuide da <b>Vida</b>. Ache itens. Descubra os <b>19 finais</b>.</li>
+      </ul>
+      <button class="botao" id="btn-comecar">Começar o dia</button>
+      <div class="inicio-finais" id="inicio-finais"></div>
+    </div>
+  </section>
 
-    <section class="panel traits" id="tracos">
-      <h3 class="panel-title">
-        <span class="ttl">Traços de classe</span>
-        <span class="cnt">passivos</span>
-      </h3>
-      <div id="lista-tracos"></div>
-    </section>
-
-    <footer class="foot">
-      <span>FICHA DE PERSONAGEM</span>
-      <span id="rodape-nivel"></span>
-    </footer>
-
+  <!-- Dado -->
+  <div class="dado-palco" id="dado-palco" hidden>
+    <div class="dado-dif" id="dado-dif"></div>
+    <div class="dado" id="dado">
+      <img src="assets/desafio/ui/d20.webp" alt="">
+      <span id="dado-num">?</span>
+    </div>
+    <div class="dado-selo" id="dado-selo"></div>
   </div>
 
-  <!-- Ordem importa: primeiro os dados, depois o script que usa os dados -->
-  <script src="js/dados.js"></script>
-  <script src="js/ficha.js"></script>
+  <!-- Aviso de item encontrado -->
+  <div class="achado" id="achado" hidden>
+    <img id="achado-img" alt="">
+    <div><small>O Irving encontrou</small><b id="achado-nome"></b></div>
+  </div>
+
+  <!-- CAIXA DE TEXTO (visual novel) -->
+  <section class="caixa" id="caixa" hidden>
+    <div class="caixa-nome" id="caixa-nome">Narrador</div>
+    <div class="caixa-texto" id="caixa-texto"></div>
+    <div class="caixa-delta" id="caixa-delta"></div>
+
+    <form class="acao" id="form-acao" autocomplete="off">
+      <textarea id="campo-acao" rows="1" maxlength="220" placeholder="O que o Irving faz?" enterkeyhint="send"></textarea>
+      <button class="botao botao-agir" id="btn-agir" type="submit">Agir</button>
+    </form>
+
+    <div class="pensando" id="pensando" hidden><span></span><span></span><span></span> <em id="pensando-txt">o narrador está pensando</em></div>
+
+    <div class="caixa-botoes" id="caixa-botoes" hidden>
+      <button class="botao" id="btn-continuar" type="button">Continuar</button>
+    </div>
+
+    <div class="erro" id="erro" hidden>
+      <span id="erro-txt"></span>
+      <button class="botao botao-pequeno" id="btn-tentar" type="button">Tentar de novo</button>
+    </div>
+  </section>
+
+  <!-- TELA FINAL -->
+  <section class="final" id="tela-final" hidden>
+    <div class="final-cartao">
+      <div class="final-pre">FIM DO DIA</div>
+      <div class="final-tipo" id="final-tipo"></div>
+      <h2 class="final-nome" id="final-nome"></h2>
+      <p class="final-texto" id="final-texto"></p>
+      <div class="final-resumo" id="final-resumo"></div>
+      <div class="galeria-titulo" id="galeria-titulo"></div>
+      <div class="galeria" id="galeria"></div>
+      <div class="final-botoes">
+        <button class="botao" id="btn-denovo" type="button">Viver outro dia</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/desafio-dados.js"></script>
+  <script src="js/desafio-ia.js"></script>
+  <script src="js/desafio.js"></script>
 </body>
 </html>
