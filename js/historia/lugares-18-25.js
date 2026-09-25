@@ -7,7 +7,7 @@
 
 CENAS["feira"] = {
   chegadas: [
-    "Eis a feira livre, campo de batalha de lonas azuis. Feirantes bradam como arautos: \"Olha a promoção, freguês!\" O cheiro de pastel paira no ar como uma bêncão.",
+    "Eis a feira livre, campo de batalha de lonas azuis. Feirantes bradam como arautos: \"Olha a promoção, freguês!\" O cheiro de pastel paira no ar como uma bênção.",
     "Caixotes de laranja, pilhas de chuchu e um exército de carrinhos de compras. É hora da xepa, e as vovós avançam com a fúria de uma cavalaria.",
   ],
   opcoes: [
