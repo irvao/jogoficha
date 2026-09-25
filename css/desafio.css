@@ -58,6 +58,9 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
   height: 94dvh; max-width: 48vw;
   object-fit: contain; object-position: bottom left;
   filter: drop-shadow(0 0 2px rgba(0,0,0,.6)) drop-shadow(10px 14px 18px rgba(0,0,0,.55));
+  /* a imagem termina no meio da perna: some suavemente em vez de cortar reto */
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
+  mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
   transition: transform .35s ease, opacity .35s ease;
   pointer-events: none;
   z-index: 2;
@@ -93,7 +96,7 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .hud-cena {
   font-family: var(--titulo); font-size: 22px; letter-spacing: 1px; color: var(--tinta);
   background: var(--papel); border: var(--borda); border-radius: 999px; padding: 3px 14px 0;
-  box-shadow: 0 4px 0 var(--tinta);
+  box-shadow: 0 4px 0 var(--tinta); white-space: nowrap;
 }
 .mochila { display: flex; gap: 8px; }
 .slot {
@@ -167,7 +170,7 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .caixa {
   position: fixed; z-index: 4;
   left: 50%; transform: translateX(-50%);
-  bottom: max(14px, env(safe-area-inset-bottom));
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + var(--teclado, 0px));
   width: min(1100px, calc(100% - 32px));
   max-height: 46dvh; overflow-y: auto; overscroll-behavior: contain;
   background: var(--papel); border: 4px solid var(--tinta); border-radius: var(--raio);
@@ -316,7 +319,7 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
    ===================================================================== */
 @media (max-aspect-ratio: 4/5), (max-width: 700px) {
   .fundo { background-position: 68% center; }
-  .irving { height: 52dvh; max-width: 70vw; left: -3vw; bottom: auto; top: 13dvh; }
+  .irving { height: 58dvh; max-width: 76vw; left: -3vw; bottom: auto; top: 11dvh; }
   .hud { padding: max(8px, env(safe-area-inset-top)) 10px 8px; gap: 8px; }
   .vida { padding: 3px 9px 3px 4px; gap: 6px; }
   .vida img { width: 26px; }
@@ -327,7 +330,7 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
   .slot img { width: 34px; height: 34px; }
   .mochila { gap: 5px; }
   .placa { top: 64px; right: 10px; font-size: 20px; }
-  .caixa { width: calc(100% - 20px); bottom: max(10px, env(safe-area-inset-bottom)); max-height: 52dvh; padding: 22px 16px 14px; }
+  .caixa { width: calc(100% - 20px); bottom: calc(max(10px, env(safe-area-inset-bottom)) + var(--teclado, 0px)); max-height: 52dvh; padding: 22px 16px 14px; }
   .caixa-nome { top: -22px; margin-top: -22px; font-size: 18px; }
   .caixa-texto { font-size: 16.5px; }
   .acao textarea { font-size: 16px; min-height: 46px; }
@@ -340,6 +343,11 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
   .achado b { font-size: 22px; }
   .achado img { width: 48px; height: 48px; }
 }
+
+/* teclado aberto no celular: caixa fica acima do teclado e cabe no espaço que sobra */
+body.com-teclado .caixa { max-height: calc(var(--visivel, 50dvh) - 70px); }
+body.com-teclado .placa,
+body.com-teclado .achado { display: none; }
 
 /* telas baixas (celular deitado) */
 @media (max-height: 520px) and (min-aspect-ratio: 1/1) {
