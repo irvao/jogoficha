@@ -300,7 +300,8 @@ async function passoResolver(acao, av, rolagem, proxima) {
 
 function aplicarResultado(acao, rolagem, proxima, r) {
   // vida (dentro de limites por tipo de resultado)
-  const faixas = { critico: [0, 20], sucesso: [-8, 12], falha: [-25, 0], desastre: [-40, -5], impossivel: [-15, 0] };
+  // a Vida nunca aumenta: o dia só desgasta
+  const faixas = { critico: [0, 0], sucesso: [-8, 0], falha: [-25, -5], desastre: [-40, -10], impossivel: [-15, 0] };
   const [mn, mx] = faixas[rolagem.tipo];
   const dVida = limitar(r.vida, mn, mx);
   est.vida = limitar(est.vida + dVida, 0, 100);
