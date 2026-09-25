@@ -17,7 +17,7 @@ const REGRAS = {
   maxOpcoesItem: 2,        // no máximo 2 dos 6 botões são de itens da mochila
   cenaMinFim: 6,           // escolhas que encerram o dia na hora só aparecem a partir desta cena
   danoFalha: 2,            // multiplica o dano escrito nas falhas das opções arriscadas
-  danoAdversidade: 6,      // cada cena com um problema sem resolver tira essa Vida (resolver compensa!)
+  danoAdversidade: 5,      // cada cena com um problema sem resolver tira essa Vida (resolver compensa!)
   chanceNpc: 0.2,          // chance de aparecer um NPC com desafio em cada cena (a partir da 2ª)
   maxNpcs: 2,              // no máximo 2 NPCs por partida
   perguntasQuiz: 3,        // chefe de quiz: faz 3 perguntas...
@@ -123,6 +123,20 @@ const ITENS = [
   { id: "cortador-unha", arq: "item-15-cortador-unha", nome: "Cortador de unha", segredo: "Funciona como na vida real." },
   { id: "bouquet", arq: "item-16-bouquet", nome: "Bouquet de flores", segredo: "Funciona como na vida real." },
   { id: "apito", arq: "item-17-apito", nome: "Apito", segredo: "Funciona como na vida real." },
+  // itens novos (set/2026)
+  { id: "antialergico", arq: "item-18-antialergico", nome: "Antialérgico", segredo: "Recupera 10 de Vida e ajuda em algumas adversidades (camarão, chuva)." },
+  { id: "livro-autoajuda", arq: "item-19-livro-autoajuda", nome: "Livro de autoajuda", segredo: "Ler: o Irving sorri e nada acontece." },
+  { id: "caixa-de-som", arq: "item-20-caixa-de-som", nome: "Caixa de som", segredo: "Ajuda em algumas situações." },
+  { id: "cd-tihuana", arq: "item-21-cd-tihuana", nome: "CD do Tihuana", segredo: "Inútil." },
+  { id: "chave-de-fenda", arq: "item-22-chave-de-fenda", nome: "Chave de fenda", segredo: "Ajuda em algumas situações." },
+  { id: "disfarce", arq: "item-23-disfarce", nome: "Disfarce", segredo: "Ajuda em algumas situações." },
+  { id: "floral", arq: "item-24-floral", nome: "Floral", segredo: "Tomar: o Irving sorri e nada acontece." },
+  { id: "nunchaku", arq: "item-25-nunchaku", nome: "Nunchaku", segredo: "Ajuda em algumas situações." },
+  { id: "pinga", arq: "item-26-pinga", nome: "Pinga", segredo: "Recupera 30 de Vida." },
+  { id: "queijo", arq: "item-27-queijo", nome: "Queijo", segredo: "Recupera 15 de Vida." },
+  { id: "tapa-olho", arq: "item-28-tapa-olho", nome: "Tapa-olho duplo", segredo: "Colocar: a tela fica preta por uma cena (as opções continuam visíveis), depois ele tira." },
+  { id: "tekpix", arq: "item-29-tekpix", nome: "Tekpix", segredo: "Ajuda em algumas situações." },
+  { id: "yakult", arq: "item-30-yakult", nome: "Yakult", segredo: "Recupera 10 de Vida." },
 ];
 
 // ---------- ADVERSIDADES ----------
@@ -213,13 +227,52 @@ const PUXA_FINAL = {
 // Ajuste fino de cada final: multiplica os pontos na hora de decidir o final.
 // Maior que 1 = final mais fácil de sair; menor que 1 = mais difícil. (Calibrado com o simulador.)
 const AJUSTE_FINAL = {
-  "feliz": 1.0, "quase-feliz": 2.1, "hora-errada": 1.41, "dia-errado": 1.79, "banana": 1.42, "sono": 1.01,
-  "onde-estou": 1.1, "rei-misto": 1.63, "matrix": 1.2, "filosofico": 1.01, "antes-tempo": 1.48, "alem-tempo": 1.46,
-  "famoso": 1.24, "prisao": 1.39, "milagre": 1.48, "amnesia": 1.83,
+  "feliz": 1, "quase-feliz": 1.83, "hora-errada": 1.29, "dia-errado": 1.66, "banana": 1.43, "sono": 0.88,
+  "onde-estou": 1.01, "rei-misto": 1.63, "matrix": 1.14, "filosofico": 1.09, "antes-tempo": 1.63, "alem-tempo": 1.64,
+  "famoso": 1.34, "prisao": 1.36, "milagre": 1.44, "amnesia": 1.43,
 };
 
 // NPCs com desafio (o conteúdo fica em js/historia/personagens.js)
 const NPCS = [];
+
+// ---------- RETA FINAL ----------
+// pista: aparece na penúltima cena, avisando pra onde a história está indo (o final que está vencendo)
+// t / r: na última cena, os 2 finais que estão vencendo viram opções (t = botão, r = o que acontece)
+// r também é usado como "ponte" quando o dia termina por outra escolha qualquer
+const PONTE_FINAL = {
+  "feliz":       { pista: "Um cheiro de pão quentinho atravessa o ar. O estômago do Irving reconhece na hora: a padaria está perto!",
+                   t: "Seguir o cheiro de pão até a padaria", r: "O herói segue o aroma sagrado, dobra a esquina e lá está ela, luminosa como um templo: a padaria." },
+  "quase-feliz": { pista: "Um cachorro de rua começa a seguir o Irving de longe, farejando o ar com um interesse suspeito.",
+                   t: "Correr pra padaria antes que algo aconteça", r: "O Irving dispara rumo à padaria, com o misto quase ao alcance... sem perceber o focinho que o acompanha." },
+  "hora-errada": { pista: "O Irving olha o relógio e engole em seco: o sol já está alto demais pra um café da manhã.",
+                   t: "Ir pra padaria, mesmo atrasado", r: "Mesmo com o sol a pino, o Irving marcha rumo à padaria. Afinal, café da manhã é um estado de espírito." },
+  "dia-errado":  { pista: "Bandeirinhas, faixas e fogos ao longe: parece que hoje é feriado de alguma coisa muito importante.",
+                   t: "Ir pra padaria assim mesmo", r: "Ignorando os fogos e as faixas comemorativas, o Irving parte decidido rumo à padaria." },
+  "banana":      { pista: "Um cheiro estranhamente amarelo paira no ar. Pra onde o Irving olha, vê cascas de banana.",
+                   t: "Correr pra padaria e pedir o misto", r: "O Irving entra na padaria e pede o misto. O padeiro sorri de um jeito muito suspeito." },
+  "sono":        { pista: "Os olhos do Irving pesam como âncoras. Um bocejo épico escapa. A cama parece chamar o nome dele.",
+                   t: "Voltar pra casa só pra descansar", r: "O herói, exausto, toma o caminho de casa, jurando que é só um cochilinho." },
+  "onde-estou":  { pista: "O Irving olha em volta e não reconhece nada. Nem as ruas, nem o céu, nem a própria sombra.",
+                   t: "Pegar um atalho que parece dar em algo", r: "O atalho vira outro atalho, que vira outro... e o Irving percebe que já não sabe onde começou." },
+  "rei-misto":   { pista: "Pessoas começam a seguir o Irving pelas ruas, gritando o nome dele. Algo grandioso está pra acontecer.",
+                   t: "Aceitar o chamado do povo", r: "O Irving ergue o braço, e a multidão explode em aplausos. Um trono improvisado já o espera." },
+  "matrix":      { pista: "Um gato passa. Depois passa de novo, igualzinho. O Irving tem certeza de que já viveu este momento.",
+                   t: "Encarar a falha na realidade", r: "O Irving toca o ar, que treme como água. Números verdes começam a escorrer pelo céu." },
+  "filosofico":  { pista: "O Irving pensa em todo mundo que conheceu hoje e sente algo quentinho no peito. Não é fome.",
+                   t: "Olhar pra trás e sorrir", r: "O herói para, respira e contempla o caminho percorrido. Talvez o misto nunca tenha sido o ponto." },
+  "antes-tempo": { pista: "Tudo ao redor parece antigo demais. Carroças, velas, e ninguém nunca ouviu falar de presunto com queijo.",
+                   t: "Procurar uma padaria nesta época", r: "O Irving pede um misto quente e recebe olhares confusos de camponeses de outro século." },
+  "alem-tempo":  { pista: "Carros voam e robôs passeiam com cachorros-robôs. Aqui, o misto quente é uma lenda antiga.",
+                   t: "Procurar uma padaria do futuro", r: "O Irving encontra uma padaria cromada, onde o misto vem numa cápsula. Gelado." },
+  "famoso":      { pista: "Ao longe, uma música animada toca e uma multidão se aglomera em volta de alguém muito famoso.",
+                   t: "Ir ver quem é o famoso", r: "O Irving abre caminho na multidão, com a câmera no ombro e o coração acelerado." },
+  "prisao":      { pista: "Sirenes soam ao longe, e parecem chegar cada vez mais perto do Irving.",
+                   t: "Tentar explicar tudo pra polícia", r: "O Irving levanta as mãos e começa a explicar o dia inteiro. Os policiais se entreolham." },
+  "milagre":     { pista: "Dois pássaros circulam lá no alto, bem em cima do Irving, como se vigiassem cada passo dele.",
+                   t: "Olhar pro céu e fazer um pedido", r: "O Irving fecha os olhos e pede, do fundo do estômago, um misto quente. As asas batem mais perto." },
+  "amnesia":     { pista: "Por um segundo, o Irving esquece o próprio nome. Depois lembra. Depois esquece de novo.",
+                   t: "Tentar lembrar o que estava fazendo", r: "O Irving franze a testa com toda a força, e a memória escorre pelos dedos como areia." },
+};
 
 // ---------- CHEFES ----------
 // Toda partida tem 1 chefe, sorteado, numa cena aleatória (nunca na Casa do Irving).
