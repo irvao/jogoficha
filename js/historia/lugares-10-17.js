@@ -46,7 +46,7 @@ CENAS["beco-perigoso"] = {
 
     { t: "Pagar a taxa do valentão",
       precisa: "100-reais", perde: "100-reais",
-      r: "O valentão conta o dinheiro, faz uma reverencia e entrega um apito: 'Se precisar, apita.' Depois leva o Irving ao ringue onde luta aos domingos.",
+      r: "O valentão conta o dinheiro, faz uma reverência e entrega um apito: 'Se precisar, apita.' Depois leva o Irving ao ringue onde luta aos domingos.",
       vai: "luta-boxe", ganha: "apito", p: { "rei-misto": 1, famoso: 1 } },
 
     { t: "Ameaçar os bandidos com a banana",
