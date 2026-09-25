@@ -19,7 +19,7 @@ CENAS["beco-perigoso"] = {
       vai: "encapuzado-carro", p: { prisao: 3 }, cara: "assustado" },
 
     { t: "Fotografar a lata de lixo que se mexe",
-      r: "Flash! A lata solta um miado ofendido. O gato caolho sai de dentro e, com despreço, deixa pra trás uma caixa de fósforos.",
+      r: "Flash! A lata solta um miado ofendido. O gato caolho sai de dentro e, com desprezo, deixa pra trás uma caixa de fósforos.",
       vai: "fica", ganha: "fosforos", p: { "quase-feliz": 2 }, cara: "confuso" },
 
     { t: "Correr pelo beco sem olhar pra trás",
