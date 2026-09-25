@@ -402,7 +402,7 @@ CENAS["comercial-margarina"] = {
       vai: "sorveteria", ganha: "banana", p: { banana: 3 }, cara: "confuso" },
 
     { t: "Deitar na cama do cenário",
-      r: "O quarto perfeito tem a cama mais fofa já fabricada. O Irving deita 'so pra testar' e acorda na própria cama, sem saber como.",
+      r: "O quarto perfeito tem a cama mais fofa já fabricada. O Irving deita 'só pra testar' e acorda na própria cama, sem saber como.",
       vai: "cama-irving", p: { sono: 2 }, cara: "cansado" },
 
     { t: "Pôr a peruca e virar figurante",
@@ -460,7 +460,7 @@ CENAS["fila-banco"] = {
       r: "Nada de senha: agora é por nome! A fila vira revolução. Metade do banco sai às ruas protestando a favor, a outra metade, contra.",
       vai: "protesto", p: { "dia-errado": 2, "rei-misto": 1 }, cara: "determinado" },
 
-    { t: "Passar pela porta giratoria",
+    { t: "Passar pela porta giratória",
       r: "A porta trava, destrava e gira sem parar. O Irving roda, roda, roda... Quando finalmente sai, está num corredor de hospital, sem lembrar quem é.",
       vai: "hospital", vida: -5, p: { amnesia: 2 }, cara: "confuso" },
 
@@ -488,7 +488,7 @@ CENAS["fila-banco"] = {
 CENAS["programa-auditorio"] = {
   chegadas: [
     "Luzes piscando, plateia gritando e um apresentador de terno brilhante berrando o nome do Irving. É domingo, é ao vivo, e ele virou participante sem querer.",
-    "A plateia grita, as dançarinas rodopiam e notas de dinheiro voam como avioezinhos pelo estúdio. O Irving está no palco de um programa de auditório.",
+    "A plateia grita, as dançarinas rodopiam e notas de dinheiro voam como aviõezinhos pelo estúdio. O Irving está no palco de um programa de auditório.",
   ],
   opcoes: [
     { t: "Girar a roleta dos prêmios",
