@@ -10,14 +10,15 @@ const REGRAS = {
   cenasMax: 12,
   chanceItem: 0,           // chance de achar item por sorte em cada cena (0 = itens só vêm das escolhas, do chefe ou do item garantido)
   chancePartidaComAdversidade: 0.50, // metade das partidas tem adversidade; a outra metade não tem nenhuma
-  chanceAdversidade: 0.10, // nas partidas com adversidade: depois da primeira, 10% de vir outra em cada cena
+  chanceAdversidade: 0.10, // (só vale se maxAdversidades for maior que 1)
+  maxAdversidades: 1,      // no máximo 1 adversidade sorteada por partida (a do coach é consequência de escolha e não conta)
   maxItens: 3,
   maxCenasMesmoLugar: 2,   // uma escolha pode segurar o Irving no mesmo lugar por até 2 cenas seguidas
   opcoesPorCena: 6,        // quantos botões aparecem em cada cena
   maxOpcoesItem: 2,        // no máximo 2 dos 6 botões são de itens da mochila
   cenaMinFim: 6,           // escolhas que encerram o dia na hora só aparecem a partir desta cena
   danoFalha: 2,            // multiplica o dano escrito nas falhas das opções arriscadas
-  danoAdversidade: 5,      // cada cena com um problema sem resolver tira essa Vida (resolver compensa!)
+  danoAdversidade: 6,      // cada cena com um problema sem resolver tira essa Vida (menos os marcados semDano)
   chanceNpc: 0.2,          // chance de aparecer um NPC com desafio em cada cena (a partir da 2ª)
   maxNpcs: 2,              // no máximo 2 NPCs por partida
   perguntasQuiz: 3,        // chefe de quiz: faz 3 perguntas...
@@ -114,7 +115,7 @@ const ITENS = [
   { id: "fita-crepe", arq: "item-06-fita-crepe", nome: "Fita crepe", segredo: "Rolo novinho. Funciona como na vida real." },
   { id: "pedra", arq: "item-07-pedra", nome: "Pedra", segredo: "Funciona como na vida real." },
   { id: "peruca", arq: "item-08-peruca", nome: "Peruca linda", segredo: "Funciona como na vida real (disfarce, estilo...)." },
-  { id: "misto-quente", arq: "item-09-misto-quente", nome: "Misto quente", segredo: "Se o jogador tentar COMER o misto quente fora da padaria, ativa o final 'Misto triste' (marque comeu_misto_fora = true)." },
+  { id: "misto-quente", arq: "item-09-misto-quente", nome: "Misto quente", dica: "Leve até a padaria pra comer em dobro! Comer antes = final triste.", segredo: "Se o jogador tentar COMER o misto quente fora da padaria, ativa o final 'Misto triste' (marque comeu_misto_fora = true)." },
   { id: "maquina-do-tempo", arq: "item-10-maquina-do-tempo", nome: "Máquina do tempo", segredo: "Funciona DE VERDADE, e tem a cara de uma máquina de lavar roupa (brinque com isso). Ao usar, o Irving vai para o túnel do tempo (marque usou_maquina_tempo = true)." },
   { id: "corda", arq: "item-11-corda", nome: "Corda", segredo: "Funciona como na vida real." },
   { id: "chapeu", arq: "item-12-chapeu-maneiro", nome: "Chapéu maneiro", segredo: "Se o jogador COLOCAR o chapéu, a partir daí o narrador SEMPRE menciona como o chapéu é maneiro. Só isso, não tem outro efeito." },
@@ -142,18 +143,18 @@ const ITENS = [
 // ---------- ADVERSIDADES ----------
 const ADVERSIDADES = [
   { id: "pacote", texto: "Um homem suspeito passa um pacote para o Irving" },
-  { id: "cachorro", texto: "Um cachorro branco pede ajuda ao Irving para comprar um refri" },
-  { id: "mesario", texto: "O Irving é chamado para ser mesário" },
+  { id: "cachorro", texto: "Um cachorro branco pede ajuda ao Irving para comprar um refri", semDano: true },
+  { id: "mesario", texto: "O Irving é chamado para ser mesário", semDano: true },
   { id: "policia", texto: "A polícia para o Irving para fazer questionamentos" },
   { id: "chuva", texto: "Começa a chover forte" },
   { id: "sem-calcas", texto: "O Irving percebe que esqueceu de colocar as calças antes de sair de casa" },
   { id: "cobra", texto: "Tem uma cobra no caminho" },
   { id: "desmaio", texto: "O Irving perde a consciência por 30 minutos" },
-  { id: "tropeco", texto: "O Irving tropeça em alguém que está sentado na rua" },
+  { id: "tropeco", texto: "O Irving tropeça em alguém que está sentado na rua", semDano: true },
   { id: "alienigena", texto: "Um alienígena tenta abduzir o Irving" },
   { id: "camarao", texto: "O Irving descobre que é alérgico a camarão" },
   { id: "banheiro", texto: "O Irving fica com muita vontade de ir ao banheiro" },
-  { id: "rifa", texto: "O Irving ganha a rifa da firma" },
+  { id: "rifa", texto: "O Irving ganha a rifa da firma", semDano: true },
 ];
 
 // ---------- FINAIS ----------
@@ -227,9 +228,9 @@ const PUXA_FINAL = {
 // Ajuste fino de cada final: multiplica os pontos na hora de decidir o final.
 // Maior que 1 = final mais fácil de sair; menor que 1 = mais difícil. (Calibrado com o simulador.)
 const AJUSTE_FINAL = {
-  "feliz": 1, "quase-feliz": 1.83, "hora-errada": 1.29, "dia-errado": 1.66, "banana": 1.43, "sono": 0.88,
-  "onde-estou": 1.01, "rei-misto": 1.63, "matrix": 1.14, "filosofico": 1.09, "antes-tempo": 1.63, "alem-tempo": 1.64,
-  "famoso": 1.34, "prisao": 1.36, "milagre": 1.44, "amnesia": 1.43,
+  "feliz": 1, "quase-feliz": 1.86, "hora-errada": 1.3, "dia-errado": 1.72, "banana": 1.51, "sono": 0.9,
+  "onde-estou": 1.11, "rei-misto": 1.75, "matrix": 1.16, "filosofico": 1.14, "antes-tempo": 1.68, "alem-tempo": 1.69,
+  "famoso": 1.4, "prisao": 1.47, "milagre": 1.44, "amnesia": 1.5,
 };
 
 // NPCs com desafio (o conteúdo fica em js/historia/personagens.js)
@@ -270,6 +271,9 @@ const PONTE_FINAL = {
                    t: "Tentar explicar tudo pra polícia", r: "O Irving levanta as mãos e começa a explicar o dia inteiro. Os policiais se entreolham." },
   "milagre":     { pista: "Dois pássaros circulam lá no alto, bem em cima do Irving, como se vigiassem cada passo dele.",
                    t: "Olhar pro céu e fazer um pedido", r: "O Irving fecha os olhos e pede, do fundo do estômago, um misto quente. As asas batem mais perto." },
+  // quando o Irving está com o misto na mochila, o final feliz vira "Misto em dupla"
+  "misto-dupla": { pista: "O misto quente na mochila ainda está quentinho. E a padaria não pode estar longe: dá pra sentir o cheiro!",
+                   t: "Levar o misto quentinho até a padaria", r: "Abraçado ao misto como a um tesouro, o Irving dobra a última esquina. Lá está a padaria, pronta pra receber dois mistos de uma vez." },
   "amnesia":     { pista: "Por um segundo, o Irving esquece o próprio nome. Depois lembra. Depois esquece de novo.",
                    t: "Tentar lembrar o que estava fazendo", r: "O Irving franze a testa com toda a força, e a memória escorre pelos dedos como areia." },
 };

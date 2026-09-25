@@ -109,7 +109,7 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .slot.novo { animation: novoItem .8s ease; }
 @keyframes novoItem { 0%{transform:scale(.2) rotate(-20deg)} 60%{transform:scale(1.25) rotate(6deg)} 100%{transform:scale(1)} }
 .slot[data-nome]:hover::after, .slot[data-nome]:focus::after {
-  content: attr(data-nome); position: absolute; top: 110%; right: 0; white-space: nowrap;
+  content: attr(data-nome); position: absolute; top: 110%; right: 0; white-space: normal; width: max-content; max-width: 220px; z-index: 5; line-height: 1.3;
   background: var(--tinta); color: var(--papel); font-size: 13px; padding: 3px 8px; border-radius: 8px;
 }
 
@@ -512,3 +512,6 @@ body.com-teclado .achado { display: none; }
 .quiz-fala { margin-top: 6px; font-weight: 900; font-size: 15px; }
 .quiz-fala.bom { color: var(--verde); }
 .quiz-fala.ruim { color: var(--vermelho); }
+#achado-dica { display: block; font-style: normal; font-weight: 800; font-size: 14px; width: min(240px, 58vw); line-height: 1.3; margin-top: 2px; }
+#achado-dica:empty { display: none; }
+.achado.longo { animation-duration: 5.9s; }

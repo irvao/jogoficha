@@ -73,7 +73,7 @@ function atualizarHud(bater, itemNovo) {
     if (id) {
       const it = ITENS.find((x) => x.id === id);
       s.className = "slot" + (id === itemNovo ? " novo" : "");
-      s.dataset.nome = it.nome;
+      s.dataset.nome = it.dica ? `${it.nome}: ${it.dica}` : it.nome;
       s.tabIndex = 0;
       s.title = it.nome;
       s.innerHTML = `<img src="assets/desafio/itens/${it.arq}.webp" alt="${it.nome}">`;
@@ -587,8 +587,10 @@ function mostrarAchado(item) {
   a.hidden = true; void a.offsetWidth;
   $("achado-img").src = `assets/desafio/itens/${item.arq}.webp`;
   $("achado-nome").textContent = item.nome;
+  $("achado-dica").textContent = item.dica || "";
+  a.classList.toggle("longo", !!item.dica);
   a.hidden = false;
-  setTimeout(() => { a.hidden = true; }, 3700);
+  setTimeout(() => { a.hidden = true; }, item.dica ? 6000 : 3700);
 }
 function mostrarAlerta(adv) {
   const a = $("alerta");

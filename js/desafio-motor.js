@@ -56,6 +56,7 @@ function novaPartida() {
   est.cenaItemGarantido = 2 + Math.floor(Math.random() * 3);
   est.temAdversidade = Math.random() < REGRAS.chancePartidaComAdversidade;
   est.cenaAdvGarantida = 2 + Math.floor(Math.random() * 4);
+  est.advSorteadas = 0;
   // chefe de quiz só entra no sorteio quando tiver pelo menos 3 perguntas
   est.chefe = sortear(CHEFES.filter((c) => chefeValido(c) && !c.gatilho));
   est.gatilhosFeitos = [];
@@ -117,7 +118,11 @@ function opcoesDaCena(est) {
 
   // 3b) última cena: 2 opções de desfecho, que levam direto aos finais que estão vencendo
   if (est.desfechos) {
-    const fins = est.desfechos.map((f) => ({ id: "fim:" + f, desfecho: true, o: { t: PONTE_FINAL[f].t, r: PONTE_FINAL[f].r, fim: f, p: {} } }));
+    const comMisto = est.itens.includes("misto-quente");
+    const fins = est.desfechos.map((f) => {
+      const pt = PONTE_FINAL[f === "feliz" && comMisto ? "misto-dupla" : f];
+      return { id: "fim:" + f, desfecho: true, o: { t: pt.t, r: pt.r, fim: f, p: {} } };
+    });
     while (escolhidas.length + fins.length > total) escolhidas.pop();
     escolhidas.push(...fins);
   }
@@ -225,7 +230,7 @@ function aplicarEscolha(est, ref, valorDado) {
   else if (est.cena >= est.totalCenas) {
     fim = calcularFinal(est);
     // ponte: a última escolha já leva o Irving pro final, sem cair "do nada"
-    const ponte = PONTE_FINAL[fim === "misto-dupla" ? "feliz" : fim];
+    const ponte = PONTE_FINAL[fim];
     if (ponte) texto += "\n\n" + ponte.r;
   }
 
@@ -274,17 +279,19 @@ function avancarCena(est, destino) {
     const x = OPCOES_ADV[a];
     if (x && x.lembretes) partes.push(sortear(x.lembretes));
   }
-  if (est.adversidades.length && REGRAS.danoAdversidade) {
-    const dano = REGRAS.danoAdversidade * est.adversidades.length;
+  const incomodam = est.adversidades.filter((id) => !(ADVERSIDADES.find((a) => a.id === id) || {}).semDano);
+  if (incomodam.length && REGRAS.danoAdversidade) {
+    const dano = REGRAS.danoAdversidade * incomodam.length;
     est.vida = limitar(est.vida - dano, 0, 100);
     tags.push({ txt: `-${dano} Vida (problema sem resolver)`, cls: "menos" });
   }
 
   // adversidade nova
   let adversidade = null;
-  const advGarantida = est.temAdversidade && est.advAparecidas.length === 0 && est.cena >= est.cenaAdvGarantida;
-  const advExtra = est.temAdversidade && est.advAparecidas.length > 0 && Math.random() < REGRAS.chanceAdversidade;
-  if (advGarantida || advExtra) {
+  const advGarantida = est.temAdversidade && est.advSorteadas === 0 && est.cena >= est.cenaAdvGarantida;
+  const advExtra = est.temAdversidade && est.advSorteadas > 0 && Math.random() < REGRAS.chanceAdversidade;
+  if ((advGarantida || advExtra) && est.advSorteadas < REGRAS.maxAdversidades) {
+    est.advSorteadas++;
     const livres = ADVERSIDADES.filter((a) => !est.advAparecidas.includes(a.id));
     if (livres.length) {
       adversidade = sortear(livres);
@@ -319,9 +326,11 @@ function avancarCena(est, destino) {
   est.desfechos = null;
   if (est.cena === est.totalCenas - 1) {
     const [lider] = lideresFinais(est, 1);
-    if (PONTE_FINAL[lider]) partes.push(PONTE_FINAL[lider].pista);
+    const chave = est.itens.includes("misto-quente") ? "misto-dupla" : lider;
+    if (PONTE_FINAL[chave]) partes.push(PONTE_FINAL[chave].pista);
   } else if (est.cena === est.totalCenas) {
-    est.desfechos = lideresFinais(est, 2);
+    // com o misto na mochila, uma das saídas é sempre levar o misto até a padaria
+    est.desfechos = est.itens.includes("misto-quente") ? ["feliz", lideresFinais(est, 3).filter((f) => f !== "feliz")[0]] : lideresFinais(est, 2);
     partes.push("O dia está chegando ao fim, e o destino do Irving começa a se desenhar...");
   }
 
