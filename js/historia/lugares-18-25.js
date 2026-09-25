@@ -7,7 +7,7 @@
 
 CENAS["feira"] = {
   chegadas: [
-    "Eis a feira livre, campo de batalha de lonas azuis. Feirantes bradam como arautos: \"Olha a promoção, freguês!\" O cheiro de pastel paira no ar como uma bênção.",
+    "Eis a feira livre, campo de batalha de lonas azuis. Feirantes bradam como arautos: \"Olha a promoção, freguˆez!\" O cheiro de pastel paira no ar como uma bêncão.",
     "Caixotes de laranja, pilhas de chuchu e um exército de carrinhos de compras. É hora da xepa, e as vovós avançam com a fúria de uma cavalaria.",
   ],
   opcoes: [
@@ -16,7 +16,7 @@ CENAS["feira"] = {
       vai: "casa-do-norte", p: { "quase-feliz": 1, filosofico: 1 }, cara: "feliz" },
 
     { t: "Perguntar ao feirante da padaria",
-      r: "\"Padaria? Segue o cheiro do pão, freguês!\" O Irving fareja o ar como um cão de caça, e o aroma o conduz até uma loja cheia de fornos.",
+      r: "\"Padaria? Segue o cheiro do pão, freguˆez!\" O Irving fareja o ar como um cão de caça, e o aroma o conduz até uma loja cheia de fornos.",
       vai: "loja-eletro-padaria", p: { feliz: 2, "quase-feliz": 1 }, cara: "determinado" },
 
     { t: "Pagar um pastel com os 100 reais",
@@ -66,7 +66,7 @@ CENAS["feira"] = {
 
     { t: "Furar a fila do pastel",
       risco: 12,
-      r: "Audácia de cavaleiro! O pasteleiro declara o Irving \"freguês número um milhão\". O prêmio: uma visita à fábrica de chocolate do cunhado dele.",
+      r: "Audácia de cavaleiro! O pasteleiro declara o Irving \"freguˆez número um milhão\". O prêmio: uma visita à fábrica de chocolate do cunhado dele.",
       vai: "fabrica-chocolate", p: { feliz: 2, "quase-feliz": 1 }, cara: "feliz",
       falha: { r: "As vovós da fila não perdoam. Sombrinhas voam, a confusão chama a polícia, e o Irving ganha uma carona de viatura.",
                vida: -15, vai: "prisao", p: { prisao: 3 }, cara: "assustado" } },
@@ -74,6 +74,14 @@ CENAS["feira"] = {
     { t: "Dividir o pastel com um vira-lata",
       r: "O pasteleiro dá um pastel de degustação. O Irving parte ao meio. O vira-lata come a metade dele, depois a do Irving, e sai abanando o rabo. O herói o segue até uma sorveteria.",
       vai: "sorveteria", p: { "quase-feliz": 2, filosofico: 1 }, cara: "triste" },
+
+    { t: "Provar o queijo na barraca",
+      r: "O feirante estende uma lasca na ponta da faca: \"Prova, freguˆez!\" O Irving prova, elogia em versos e ganha o pedaço inteiro de brinde.",
+      vai: "fica", ganha: "queijo", p: { "quase-feliz": 2 }, cara: "feliz" },
+
+    { t: "Aceitar um floral da barraca natural",
+      r: "Uma moça de turbante entrega ao Irving um vidrinho de floral de Bach, fórmula Urgências. \"Três gotinhas e o universo se alinha\", promete. Ele guarda com fé.",
+      vai: "fica", ganha: "floral", p: { milagre: 1, filosofico: 1 }, cara: "neutro" },
   ],
 };
 
@@ -138,6 +146,14 @@ CENAS["aviao"] = {
       precisa: "alpiste",
       r: "Um pombo escondido na poltrona 14C come o alpiste, agradece e convoca a revoada. Os pássaros tiram o Irving pela janelinha com toda a delicadeza.",
       vai: "carregado-passaros", perde: "alpiste", p: { milagre: 3 }, cara: "feliz" },
+
+    { t: "Pedir um antialérgico à comissária",
+      r: "A comissária some atrás da cortina e volta com um antialérgico numa bandejinha: \"Cortesia da companhia, senhor.\" O Irving se sente de primeira classe.",
+      vai: "fica", ganha: "antialergico", p: { feliz: 1, amnesia: 1 }, cara: "feliz" },
+
+    { t: "Pegar o kit de dormir do avião",
+      r: "No kit de bordo: meias, escova e um tapa-olho duplo. O Irving o ergue contra a luz e sente o chamado ancestral da soneca.",
+      vai: "fica", ganha: "tapa-olho", p: { sono: 2 }, cara: "cansado" },
   ],
 };
 
@@ -206,6 +222,10 @@ CENAS["cama-irving"] = {
     { t: "Conferir o calendário na parede",
       r: "Um círculo vermelho marca a data de hoje: 'Dia do Padeiro'. O Irving não lembra de ter marcado. Um arrepio sobe a espinha, e ele sai de casa pra conferir.",
       vai: "rua-irving", p: { "dia-errado": 3 }, cara: "assustado" },
+
+    { t: "Achar o tapa-olho debaixo do travesseiro",
+      r: "Debaixo do travesseiro, macio como uma nuvem, repousa um tapa-olho duplo. O Irving o segura e escuta, ao longe, o canto das sereias da soneca.",
+      vai: "fica", ganha: "tapa-olho", p: { sono: 2 }, cara: "cansado" },
   ],
 };
 
@@ -274,6 +294,10 @@ CENAS["fabrica-chocolate"] = {
     { t: "Visitar a ala das frutas com chocolate",
       r: "Morango, abacaxi e muita banana, tudo coberto de chocolate. A banana, disfarçada, quase engana o Irving. Quase. Ele foge da ala tropical e só para dentro de uma sorveteria.",
       vai: "sorveteria", p: { banana: 3 }, cara: "confuso" },
+
+    { t: "Aceitar o queijo de um operário",
+      r: "Um operário de touca, enjoado de tanto doce, oferece ao Irving um pedaço de queijo: \"Leva, pelo amor de Deus. Não aguento mais açúcar.\"",
+      vai: "fica", ganha: "queijo", p: { filosofico: 1, feliz: 1 }, cara: "feliz" },
   ],
 };
 
@@ -342,6 +366,10 @@ CENAS["loja-eletro-padaria"] = {
     { t: "Testar o forno inteligente",
       r: "O forno fala, pensa e se recusa a assar: 'Sou do futuro.' Uma escotilha se abre no painel, e o Irving é sugado até um módulo espacial.",
       vai: "estacao-espacial", p: { "alem-tempo": 3 }, cara: "assustado" },
+
+    { t: "Pegar a chave de fenda de brinde",
+      r: "Presa a uma chapa de demonstração, uma chave de fenda de brinde. \"Leva, chefe, é cortesia\", diz o vendedor. O Irving aceita, já sonhando em montar um forno.",
+      vai: "fica", ganha: "chave-de-fenda", p: { feliz: 2 }, cara: "feliz" },
   ],
 };
 
@@ -405,6 +433,14 @@ CENAS["hospital"] = {
       precisa: "bouquet",
       r: "O senhor do quarto 12 chora de emoção. É um padeiro aposentado! Ele indica uma loja de fornos onde os amigos dele sempre sabem o caminho da padaria.",
       vai: "loja-eletro-padaria", perde: "bouquet", p: { feliz: 2, filosofico: 2 }, cara: "feliz" },
+
+    { t: "Aceitar o Yakult da enfermeira",
+      r: "A enfermeira tira um Yakult do bolso do jaleco: \"Pra repor os lactobacilos, herói.\" O Irving recebe o frasquinho como uma medalha de honra.",
+      vai: "fica", ganha: "yakult", p: { feliz: 1, milagre: 1 }, cara: "feliz" },
+
+    { t: "Pedir um antialérgico na farmácia",
+      r: "Três senhas, duas assinaturas e um carimbo depois, a farmacêutica entrega uma cartela de antialérgico. O Irving a ergue como um troféu.",
+      vai: "fica", ganha: "antialergico", p: { "hora-errada": 2 }, cara: "cansado" },
   ],
 };
 
@@ -469,6 +505,10 @@ CENAS["protesto"] = {
       precisa: "banana",
       r: "No meio do protesto marcha um elefante (pelos direitos dos elefantes). Ele aceita a banana, agradece com a tromba e põe o Irving nas costas.",
       vai: "elefante", perde: "banana", p: { banana: 3 }, cara: "feliz" },
+
+    { t: "Assumir a caixa de som do protesto",
+      r: "O homem do megafone fica rouco e passa a caixa de som ao Irving: \"Agora é contigo, companheiro.\" O herói a ergue no ombro como um porta-bandeira.",
+      vai: "fica", ganha: "caixa-de-som", p: { "dia-errado": 1, "rei-misto": 1 }, cara: "determinado" },
   ],
 };
 
