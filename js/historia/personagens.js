@@ -26,71 +26,128 @@ CHEFES.push({
   ],
 });
 
+// Chefes de quiz criados pelo Irving (set/2026). Cada um entra no jogo
+// sozinho assim que tiver pelo menos 3 perguntas na lista.
+// gatilho: "lugar" = o chefe só aparece nesse lugar (e não entra no sorteio normal)
+// acerto / erro: frases que o chefe fala quando o Irving acerta ou erra (opcional)
+CHEFES.push(
+  {
+    id: "homem-lixo", tipo: "quiz", nome: "Homem Lixoso", genero: "o", img: "chefe-homem-lixo.webp", emoji: "🗑️",
+    entrada: "Um fedor lendário anuncia a chegada. Uma lata de lixo com braços, pernas e coturnos bloqueia o caminho, e dois olhos brilham lá de dentro. É o HOMEM LIXOSO! Ninguém passa sem responder às suas perguntas!",
+    acerto: ["\"Grrr... acertou.\"", "O Homem Lixoso bate a tampa, contrariado."],
+    erro: ["\"HA! Isso foi um lixo!\"", "O Homem Lixoso solta um arroto de chorume."],
+    perguntas: [
+      { p: "Qual é o cesto de reciclável para vidro?", respostas: ["Verde", "O do vizinho", "Azul-bebê com bolinhas"], certa: 1 },
+      { p: "Qual dessas bandas é um lixo?", respostas: ["Legião Urbana", "Os Sacos Plásticos", "Tampinhas do Brasil"], certa: 1 },
+      { p: "Você gosta de sorvete?", respostas: ["Sim", "Não", "Só de flocos com farofa"], certa: "todas" },
+    ],
+  },
+  {
+    id: "senhor-do-tempo", tipo: "quiz", gatilho: "tunel-do-tempo", nome: "Senhor do Tempo", genero: "o", img: "chefe-senhor-do-tempo.webp", emoji: "⏳",
+    entrada: "No meio do túnel de luz, tudo congela. Um homem de terno amassado, apoiado num cajado com um relógio brilhante, boceja: é o SENHOR DO TEMPO, o dono deste túnel. \"Quem viaja pelo meu tempo paga pedágio. Responda!\"",
+    acerto: ["\"Hum. Correto, por enquanto.\"", "O Senhor do Tempo confere o relógio e suspira."],
+    erro: ["\"Errado. Eu vi isso acontecer 400 vezes.\"", "O Senhor do Tempo boceja, entediado."],
+    perguntas: [
+      { p: "Que horas são?", respostas: ["Não sei", "Hora do misto", "Vinte e cinco e meia"], certa: 1 },
+      { p: "Quantos minutos tem um dia?", respostas: ["Pelo menos 12", "Depende do humor do relógio", "Sete e meio, no máximo"], certa: 1 },
+      { p: "Quanto é 121/35?", respostas: ["3,4", "Um misto e meio", "121 com 35 avos de banana"], certa: 1 },
+    ],
+  },
+  {
+    id: "apresentador", tipo: "quiz", nome: "Silmo Samos", genero: "o", img: "chefe-apresentador.webp", emoji: "🎤",
+    entrada: "Luzes, aplausos e um terno de paetê azul girando no ar! É SILMO SAMOS, com o microfone colado no peito: \"Ma oeee! Vale um milhão de mistos quentes, hein? Três perguntas! Está preparado? Posso perguntar?\"",
+    acerto: ["\"Certa a resposta! Ma oeee!\"", "\"Está certo disso? ESTÁ CERTO!\" A plateia vai à loucura."],
+    erro: ["\"Que pena... errou!\" A plateia faz \"ôôôô\".", "\"Ihhh, vai ficar sem o misto!\""],
+    perguntas: [
+      { p: "Qual a capital da Austrália?", respostas: ["Camberra", "Sydney", "Cangurulândia"], certa: 1 },
+      { p: "Quem foi o primeiro presidente do Brasil?", respostas: ["Deveria ter sido o Irving", "Marechal Deodoro da Fonseca", "O Rei do Dog"], certa: [1, 2] },
+      { p: "Cebola é um bom tempero?", respostas: ["Não, é horrível", "Sim", "Só na lua cheia"], certa: 1 },
+    ],
+  },
+  {
+    id: "dona-barata", tipo: "quiz", nome: "Dona Barata", genero: "a", img: "chefe-dona-barata.webp", emoji: "🪳",
+    entrada: "Um farfalhar de asas arrepia a nuca do Irving. De jaqueta de couro e coturno, antenas em pé, surge DONA BARATA, a rainha dos rodapés: \"Daqui ninguém passa sem responder às minhas perguntas, meu bem!\"",
+    acerto: ["\"Hunf. Acertou, meu bem.\"", "Dona Barata bate as antenas, contrariada."],
+    erro: ["\"Errou feio, errou rude!\"", "Dona Barata dá uma risadinha de rodapé."],
+    perguntas: [
+      { p: "Quantas saias de filó eu tenho?", respostas: ["0", "Sete, uma pra cada perna", "Todas as do mundo"], certa: 1 },
+      { p: "Toda a informação tridimensional do interior de um buraco negro estaria codificada na sua superfície bidimensional externa, como o selo holográfico de um cartão de crédito?",
+        respostas: ["Talvez", "Só às terças-feiras", "Pergunta pro Senhor do Tempo"], certa: 1 },
+      { p: "A fórmula molecular C₁₀H₁₄N₂, de nome químico IUPAC 3-(1-metilpirrolidin-2-il)piridina, é de qual substância?",
+        respostas: ["Nicotina", "Queijo derretido", "Suor de crossfiteira"], certa: 1 },
+    ],
+  },
+);
+
 // ---------------------------------------------------------------------
-//  NPCs COM DESAFIO
+//  NPCs
 //  Aparecem de vez em quando (20% por cena, no máximo 2 por partida).
-//  Cada um pede ajuda com um problema (sorteado da lista "desafios").
-//  Acertou a resposta: ganha 1 item aleatório. Errou: não perde nada.
-//  lugares: ["feira", "quermesse"] faz o NPC só aparecer nesses lugares
-//  (sem lugares = aparece em qualquer um).
-//  Tipos de desafio:
-//   - pergunta: 3 respostas, certa = 1, 2 ou 3 (a ordem é embaralhada)
-//   - adivinha: { tipo: "adivinha", max: 10, tentativas: 3 } (número com dica maior/menor)
+//  Cada resposta pode ser só um texto (e "certa" diz qual ganha) ou um
+//  objeto com efeitos: { txt, ok, fala, dano, adv, vai, premio }
+//    ok: true = deu certo (ganha item aleatório, a não ser premio: false)
+//    fala: o que acontece    dano: Vida perdida    adv: adversidade que começa
+//    vai: lugar pra onde o Irving é levado
 // ---------------------------------------------------------------------
+const FOTOS_TANIA = [
+  "meditando no topo de uma montanha", "terminando uma maratona", "lendo um livro de filosofia russa",
+  "comendo salada e amando", "salvando um gatinho de uma árvore",
+];
 NPCS.push(
   {
     id: "tania", nome: "Tania", img: "npc-tania.webp", emoji: "💅",
-    fala: "Um perfume de lavanda e laquê invade a cena. Envolta em oncinha e paetê, com um cachorrinho em cada ombro, surge TANIA: \"Querido, você tem cara de quem resolve problemas. Me ajuda?\"",
-    desafios: [
-      { tipo: "pergunta", p: "\"O Biscoito, meu poodle, fugiu atrás de um cheiro! Onde eu procuro?\"",
-        respostas: ["Na barraca de cachorro-quente", "Na loja de gatos", "Na fila do banco"], certa: 1 },
-      { tipo: "pergunta", p: "\"A Chanel está com calor, coitadinha! O que eu faço?\"",
-        respostas: ["Abano ela com um leque de plumas", "Visto um casaco de pele nela", "Coloco ela no forno pra secar"], certa: 1 },
-      { tipo: "pergunta", p: "\"Tenho um jantar de gala e uma festa junina hoje. O que eu visto?\"",
-        respostas: ["Paetê com chapéu de palha, óbvio", "Pijama de flanela", "O terno do meu ex-marido"], certa: 1 },
-      { tipo: "pergunta", p: "\"Seja sincero: meu cabelo parece o quê?\"",
-        respostas: ["Uma nuvem de ouro", "Um ninho de pombo", "Uma vassoura de piaçava"], certa: 1 },
-      { tipo: "pergunta", p: "\"Perdi meu brinco de ouro! Estava nas duas orelhas agora há pouco. Onde está?\"",
-        respostas: ["Preso no pelo da Chanel", "No fundo do mar", "Na Lua"], certa: 1 },
-    ],
-    acertou: "Tania solta um gritinho, beija o ar dos dois lados e tira um presente da bolsa de oncinha: \"Você é um amor!\"",
-    errou: "Tania revira os olhos, ajeita os cachorrinhos nos ombros e vai embora num rastro de laquê: \"Homens...\"",
+    fala: "Um perfume de lavanda e laquê invade a cena. Envolta em oncinha e paetê, com um cachorrinho em cada ombro, surge TANIA, celular em punho: \"Querido! Você chegou na hora certa!\"",
+    desafios: FOTOS_TANIA.map((acao) => ({
+      tipo: "pergunta",
+      p: `"Tira uma foto minha fingindo que eu tô ${acao}? É pro pessoal da internet fingir que se importa comigo!"`,
+      respostas: [
+        { txt: "Clicar a foto mais épica da história", ok: true,
+          fala: "Tania faz a pose, o Irving capricha no ângulo. Mil curtidas em 3 segundos! Ela dá um gritinho e tira um presente da bolsa de oncinha." },
+        { txt: "\"Isso não é meio mentira, Tania?\"", ok: false,
+          fala: "Tania arregala os olhos, ofendida: \"Mentira não, querido. Conteúdo.\" E vai embora num rastro de laquê." },
+        { txt: "Fotografar só os cachorrinhos", ok: false,
+          fala: "A foto dos cachorrinhos viraliza. Tania, esquecida no canto do quadro, sai pisando duro." },
+      ],
+    })),
   },
   {
     id: "pomba", nome: "Pomba", img: "npc-pomba.webp", emoji: "🕊️",
-    fala: "Um bater de asas, uma bolsinha de carteiro e um lencinho no pescoço. Uma POMBA pousa na frente do Irving, séria como uma funcionária dos Correios: \"Com licença, senhor. Tenho um probleminha.\"",
+    fala: "Um bater de asas, uma bolsinha de carteiro e um lencinho no pescoço. Uma POMBA pousa bem na frente do Irving e o encara com muita seriedade.",
     desafios: [
-      { tipo: "pergunta", p: "\"Preciso entregar esta carta. O envelope diz: Rua das Flores, número 12. Pra onde eu voo?\"",
-        respostas: ["Rua das Flores, número 12", "Rua dos Espinhos, número 21", "Direto pro Cristo Redentor"], certa: 1 },
-      { tipo: "pergunta", p: "\"O relógio da praça marca 8h, mas ele está 1 hora adiantado. Que horas são de verdade?\"",
-        respostas: ["7h", "9h", "8h em ponto"], certa: 1 },
-      { tipo: "pergunta", p: "\"Tem um gato me encarando do telhado. O que eu faço?\"",
-        respostas: ["Voo pra longe, rapidinho", "Chamo ele pra um chá", "Tiro um cochilo ali mesmo"], certa: 1 },
-      { tipo: "pergunta", p: "\"Minha bolsinha só cabe uma coisa. Levo a carta ou o tijolo?\"",
-        respostas: ["A carta", "O tijolo", "Os dois, empilhados"], certa: 1 },
-      { tipo: "pergunta", p: "\"Qual é o jeito mais rápido de atravessar a cidade?\"",
-        respostas: ["Voando, ué, eu sou uma pomba", "Pegando o ônibus", "Chamando um Uber"], certa: 1 },
+      { tipo: "pergunta", p: "\"Pru. Pru pru? Pruuu. PRU!\"", respostas: [
+        { txt: "\"Pru.\"", ok: true, vai: "carregado-passaros",
+          fala: "Os olhos da Pomba brilham: finalmente alguém que fala a língua dela! Ela assobia, um bando inteiro desce do céu, e o Irving é erguido pelos ares. De presente, a Pomba ainda tira algo da bolsinha." },
+        { txt: "\"Oi, dona pomba!\"", ok: false, fala: "A Pomba suspira, decepcionada com a falta de cultura do Irving, e vai embora a pé." },
+        { txt: "\"Xô! Xô!\"", ok: false, fala: "A Pomba anota alguma coisa num bloquinho e levanta voo, ofendidíssima." },
+      ] },
+      { tipo: "pergunta", p: "\"Pru pru pru. Pru? PRU PRU.\" (Ela parece esperar uma resposta muito importante.)", respostas: [
+        { txt: "\"Pru pru!\"", ok: true, vai: "carregado-passaros",
+          fala: "\"PRU!\" A Pomba bate as asas de emoção e chama os amigos. Em segundos, o Irving está voando, carregado por uma nuvem de pássaros, e com um presente no bolso." },
+        { txt: "Oferecer um pedaço de pão", ok: false, fala: "A Pomba aceita o pão, mas balança a cabeça: não era isso. Ela vai embora mastigando." },
+        { txt: "Fingir que é uma estátua", ok: false, fala: "A Pomba pousa na cabeça do Irving, pensa um pouco, e vai embora. Que bom que foi só isso." },
+      ] },
     ],
-    acertou: "A Pomba arrulha de alegria, tira um presente da bolsinha e entrega com a asa: \"Serviço de primeira. Assine aqui.\"",
-    errou: "A Pomba suspira, anota alguma coisa num bloquinho e levanta voo: \"Vou registrar uma reclamação.\"",
   },
   {
     id: "luiz-miguel", nome: "Luiz Miguel", img: "npc-luiz-miguel.webp", emoji: "📈",
-    fala: "Um topete descomunal surge antes do dono. De terno apertado e olhar de quem não dorme desde 2019, aparece LUIZ MIGUEL, o coach: \"Você! Sim, você! Quer sair da zona de conforto? Então prove seu valor!\"",
+    fala: "Um topete descomunal surge antes do dono. De terno apertado e olhar de quem não dorme desde 2019, aparece LUIZ MIGUEL, o coach: \"Você! Sim, você! Tem cara de quem quer mudar de vida!\"",
     desafios: [
-      { tipo: "pergunta", p: "\"Um campeão acorda às 5h e leva 1 hora penteando o topete. Que horas ele sai de casa?\"",
-        respostas: ["6h", "5h", "Nunca, o topete nunca fica pronto"], certa: 1 },
-      { tipo: "pergunta", p: "\"Complete o mantra: quem acorda cedo...\"",
-        respostas: ["...Deus ajuda", "...dorme mais tarde", "...perde o misto"], certa: 1 },
-      { tipo: "pergunta", p: "\"Um vencedor encontra um muro no caminho. O que ele faz?\"",
-        respostas: ["Procura a porta", "Senta e chora", "Come o muro"], certa: 1 },
-      { tipo: "pergunta", p: "\"Meu curso custa 100 reais. Com 10% de desconto, quanto fica?\"",
-        respostas: ["90 reais", "110 reais", "Continua 100, desconto é mentalidade"], certa: 1 },
-      { tipo: "pergunta", p: "\"Qual destes é um hábito de alta performance?\"",
-        respostas: ["Beber água", "Dormir nas reuniões", "Pentear a sobrancelha com garfo"], certa: 1 },
+      { tipo: "pergunta", p: "\"Quer entrar no meu curso de como vender cursos pra quem já comprou um curso de vender cursos? Vagas limitadíssimas!\"", respostas: [
+        { txt: "\"Parece uma ótima ideia!\"", ok: false, dano: 10, adv: "desmaio", premio: false,
+          fala: "Luiz Miguel começa a explicar o método. Na terceira camada de curso dentro de curso, o cérebro do Irving não aguenta tanta idiotice e desliga." },
+        { txt: "\"Quanto custa?\"", ok: false, dano: 10, adv: "desmaio", premio: false,
+          fala: "\"Só 12 parcelas de 12 parcelas de 12 parcelas!\" O Irving tenta fazer a conta e desmaia no meio dela." },
+        { txt: "Fugir correndo", ok: true,
+          fala: "O Irving foge como nunca fugiu na vida. Luiz Miguel grita: \"ISSO! FUJA DA ZONA DE CONFORTO!\" e arremessa um brinde, que o Irving pega no ar." },
+      ] },
+      { tipo: "pergunta", p: "\"Tenho uma mentoria exclusiva: te ensino a ensinar pessoas a ensinarem pessoas a vender cursos. Topa?\"", respostas: [
+        { txt: "\"Topo! Quero ser milionário!\"", ok: false, dano: 10, adv: "desmaio", premio: false,
+          fala: "Luiz Miguel desenha uma pirâmide no ar. O Irving tenta entender a pirâmide. A pirâmide vence." },
+        { txt: "\"Tem certificado?\"", ok: false, dano: 10, adv: "desmaio", premio: false,
+          fala: "\"Tem certificado do certificado!\" A frase é tão poderosa que o Irving desaba ali mesmo." },
+        { txt: "Sair de fininho", ok: true,
+          fala: "Enquanto Luiz Miguel ajeita o topete no reflexo de uma vitrine, o Irving escapa. No chão, ficou um brinde esquecido do coach." },
+      ] },
     ],
-    acertou: "Luiz Miguel aponta pro Irving com as duas mãos: \"ISSO É MINDSET!\" E entrega um prêmio como se fosse um troféu.",
-    errou: "Luiz Miguel balança a cabeça, decepcionado: \"Crenças limitantes, meu amigo.\" E some atrás do próprio topete.",
   },
 );
 
@@ -101,7 +158,7 @@ NPCS.push(
 // ---------------------------------------------------------------------
 const VENDEDOR_NORTE = {
   nome: "Sebastião", img: "npc-sebastiao.webp", emoji: "🤠",
-  fala: "Atrás do balcão, um senhor de chapéu de couro e avental sorri de orelha a orelha: \"Oxe, freguês novo! Sou o Sebastião, o Rei do Sertão. Hoje é dia de presente: escolha uma coisa, que é por conta da casa.\"",
-  escolheu: "Sebastião embrulha o presente num jornal velho e entrega com um aceno: \"Vá com Deus e volte sempre!\"",
-  recusou: "Sebastião dá de ombros: \"Quem não quer, não quer. Mas a porta fica aberta, viu?\"",
+  fala: "Atrás do balcão, um senhor de chapéu de couro abre um sorrisão: \"Oxente, que cabra arretado entrou aqui! Sou Sebastião, o Rei do Sertão, e fui com a tua cara, visse? Escolhe uma coisinha dessas aí, que é presente da casa!\"",
+  escolheu: "\"Vixe, escolheu bem demais!\" Sebastião embrulha o presente num jornal velho. \"Vai com Deus, meu fi, e volte sempre!\"",
+  recusou: "\"Oxe, não quer nada não? Tá certo, cabra. Mas a porteira aqui tá sempre aberta!\"",
 };
