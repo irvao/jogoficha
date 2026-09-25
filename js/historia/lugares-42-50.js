@@ -50,7 +50,7 @@ CENAS["leilao-gado"] = {
 
     { t: "Sair de fininho sem mexer um músculo",
       risco: 9,
-      r: "Imóvel como estatua, o Irving desliza até a saída. Do outro lado da estrada, uma feira exala cheiro de pastel e pão fresco.",
+      r: "Imóvel como estátua, o Irving desliza até a saída. Do outro lado da estrada, uma feira exala cheiro de pastel e pão fresco.",
       vai: "feira", p: { feliz: 1, "quase-feliz": 2 },
       falha: { r: "Um espirro. VENDIDO! Achando que ele quer dar calote, os seguranças o levam direto pra uma cela.",
                vida: -12, vai: "prisao", p: { prisao: 3 }, cara: "assustado" } },
@@ -282,7 +282,7 @@ CENAS["forno-gigante"] = {
 
     { t: "Escalar até a bandeja do misto",
       risco: 12,
-      r: "Escalada de lenda! Lá no alto, dourado e fumegante, repousa um misto quente perfeito. O Irving o guarda com reverencia, queimando só um pouquinho os dedos.",
+      r: "Escalada de lenda! Lá no alto, dourado e fumegante, repousa um misto quente perfeito. O Irving o guarda com reverência, queimando só um pouquinho os dedos.",
       vai: "fica", ganha: "misto-quente", vida: -5, p: { feliz: 2 }, cara: "feliz",
       falha: { r: "A bandeja vira. O Irving despenca na massa de bolo, é embalado numa caixa e despachado sabe-se lá pra onde.",
                vida: -15, vai: "caixa-papelao", p: { sono: 1, "onde-estou": 1 }, cara: "assustado" } },
@@ -438,7 +438,7 @@ CENAS["casamento"] = {
 
     { t: "Fugir no carro dos noivos",
       risco: 12,
-      r: "Latinhas no para-choque e placa de RECEM-CASADOS! O Irving acelera rumo à padaria e freia numa loja de fornos, quase lá.",
+      r: "Latinhas no para-choque e placa de RECÉM-CASADOS! O Irving acelera rumo à padaria e freia numa loja de fornos, quase lá.",
       vai: "loja-eletro-padaria", p: { feliz: 2, "quase-feliz": 1 }, cara: "determinado",
       falha: { r: "O noivo acha que é roubo do carro. A polícia chega antes do bolo ser cortado.",
                vida: -12, vai: "prisao", marca: "procurado", p: { prisao: 3 }, cara: "assustado" } },
