@@ -159,7 +159,7 @@ RESULTADO DO DADO (já decidido, respeite): ${rolagem.texto}.
 ${rolagem.explicacao}
 
 TAREFA 1: narre o que aconteceu em "resultado" (2 a 4 frases, engraçado e ácido, coerente com o resultado do dado).
-TAREFA 2: decida a mudança de Vida em "vida" (número inteiro, NUNCA positivo: a Vida não se recupera). Sucesso crítico: 0. Sucesso: 0 a -5 (só se algo pequeno deu errado no caminho). Falha: -5 a -20. Falha crítica: -15 a -35. Coisas perigosas tiram mais.
+TAREFA 2: decida a mudança de Vida em "vida" (número inteiro, NUNCA positivo: a Vida não se recupera). Sucesso crítico: 0. Sucesso: 0 a -5 (só se algo pequeno deu errado no caminho). Falha: -8 a -18. Falha crítica: -20 a -35. Coisas perigosas tiram mais.
 TAREFA 3: efeitos:
 - "itens_removidos": ids de itens que foram gastos, comidos, quebrados ou perdidos nessa ação (ex.: skate usado pra se locomover, banana comida). Senão, [].
 - "adversidades_resolvidas": ids dos problemas que foram resolvidos nessa ação. Senão, [].

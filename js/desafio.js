@@ -169,12 +169,13 @@ function comecar() {
     adversidades: [],
     advAparecidas: [],
     visitados: ["casa-irving"],
+    cenasNoLugar: 1,
     chapeuNaCabeca: false,
     historico: [],
     itemNovo: null,
   };
-  // toda partida tem pelo menos 1 item: se até esta cena nada apareceu, um item aparece com certeza
-  est.cenaItemGarantido = 2 + Math.floor(Math.random() * Math.min(4, est.totalCenas - 2));
+  // toda partida tem pelo menos 1 item: se até esta cena (2ª a 4ª) nada apareceu, um item aparece com certeza
+  est.cenaItemGarantido = 2 + Math.floor(Math.random() * 3);
   document.body.classList.remove("morte");
   $("tela-inicio").hidden = true;
   $("tela-final").hidden = true;
@@ -185,12 +186,15 @@ function comecar() {
 }
 
 async function entrarNaCena(lugar, situacao, expr) {
+  const mesmoLugar = est.lugar === lugar && est.cena > 1;
   est.lugar = lugar;
   est.situacao = situacao;
   mostrarDelta([]);
   estadoCaixa("nada");
-  await trocarFundo(lugar);
-  mostrarPlaca(lugar);
+  if (!mesmoLugar) {
+    await trocarFundo(lugar);
+    mostrarPlaca(lugar);
+  }
   cara(expr || "neutro", "pulo");
   atualizarHud();
   $("campo-acao").value = "";
@@ -304,7 +308,7 @@ async function passoResolver(acao, av, rolagem, proxima) {
 function aplicarResultado(acao, rolagem, proxima, r) {
   // vida (dentro de limites por tipo de resultado)
   // a Vida nunca aumenta: o dia só desgasta
-  const faixas = { critico: [0, 0], sucesso: [-8, 0], falha: [-25, -5], desastre: [-40, -10], impossivel: [-15, 0] };
+  const faixas = { critico: [0, 0], sucesso: [-8, 0], falha: [-20, -8], desastre: [-40, -20], impossivel: [-15, -5] };
   const [mn, mx] = faixas[rolagem.tipo];
   const dVida = limitar(r.vida, mn, mx);
   est.vida = limitar(est.vida + dVida, 0, 100);
@@ -346,11 +350,13 @@ function aplicarResultado(acao, rolagem, proxima, r) {
 
   let destino = r.proximoLugar;
   if (r.usouMaquinaTempo && tinhaMaquina) destino = "tunel-do-tempo";
-  const valido = destino === "tunel-do-tempo" ? tinhaMaquina : LUGARES.some((l) => l.id === destino);
-  if (!valido || destino === est.lugar) destino = sortear(LUGARES.filter((l) => l.id !== est.lugar && !est.visitados.includes(l.id))).id;
+  const valido = destino === "tunel-do-tempo" ? tinhaMaquina : (LUGARES.some((l) => l.id === destino) || destino === est.lugar);
+  const podeFicar = est.cenasNoLugar < REGRAS.maxCenasMesmoLugar;
+  if (!valido || (destino === est.lugar && !podeFicar)) destino = sortear(LUGARES.filter((l) => l.id !== est.lugar && !est.visitados.includes(l.id))).id;
 
   proximoPasso = () => {
     est.cena++;
+    est.cenasNoLugar = destino === est.lugar ? est.cenasNoLugar + 1 : 1;
     if (!est.visitados.includes(destino)) est.visitados.push(destino);
     if (proxima.item) {
       est.itens.push(proxima.item.id);
