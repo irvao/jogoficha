@@ -130,11 +130,11 @@ OPCOES_ITENS["misto-quente"] = [
     r: "O Irving ergue o misto. O queijo brilha. Uma voz interior grita \"NÃO! NA PADARIA!\". O estômago grita mais alto. A mordida ecoa pelos séculos.",
     fim: "misto-triste", cara: "triste" },
 
-  { t: "Guardar o misto com carinho", precisa: "misto-quente",
+  { t: "Guardar o misto com carinho", precisa: "misto-quente", mantem: true,
     r: "O Irving embrulha o misto num guardanapo, como quem guarda uma relíquia sagrada, e promete: \"Você vai conhecer a padaria.\"",
     vai: "fica", p: { feliz: 1, filosofico: 1 }, cara: "determinado" },
 
-  { t: "Proteger o misto de olhares famintos", precisa: "misto-quente",
+  { t: "Proteger o misto de olhares famintos", precisa: "misto-quente", mantem: true,
     r: "O Irving abraça a mochila e encara cada ser vivo ao redor. Um cachorro passa. O Irving rosna primeiro. O misto está a salvo.",
     vai: "fica", p: { "quase-feliz": 2 }, cara: "bravo" },
 ];
@@ -246,6 +246,146 @@ OPCOES_ITENS["apito"] = [
     vai: ["karaoke", "quermesse", "programa-auditorio", "casamento"], p: { famoso: 2, filosofico: 1 }, cara: "feliz" },
 ];
 
+// ----- itens novos (set/2026) -----
+
+OPCOES_ITENS["antialergico"] = [
+  { t: "Tomar o antialérgico", precisa: "antialergico",
+    r: "O Irving engole o comprimido com a solenidade de quem bebe uma poção élfica. O nariz desentope, a coceira some e a força volta ao corpo do herói.",
+    vai: "fica", cura: 10, perde: "antialergico", p: { feliz: 1 }, cara: "feliz" },
+
+  { t: "Ler a bula inteira do antialérgico", precisa: "antialergico",
+    r: "O Irving lê a bula do começo ao fim, incluindo as reações raríssimas. Ao terminar, sabe tudo sobre histamina e já não lembra direito o que estava fazendo.",
+    vai: "fica", p: { "hora-errada": 1, amnesia: 1 }, cara: "confuso" },
+];
+
+OPCOES_ITENS["livro-autoajuda"] = [
+  { t: "Ler o livro de autoajuda", precisa: "livro-autoajuda",
+    r: "O Irving lê o livro, sorri... e nada acontece!",
+    vai: "fica", cara: "feliz" },
+];
+
+OPCOES_ITENS["caixa-de-som"] = [
+  { t: "Ligar a caixa de som no talo", precisa: "caixa-de-som",
+    r: "O grave faz tremer as janelas do reino. Em segundos, uma multidão dança ao redor do Irving como se ele fosse o DJ do apocalipse.",
+    vai: "fica", p: { famoso: 2, filosofico: 1 }, cara: "feliz" },
+
+  { t: "Anunciar na caixa: \"QUERO UM MISTO!\"", precisa: "caixa-de-som",
+    r: "A voz do Irving ecoa amplificada por dez quarteirões. Um padeiro, lá longe, ouve o chamado e manda um motoboy buscar o herói.",
+    vai: ["loja-eletro-padaria", "forno-gigante", "comercial-margarina", "feira"], p: { feliz: 3 }, cara: "determinado" },
+
+  { t: "Fazer um comício com a caixa de som", precisa: "caixa-de-som",
+    r: "Com a caixa de som no ombro, o Irving discursa sobre o direito universal ao misto. A multidão obedece a cada palavra. Nasce um líder.",
+    vai: "fica", p: { "rei-misto": 3 }, cara: "determinado" },
+];
+
+OPCOES_ITENS["cd-tihuana"] = [
+  { t: "Usar o CD do Tihuana como espelho", precisa: "cd-tihuana",
+    r: "O Irving se olha no verso do CD. Vê um herói barbudo, cheio de arco-íris. Ajeita o boné com cuidado. Nada mais acontece.",
+    vai: "fica", p: { matrix: 1 }, cara: "neutro" },
+
+  { t: "Oferecer o CD do Tihuana a alguém", precisa: "cd-tihuana",
+    r: "O Irving oferece o CD com orgulho. A pessoa olha, pensa, agradece com educação e devolve. O CD volta pra mochila, invicto.",
+    vai: "fica", p: { filosofico: 1 }, cara: "confuso" },
+];
+
+OPCOES_ITENS["chave-de-fenda"] = [
+  { t: "Apertar todos os parafusos por perto", precisa: "chave-de-fenda",
+    r: "O Irving aperta cada parafuso ao alcance, com precisão de relojoeiro suíço. Tudo para de ranger. Os presentes o aclamam como engenheiro supremo.",
+    vai: "fica", p: { filosofico: 2, "rei-misto": 1 }, cara: "feliz" },
+
+  { t: "Desparafusar um painel misterioso", precisa: "chave-de-fenda",
+    r: "Atrás de um painel, o Irving encontra fios, botões e uma alavanca escrita ATALHO. Ele puxa, o chão gira como porta giratória e o cospe em outro lugar.",
+    vai: ["estacao-espacial", "forno-gigante", "reuniao-onu", "lugar-escuro"], p: { "alem-tempo": 1, matrix: 1, feliz: 1 }, cara: "assustado" },
+
+  { t: "Consertar uma torradeira abandonada", precisa: "chave-de-fenda",
+    r: "Uma torradeira quebrada surge do nada, pedindo socorro. Três parafusos depois, ela ressuscita e solta uma torrada perfeita. O cheiro de padaria enche o ar.",
+    vai: "fica", p: { feliz: 2 }, cara: "feliz" },
+];
+
+OPCOES_ITENS["disfarce"] = [
+  { t: "Colocar o disfarce de bigode", precisa: "disfarce",
+    r: "Óculos, nariz, bigode e sobrancelhas. O Irving se olha num reflexo e não se reconhece. É o disfarce perfeito, forjado pelos deuses da papelaria.",
+    vai: "fica", p: { matrix: 1, famoso: 1 }, cara: "feliz" },
+
+  { t: "Entrar disfarçado num evento VIP", precisa: "disfarce",
+    r: "De bigode falso, o Irving passa pelo segurança com um aceno. \"Doutor Bigodes, pode entrar.\" Uma porta dourada se abre para um lugar muito importante.",
+    vai: ["reuniao-onu", "programa-auditorio", "casamento", "estacao-espacial"], p: { "rei-misto": 2, famoso: 1 }, cara: "determinado" },
+
+  { t: "Despistar todo mundo disfarçado", precisa: "disfarce",
+    r: "O Irving coloca o disfarce e sai assobiando. Quem o procurava passa reto, atrás de um homem sem bigode. Livre, o herói segue o cheiro de pão.",
+    vai: ["rua-irving", "feira", "loja-eletro-padaria", "casa-do-norte"], p: { feliz: 2, prisao: 1 }, cara: "feliz" },
+];
+
+OPCOES_ITENS["floral"] = [
+  { t: "Tomar o floral de Bach", precisa: "floral",
+    r: "O Irving toma o floral, sorri... e nada acontece!",
+    vai: "fica", cara: "feliz" },
+];
+
+OPCOES_ITENS["nunchaku"] = [
+  { t: "Girar o nunchaku com estilo", precisa: "nunchaku",
+    r: "O Irving gira o nunchaku como um mestre de filme antigo. Acerta o próprio cotovelo, mas não demonstra dor. Os presentes recuam, impressionados.",
+    vai: "fica", vida: -3, p: { "rei-misto": 2 }, cara: "determinado" },
+
+  { t: "Abrir caminho girando o nunchaku", precisa: "nunchaku",
+    r: "Girando o nunchaku e gritando \"HIAAA!\", o Irving atravessa a multidão, que abre alas em respeito. Ele marcha, invicto, rumo ao cheiro de pão.",
+    vai: ["rua-irving", "feira", "loja-eletro-padaria", "forno-gigante"], p: { feliz: 2, "rei-misto": 1 }, cara: "determinado" },
+
+  { t: "Dar uma aula de nunchaku", precisa: "nunchaku",
+    r: "O Irving improvisa uma aula de artes marciais. Os alunos giram, se enroscam e riem juntos. No fim, todos fazem reverência. Nasce uma escola.",
+    vai: "fica", p: { filosofico: 2, "rei-misto": 1 }, cara: "feliz" },
+];
+
+OPCOES_ITENS["pinga"] = [
+  { t: "Tomar um gole de pinga", precisa: "pinga",
+    r: "O Irving toma um único e solene gole, como os guerreiros antigos antes da batalha. Um calor sobe até o boné e a força volta. O resto, com sabedoria, ele dispensa.",
+    vai: "fica", cura: 30, perde: "pinga", p: { feliz: 1 }, cara: "determinado" },
+
+  { t: "Oferecer a pinga a um senhor", precisa: "pinga",
+    r: "O senhor de chapéu de palha recusa com um sorriso, mas conta causos por meia hora. O Irving ganha um amigo e a pinga continua na mochila.",
+    vai: "fica", p: { filosofico: 2, "hora-errada": 1 }, cara: "feliz" },
+];
+
+OPCOES_ITENS["queijo"] = [
+  { t: "Comer o queijo", precisa: "queijo",
+    r: "O Irving morde o queijo como um rei num banquete medieval. É curado, salgado e perfeito. A Vida volta, e o misto parece um pouco mais perto.",
+    vai: "fica", cura: 15, perde: "queijo", p: { feliz: 1 }, cara: "feliz" },
+
+  { t: "Usar o queijo como isca", precisa: "queijo",
+    r: "O Irving arrasta o queijo num barbante. Não vem um rato: vem um cachorro enorme, que abocanha o queijo e dispara. O herói corre atrás até outro lugar.",
+    vai: ["feira", "quermesse", "casa-do-norte", "rua-irving"], perde: "queijo", p: { "quase-feliz": 3 }, cara: "assustado" },
+];
+
+OPCOES_ITENS["tapa-olho"] = [
+  { t: "Colocar o tapa-olho duplo", precisa: "tapa-olho", efeito: "vendado",
+    r: "O Irving cobre os dois olhos com a máscara de dormir. Breu total. Tropeça num degrau, esbarra numa porta e segue em frente sem a menor ideia de onde está indo.",
+    vai: ["canavial", "trem", "feira", "dentro-baleia", "fila-banco"], p: { sono: 1, "onde-estou": 1 }, cara: "confuso" },
+];
+
+OPCOES_ITENS["tekpix"] = [
+  { t: "Filmar tudo com a Tekpix", precisa: "tekpix",
+    r: "O Irving filma tudo, narrando como um documentarista. A luzinha vermelha pisca. Um produtor de TV vê a cena e o leva direto pro estúdio.",
+    vai: ["programa-auditorio", "comercial-margarina", "novela-mexicana", "karaoke"], p: { famoso: 3 }, cara: "feliz" },
+
+  { t: "Rever as gravações da Tekpix", precisa: "tekpix",
+    r: "Na telinha, o Irving vê cenas que não lembra de ter filmado: ele mesmo, em lugares onde nunca esteve. A imagem trava. Pisca. Volta.",
+    vai: "fica", p: { matrix: 3 }, cara: "confuso" },
+
+  { t: "Gravar um recado pro futuro", precisa: "tekpix",
+    r: "O Irving encara a lente e grava: \"Se você está vendo isso, eu ainda não comi o misto.\" Guarda a fita como um tesouro da humanidade.",
+    vai: "fica", p: { "alem-tempo": 1, "antes-tempo": 1, filosofico: 1 }, cara: "determinado" },
+];
+
+OPCOES_ITENS["yakult"] = [
+  { t: "Tomar o Yakult", precisa: "yakult",
+    r: "O Irving abre o Yakult com a delicadeza de um joalheiro e bebe num gole só. Bilhões de lactobacilos marcham em seu socorro. A Vida volta.",
+    vai: "fica", cura: 10, perde: "yakult", p: { feliz: 1 }, cara: "feliz" },
+
+  { t: "Brindar com o Yakult", precisa: "yakult",
+    r: "O Irving ergue o Yakult num brinde solene: \"Aos amigos que ainda não fiz!\" Estranhos erguem copinhos imaginários. O Yakult segue fechado, o coração, aberto.",
+    vai: "fica", p: { filosofico: 2 }, cara: "feliz" },
+];
+
 // ---------------------------------------------------------------------
 //  2) ADVERSIDADES
 // ---------------------------------------------------------------------
@@ -275,6 +415,10 @@ OPCOES_ADV["pacote"] = {
     { t: "Lacrar o pacote e devolver", precisaAdv: "pacote", precisa: "fita-crepe", resolve: "pacote",
       r: "O Irving lacra o pacote com a fita crepe inteira e escreve DEVOLVER AO REMETENTE. Um carteiro passa e leva. Problema resolvido.",
       vai: "fica", perde: "fita-crepe", p: { feliz: 1, prisao: 1 }, cara: "feliz" },
+
+    { t: "Largar o pacote e pôr o disfarce", precisaAdv: "pacote", precisa: "disfarce", resolve: "pacote",
+      r: "O Irving larga o pacote num balcão e põe o disfarce. O homem de sobretudo volta procurando o cara de boné e só encontra um senhor de bigode lendo jornal.",
+      vai: "fica", p: { matrix: 1, prisao: 1 }, cara: "feliz" },
   ],
 };
 
@@ -331,6 +475,10 @@ OPCOES_ADV["mesario"] = {
     { t: "Se disfarçar com a peruca", precisaAdv: "mesario", precisa: "peruca", resolve: "mesario",
       r: "Com a peruca linda, o Irving vira outra pessoa. O oficial passa reto por ele, procurando um tal de Irving.",
       vai: "fica", p: { matrix: 1, famoso: 1 }, cara: "feliz" },
+
+    { t: "Animar a seção eleitoral com a caixa", precisaAdv: "mesario", precisa: "caixa-de-som", resolve: "mesario",
+      r: "O Irving liga a caixa de som na seção eleitoral. Os eleitores votam dançando, a fila anda como nunca e ele é liberado cedo, com honras de mesário do ano.",
+      vai: "fica", p: { "dia-errado": 1, filosofico: 2 }, cara: "feliz" },
   ],
 };
 
@@ -359,6 +507,10 @@ OPCOES_ADV["policia"] = {
     { t: "Oferecer flores ao policial", precisaAdv: "policia", precisa: "bouquet", resolve: "policia",
       r: "O Irving estende o bouquet. O policial fica vermelho, aceita as flores e o dispensa com um aceno tímido.",
       vai: "fica", perde: "bouquet", p: { filosofico: 2 }, cara: "feliz" },
+
+    { t: "Pôr o disfarce e sumir", precisaAdv: "policia", precisa: "disfarce", resolve: "policia",
+      r: "Óculos, nariz, bigode. O policial pisca, confuso: \"Cadê o rapaz de boné?\" O Doutor Bigodes aponta pro outro lado e sai assobiando.",
+      vai: "fica", p: { prisao: 1, matrix: 1 }, cara: "feliz" },
   ],
 };
 
@@ -384,6 +536,10 @@ OPCOES_ADV["chuva"] = {
     { t: "Pedir aos céus uma trégua", precisaAdv: "chuva",
       r: "O Irving ergue os braços e implora. Um trovão responde. A chuva continua, mas ele sente que foi ouvido lá em cima.",
       vai: "fica", vida: -5, p: { milagre: 2 }, cara: "determinado" },
+
+    { t: "Tomar antialérgico pra rinite da chuva", precisaAdv: "chuva", precisa: "antialergico", resolve: "chuva",
+      r: "O Irving toma o antialérgico. O nariz desentope e o céu, em respeito, para de chover. Ninguém entende a relação. Nem a ciência.",
+      vai: "fica", cura: 10, perde: "antialergico", p: { milagre: 2, matrix: 1 }, cara: "feliz" },
   ],
 };
 
@@ -437,6 +593,10 @@ OPCOES_ADV["cobra"] = {
     { t: "Encantar a cobra com o apito", precisaAdv: "cobra", precisa: "apito", resolve: "cobra",
       r: "O Irving apita uma melodia hipnótica. A cobra dança, rebola e segue o som até sumir no horizonte.",
       vai: "fica", p: { famoso: 2 }, cara: "feliz" },
+
+    { t: "Hipnotizar a cobra com o nunchaku", precisaAdv: "cobra", precisa: "nunchaku", resolve: "cobra",
+      r: "O Irving gira o nunchaku num balé hipnótico. A cobra acompanha com a cabeça, fica tonta e vai embora cambaleando em zigue-zague.",
+      vai: "fica", p: { "rei-misto": 2 }, cara: "determinado" },
   ],
 };
 
@@ -479,6 +639,10 @@ OPCOES_ADV["tropeco"] = {
     { t: "Sair de fininho", precisaAdv: "tropeco",
       r: "O Irving finge que nada aconteceu e acelera o passo. Olha pra trás: o desconhecido vem atrás. Ele acelera mais, e mais, até se perder.",
       vai: ["bairro-desconhecido", "beco-perigoso", "trem", "osasco"], p: { "onde-estou": 1, prisao: 1 }, cara: "assustado" },
+
+    { t: "Tocar uma música de desculpas", precisaAdv: "tropeco", precisa: "caixa-de-som", resolve: "tropeco",
+      r: "O Irving liga a caixa de som e toca a música mais sentida do mundo. O desconhecido se emociona, aceita as desculpas e os dois dançam juntos na calçada.",
+      vai: "fica", p: { filosofico: 2, famoso: 1 }, cara: "feliz" },
   ],
 };
 
@@ -507,7 +671,22 @@ OPCOES_ADV["alienigena"] = {
     { t: "Explicar o que é um misto quente", precisaAdv: "alienigena",
       r: "O Irving desenha no chão: pão, queijo, presunto. O alienígena chora de emoção e revela, baixinho, que a Terra é uma simulação.",
       vai: "fica", p: { matrix: 3 }, cara: "confuso" },
-  ],
+
+    { t: "Girar o nunchaku contra o disco", precisaAdv: "alienigena", precisa: "nunchaku",
+      risco: 10,
+      r: "O Irving gira o nunchaku tão rápido que vira uma hélice. O raio verde ricocheteia e o disco foge, apavorado com a arte marcial terrestre.",
+      vai: "fica", resolve: "alienigena", p: { "rei-misto": 2, "alem-tempo": 1 }, cara: "determinado",
+      falha: { r: "O nunchaku escapa, sobe pelo raio verde e volta quicando no boné do Irving. Ele apaga e acorda longe, sem saber como.",
+               vida: -15, vai: ["lugar-escuro", "canavial", "estacao-espacial"], resolve: "alienigena", p: { amnesia: 2 }, cara: "confuso" } },
+
+    { t: "Filmar o disco voador com a Tekpix", precisaAdv: "alienigena", precisa: "tekpix", resolve: "alienigena",
+      r: "O Irving filma o disco em alta definição de 1998. O alienígena, com vergonha de aparecer na TV, desliga o raio e foge. O vídeo vira lenda.",
+      vai: "fica", p: { famoso: 2, "alem-tempo": 1 }, cara: "feliz" },
+
+    { t: "Desparafusar o disco voador", precisaAdv: "alienigena", precisa: "chave-de-fenda", resolve: "alienigena",
+      r: "Flutuando no raio verde, o Irving desparafusa uma plaquinha do disco. Algo faz PLEC. O disco solta fumaça, pede desculpas e vai embora mancando.",
+      vai: "fica", p: { "alem-tempo": 2, "rei-misto": 1 }, cara: "determinado" },
+];
 };
 
 OPCOES_ADV["camarao"] = {
@@ -532,6 +711,10 @@ OPCOES_ADV["camarao"] = {
     { t: "Passar hidratante no rosto", precisaAdv: "camarao", precisa: "hidratante", resolve: "camarao",
       r: "O Irving espalha hidratante no rosto inchado. Não é remédio, mas alivia. O inchaço desce aos poucos, e a dignidade sobe.",
       vai: "fica", p: { feliz: 1 }, cara: "feliz" },
+
+    { t: "Tomar o antialérgico pro camarão", precisaAdv: "camarao", precisa: "antialergico", resolve: "camarao",
+      r: "O Irving engole o antialérgico. Em minutos, os lábios desincham e o rosto volta ao normal. A ciência vence o camarão por nocaute.",
+      vai: "fica", cura: 10, perde: "antialergico", p: { feliz: 2 }, cara: "feliz" },
   ],
 };
 
