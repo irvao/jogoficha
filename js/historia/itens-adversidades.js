@@ -93,7 +93,7 @@ OPCOES_ITENS["fita-crepe"] = [
     vai: ["bairro-desconhecido", "rua-irving", "loja-eletro-padaria", "canavial"], p: { feliz: 1, "onde-estou": 1 }, cara: "determinado" },
 
   { t: "Fazer um crachá VIP de fita crepe", precisa: "fita-crepe",
-    r: "Com fita crepe e muita cara de pau, o Irving cria um crachá: VIP. Seguranças abrem caminho em reverencia e o levam a um lugar exclusivo.",
+    r: "Com fita crepe e muita cara de pau, o Irving cria um crachá: VIP. Seguranças abrem caminho em reverência e o levam a um lugar exclusivo.",
     vai: ["programa-auditorio", "reuniao-onu", "karaoke", "casamento"], p: { famoso: 1, "rei-misto": 1 } },
 ];
 
@@ -530,7 +530,7 @@ OPCOES_ADV["camarao"] = {
       vai: "fica", vida: -8, p: { "onde-estou": 1, amnesia: 1 }, cara: "confuso" },
 
     { t: "Passar hidratante no rosto", precisaAdv: "camarao", precisa: "hidratante", resolve: "camarao",
-      r: "O Irving espalha hidratante no rosto inchado. Não é remédio, mas alivia. O inchaco desce aos poucos, e a dignidade sobe.",
+      r: "O Irving espalha hidratante no rosto inchado. Não é remédio, mas alivia. O inchaço desce aos poucos, e a dignidade sobe.",
       vai: "fica", p: { feliz: 1 }, cara: "feliz" },
   ],
 };
