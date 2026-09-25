@@ -70,6 +70,10 @@ CENAS["leilao-gado"] = {
       precisa: "banana",
       r: "O boi come a banana com gratidão. Enfim alguém que gosta disso! O Irving deita no feno ao lado dele e só acorda na própria cama.",
       vai: "cama-irving", perde: "banana", p: { sono: 1, banana: 2 }, cara: "cansado" },
+
+    { t: "Arrematar uma pinga por engano",
+      r: "O Irving coça o nariz. O leiloeiro grita \"VENDIDO!\". Por sorte, era o lote 14: uma garrafinha de pinga, cortesia da casa. O herói respira aliviado.",
+      vai: "fica", ganha: "pinga", p: { "rei-misto": 1, "hora-errada": 1 }, cara: "assustado" },
   ],
 };
 
@@ -134,6 +138,14 @@ CENAS["hidroginastica"] = {
     { t: "Cantar Evidências com a turma",
       r: "As senhoras fazem coro, a vizinhança ouve, e o dono do karaokê ao lado arrasta o Irving pro seu palco.",
       vai: "karaoke", p: { famoso: 2 }, cara: "feliz" },
+
+    { t: "Aceitar o Yakult da Dona Cida",
+      r: "Dona Cida tira um Yakult da bolsa térmica: \"Toma, meu filho, faz bem.\" Todas as senhoras concordam em coro. O Irving obedece e guarda.",
+      vai: "fica", ganha: "yakult", p: { filosofico: 2 }, cara: "feliz" },
+
+    { t: "Ganhar o floral da professora",
+      r: "A professora, serena como um lago, entrega ao Irving um vidrinho de floral de Bach: \"Urgências. Pra quem tem pressa de viver.\" Ele agradece com uma reverência molhada.",
+      vai: "fica", ganha: "floral", p: { sono: 1, filosofico: 1 }, cara: "neutro" },
   ],
 };
 
@@ -198,6 +210,13 @@ CENAS["balsa"] = {
     { t: "Perguntar ao balseiro da padaria",
       r: "'O pão mais perto tá lá no forno', diz o balseiro, misterioso. O Irving encosta na caldeira quente, fecha os olhos e acorda dentro de um forno enorme.",
       vai: "forno-gigante", p: { feliz: 2, "quase-feliz": 1 }, cara: "confuso" },
+
+    { t: "Consertar o motor com a chave de fenda", precisa: "chave-de-fenda",
+      risco: 8,
+      r: "O Irving mergulha no motor e aperta um único parafuso. O motor ruge como um leão, a balsa cruza o rio num instante e o herói desembarca triunfante do outro lado.",
+      vai: ["xique-xique", "casa-do-norte", "canavial", "feira"], p: { feliz: 2, "rei-misto": 1 }, cara: "feliz",
+      falha: { r: "O parafuso pula no rio e o motor solta uma nuvem preta bem no rosto do Irving. Três horas de conserto depois, ele ainda tosse.",
+               vida: -12, vai: "fica", p: { "hora-errada": 2 }, cara: "cansado" } },
   ],
 };
 
@@ -263,6 +282,14 @@ CENAS["karaoke"] = {
       cenaMin: 4,
       r: "A plateia não deixa o Irving descer do palco. Bis, bis, bis. Dizem que um cantor famoso entrou pra dividir o microfone. A padaria pode esperar.",
       fim: "famoso", cara: "feliz" },
+
+    { t: "Pegar um CD esquecido no palco",
+      r: "Atrás do monitor, esquecido pelos séculos, repousa um CD do Tihuana. O Irving o ergue como quem desenterra um artefato perdido. A plateia de pijama aplaude.",
+      vai: "fica", ganha: "cd-tihuana", p: { famoso: 1 }, cara: "feliz" },
+
+    { t: "Plugar a caixa de som no karaokê", precisa: "caixa-de-som",
+      r: "O grave sacode o globo de espelhos, a voz do Irving vira trovão e a plateia de pijama entra em êxtase. Nasce uma lenda do karaokê.",
+      vai: "fica", p: { famoso: 3, filosofico: 1 }, cara: "feliz" },
   ],
 };
 
@@ -394,6 +421,14 @@ CENAS["estacao-espacial"] = {
       cenaMin: 4,
       r: "O Irving assina o contrato de astronauta vitalício. A Terra vira uma bolinha azul na janela. O misto vira lenda de um tempo que não volta mais.",
       fim: "alem-tempo", cara: "triste" },
+
+    { t: "Consertar a estação com a chave de fenda", precisa: "chave-de-fenda",
+      r: "Um painel pisca ERRO. O Irving flutua até ele e aperta um parafuso solto. Tudo se acende. Os astronautas o condecoram Engenheiro Galáctico.",
+      vai: "fica", p: { "alem-tempo": 2, "rei-misto": 1 }, cara: "feliz" },
+
+    { t: "Filmar a Terra com a Tekpix", precisa: "tekpix",
+      r: "O Irving aponta a Tekpix pela janela e filma a Terra girando. O vídeo passa em todos os telejornais lá embaixo. O mundo inteiro conhece o homem de boné.",
+      vai: "fica", marca: "famoso-tv", p: { famoso: 2, "alem-tempo": 1 }, cara: "feliz" },
   ],
 };
 
@@ -463,6 +498,14 @@ CENAS["casamento"] = {
     { t: "Perguntar a data do casamento",
       r: "'Hoje, Dia do Padeiro!', diz a noiva, filha de padeiro. Toda padaria da cidade fechou pra festa. Derrotado, o Irving embrulha um bem-casado e volta pra casa.",
       vai: "casa-irving", p: { "dia-errado": 3 }, cara: "triste" },
+
+    { t: "Cuidar da caixa de som do DJ",
+      r: "O DJ some atrás dos bem-casados e deixa a caixa de som com o padrinho: \"Cuida dela como se fosse sua.\" Ele nunca mais volta. Agora ela é.",
+      vai: "fica", ganha: "caixa-de-som", p: { famoso: 1, filosofico: 1 }, cara: "feliz" },
+
+    { t: "Segurar a Tekpix do tio da filmagem",
+      r: "O tio da filmagem entrega a Tekpix ao Irving: \"Segura aí, que eu vou dançar.\" E some na pista para sempre. A luzinha vermelha pisca, fiel ao novo dono.",
+      vai: "fica", ganha: "tekpix", p: { famoso: 1, filosofico: 1 }, cara: "confuso" },
   ],
 };
 
@@ -531,6 +574,17 @@ CENAS["prisao"] = {
       cenaMin: 5,
       r: "O Irving senta no beliche, suspira e pega a colher do Tatu. Onze anos passam depressa quando se tem um bom amigo e um bom túnel.",
       fim: "prisao", cara: "triste" },
+
+    { t: "Fugir com o disfarce de bigode", precisa: "disfarce",
+      r: "De óculos, nariz e bigode, o Irving vira visitante. O carcereiro procura o preso de boné, não acha, e acompanha o Doutor Bigodes até a rua. A liberdade tem cheiro de pão.",
+      vai: ["rua-irving", "bairro-desconhecido", "feira", "trem"], p: { feliz: 2, prisao: 1 }, cara: "feliz" },
+
+    { t: "Desparafusar a grade da janelinha", precisa: "chave-de-fenda",
+      risco: 11,
+      r: "Parafuso por parafuso, a grade cede. Seu Tatu chora: onze anos de colher, e bastava uma chave de fenda. Os dois escapam pela janelinha rumo ao desconhecido.",
+      vai: ["canavial", "bairro-desconhecido", "beco-perigoso", "osasco"], p: { filosofico: 2, "onde-estou": 1 }, cara: "determinado",
+      falha: { r: "O último parafuso range alto. O carcereiro aparece, confisca a chave de fenda e dobra a vigilância. Seu Tatu volta para a colher.",
+               vida: -12, vai: "fica", perde: "chave-de-fenda", p: { prisao: 3 }, cara: "triste" } },
   ],
 };
 
