@@ -26,7 +26,7 @@ CENAS["canavial"] = {
     { t: "Pedir caldo de cana ao lavrador",
       precisa: "100-reais", perde: "100-reais",
       r: "O lavrador serve um caldo de cana gelado com limão, néctar dos deuses! Emocionado com os 100 reais, leva o Irving de carroça até o evento mais animado da região.",
-      vai: ["feira", "leilao-gado"], p: { "quase-feliz": 2, feliz: 1 }, cara: "feliz" },
+      vai: ["feira", "leilao-gado", "casa-do-norte"], p: { "quase-feliz": 2, feliz: 1 }, cara: "feliz" },
 
     { t: "Subir no trator abandonado",
       risco: 11,
