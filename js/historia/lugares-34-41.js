@@ -71,6 +71,10 @@ CENAS["canavial"] = {
       cenaMin: 5,
       r: "O Irving constrói uma cabana de bagaço e se nomeia guardião do canavial. A padaria vira lenda. O caminho de volta, também.",
       fim: "onde-estou", cara: "confuso" },
+
+    { t: "Visitar o alambique escondido",
+      r: "No meio da cana, um alambique fumega. Um senhor de bigode branco entrega ao Irving uma garrafinha: \"Pra dar coragem, não pra perder o juízo.\" Sábias palavras.",
+      vai: "fica", ganha: "pinga", p: { filosofico: 1, "onde-estou": 1 }, cara: "feliz" },
   ],
 };
 
@@ -140,6 +144,17 @@ CENAS["inglaterra-medieval"] = {
       cenaMin: 5,
       r: "O Irving troca o boné por um elmo e o sonho do misto por pão com queijo de cabra. Sir Irving, o Forasteiro, nunca mais volta.",
       fim: "antes-tempo", cara: "triste" },
+
+    { t: "Virar nobre com o disfarce", precisa: "disfarce",
+      r: "De bigode e sobrancelhas grossas, o Irving vira Lorde Bigodes de Osasco. Os camponeses se curvam, os cavaleiros saúdam e o rei o convida para o banquete.",
+      vai: "fica", p: { "antes-tempo": 2, "rei-misto": 2 }, cara: "determinado" },
+
+    { t: "Vencer o torneio com o nunchaku", precisa: "nunchaku",
+      risco: 10,
+      r: "Diante de um cavaleiro de armadura, o Irving gira o nunchaku em círculos hipnóticos. O cavalo fica tonto, o cavaleiro também. O Irving é declarado campeão do reino.",
+      vai: "fica", marca: "campeao", p: { "rei-misto": 2, "antes-tempo": 1 }, cara: "determinado",
+      falha: { r: "O nunchaku gira, gira e se enrosca na barba do Irving. O cavaleiro nem precisa agir. O herói cai na lama sob vaias medievais.",
+               vida: -12, vai: "fica", p: { "antes-tempo": 1 }, cara: "triste" } },
   ],
 };
 
@@ -208,6 +223,10 @@ CENAS["reuniao-onu"] = {
       cenaMin: 5,
       r: "Silêncio. Depois, uma salva de palmas. As bandeiras são trocadas por fotos do Irving de boné. O planeta tem um novo imperador.",
       fim: "rei-misto", cara: "determinado" },
+
+    { t: "Discursar com a caixa de som", precisa: "caixa-de-som",
+      r: "Sem fone de tradução, o Irving liga a caixa de som e discursa sobre o misto quente. As bandeiras tremem. Cento e noventa países aprovam por unanimidade.",
+      vai: "fica", p: { "rei-misto": 3, "dia-errado": 1 }, cara: "determinado" },
   ],
 };
 
@@ -346,6 +365,10 @@ CENAS["excursao-peruanos"] = {
       cenaMin: 4, precisaMarca: "amigo-peruanos",
       r: "O Irving percebe que o misto nunca foi o ponto. O ponto eram eles. Um abraço coletivo, quarenta e duas despedidas, e ele volta a pé, leve.",
       fim: "filosofico", cara: "feliz" },
+
+    { t: "Ganhar um nunchaku de lembrança",
+      r: "Um senhor da excursão, faixa preta aposentado, presenteia o Irving com um nunchaku: \"Para proteger o misto, amigo.\" Os dois fazem reverência. A excursão aplaude.",
+      vai: "fica", ganha: "nunchaku", p: { filosofico: 2 }, cara: "feliz" },
   ],
 };
 
@@ -413,6 +436,10 @@ CENAS["comercial-margarina"] = {
     { t: "Ler o roteiro do comercial",
       r: "'Cena 1: Dia do Padeiro. Padarias fechadas. A família fica em casa com margarina.' O Irving empalidece e corre pra casa, pra conferir se é verdade.",
       vai: "casa-irving", p: { "dia-errado": 3 }, cara: "assustado" },
+
+    { t: "Vender o vídeo da Tekpix ao diretor", precisa: "tekpix",
+      r: "O diretor assiste ao que o Irving filmou hoje e chora: \"Isso é arte!\" Compra o vídeo na hora com uma nota de 100 reais e um pão quentinho de brinde.",
+      vai: "fica", ganha: "100-reais", p: { feliz: 2, famoso: 2 }, cara: "feliz" },
   ],
 };
 
@@ -482,6 +509,10 @@ CENAS["fila-banco"] = {
       cenaMin: 4,
       r: "Plim! 'Senha 847!' O Irving é atendido às 12h50 e corre até a padaria como um raio. O relógio da parede marca 13h em ponto.",
       fim: "hora-errada", cara: "cansado" },
+
+    { t: "Pegar o livro esquecido na cadeira",
+      r: "Numa cadeira, alguém esqueceu o livro de autoajuda \"Espere com propósito\". O Irving começa a ler. A senha continua em 13. O propósito, ele ainda procura.",
+      vai: "fica", ganha: "livro-autoajuda", p: { "hora-errada": 2 }, cara: "neutro" },
   ],
 };
 
@@ -550,5 +581,13 @@ CENAS["programa-auditorio"] = {
       cenaMin: 5,
       r: "O Irving encara a câmera. Do outro lado, alguém encara de volta. Não há padaria. Não há misto. Só um roteiro, e ele está nele.",
       fim: "matrix", cara: "confuso" },
+
+    { t: "Ganhar o disfarce na roleta",
+      r: "O apresentador gira a roleta. Plim! \"O prêmio é... UM DISFARCE COMPLETO!\" Óculos, nariz, bigode e sobrancelhas. A plateia vai à loucura. O Irving também.",
+      vai: "fica", ganha: "disfarce", p: { famoso: 2 }, cara: "feliz" },
+
+    { t: "Receber a Tekpix de prêmio",
+      r: "\"E você leva pra casa... UMA TEKPIX!\" As dançarinas trazem a filmadora numa almofada de veludo. O Irving chora como quem ganhou um carro zero.",
+      vai: "fica", ganha: "tekpix", p: { famoso: 2, "rei-misto": 1 }, cara: "feliz" },
   ],
 };
