@@ -287,7 +287,7 @@ OPCOES_ADV["cachorro"] = {
   opcoes: [
     { t: "Procurar um refri pro cachorro", precisaAdv: "cachorro", resolve: "cachorro",
       r: "Lado a lado como velhos parceiros, os dois saem em busca de refri. Na primeira barraca, o vendedor dá um de graça. O cachorro agradece e parte.",
-      vai: ["feira", "quermesse", "cantina-escola", "sorveteria"], p: { "quase-feliz": 2, filosofico: 1 }, cara: "feliz" },
+      vai: ["feira", "casa-do-norte", "quermesse", "cantina-escola", "sorveteria"], p: { "quase-feliz": 2, filosofico: 1 }, cara: "feliz" },
 
     { t: "Explicar que está sem dinheiro", precisaAdv: "cachorro",
       r: "O Irving mostra os bolsos vazios. O cachorro suspira, compreensivo: \"Tudo bem. Amizade não se compra.\" E continua seguindo o Irving.",
@@ -343,7 +343,7 @@ OPCOES_ADV["policia"] = {
   opcoes: [
     { t: "Explicar que só quer um misto quente", precisaAdv: "policia", resolve: "policia",
       r: "O Irving conta toda a jornada, com lágrimas nos olhos. O policial se emociona, devolve os documentos e aponta: \"A padaria é por ali.\" O herói segue.",
-      vai: ["rua-irving", "loja-eletro-padaria", "bairro-desconhecido", "feira"], p: { feliz: 2 }, cara: "feliz" },
+      vai: ["rua-irving", "loja-eletro-padaria", "bairro-desconhecido", "feira", "casa-do-norte"], p: { feliz: 2 }, cara: "feliz" },
 
     { t: "Mostrar os documentos com calma", precisaAdv: "policia", resolve: "policia",
       r: "O policial analisa os documentos por longos minutos, consulta o rádio, suspira e libera o Irving. O tempo perdido, porém, não volta.",
@@ -421,7 +421,7 @@ OPCOES_ADV["cobra"] = {
   opcoes: [
     { t: "Dar a volta bem devagar", precisaAdv: "cobra", resolve: "cobra",
       r: "Passo a passo, como um ninja de boné, o Irving contorna a cobra. Ela boceja. Caminho livre, mas o desvio é longo, muito longo.",
-      vai: ["canavial", "bairro-desconhecido", "feira", "rua-irving"], p: { "onde-estou": 1, "hora-errada": 1 }, cara: "assustado" },
+      vai: ["canavial", "bairro-desconhecido", "feira", "casa-do-norte", "rua-irving"], p: { "onde-estou": 1, "hora-errada": 1 }, cara: "assustado" },
 
     { t: "Encarar a cobra nos olhos", precisaAdv: "cobra",
       risco: 11,
@@ -592,7 +592,7 @@ OPCOES_ADV["rifa"] = {
 OPCOES_GERAIS.push(
   { t: "Perguntar o caminho da padaria",
     r: "Uma senhora aponta com certeza absoluta: \"É logo ali, depois da esquina.\" O Irving agradece e segue. A esquina leva a um lugar que ninguém mencionou.",
-    vai: ["rua-irving", "bairro-desconhecido", "feira", "osasco", "loja-eletro-padaria", "oficina-mecanica", "loja-patinetes"], p: { feliz: 2, "onde-estou": 1 }, cara: "determinado" },
+    vai: ["rua-irving", "bairro-desconhecido", "feira", "casa-do-norte", "osasco", "loja-eletro-padaria", "oficina-mecanica", "loja-patinetes"], p: { feliz: 2, "onde-estou": 1 }, cara: "determinado" },
 
   { t: "Sair correndo sem rumo",
     r: "O Irving dispara como um corcel selvagem, sem olhar pra onde vai. Quando para, ofegante, a paisagem é completamente outra.",
@@ -644,7 +644,7 @@ OPCOES_GERAIS.push(
 
   { t: "Seguir um cachorro que parece saber",
     r: "Um cachorro de rua olha para o Irving e vira a cabeça, como quem diz \"vem\". O herói confia no guia de quatro patas.",
-    vai: ["feira", "quermesse", "cantina-escola", "sorveteria", "rua-irving", "oficina-mecanica"], p: { "quase-feliz": 2, feliz: 1 }, cara: "determinado" },
+    vai: ["feira", "casa-do-norte", "quermesse", "cantina-escola", "sorveteria", "rua-irving", "oficina-mecanica"], p: { "quase-feliz": 2, feliz: 1 }, cara: "determinado" },
 
   { t: "Apertar um botão vermelho misterioso",
     r: "Na parede, um botão vermelho diz NÃO APERTE. O Irving aperta. Um zumbido, um clarão, e tudo ao redor muda de época. Ou de planeta.",
