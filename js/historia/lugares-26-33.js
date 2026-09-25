@@ -98,7 +98,7 @@ CENAS["cantina-escola"] = {
                vida: -15, vai: "hospital", p: { amnesia: 2 }, cara: "confuso" } },
 
     { t: "Provar a merenda do dia",
-      r: "Arroz, feijão e, de sobremesa, banana. Uma meninazinha, generosa, deixa a dela na bandeja do Irving. Recusar partiria o coração dela.",
+      r: "Arroz, feijão e, de sobremesa, banana. Uma menininha, generosa, deixa a dela na bandeja do Irving. Recusar partiria o coração dela.",
       vai: "fica", ganha: "banana", p: { banana: 3 }, cara: "confuso" },
 
     { t: "Se esconder no saco de bolas",
