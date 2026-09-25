@@ -173,6 +173,8 @@ function comecar() {
     historico: [],
     itemNovo: null,
   };
+  // toda partida tem pelo menos 1 item: se até esta cena nada apareceu, um item aparece com certeza
+  est.cenaItemGarantido = 2 + Math.floor(Math.random() * Math.min(4, est.totalCenas - 2));
   document.body.classList.remove("morte");
   $("tela-inicio").hidden = true;
   $("tela-final").hidden = true;
@@ -274,7 +276,8 @@ function sortearProxima() {
   const ultima = est.cena >= est.totalCenas;
   let item = null, adversidade = null;
   if (!ultima) {
-    if (est.itens.length < REGRAS.maxItens && Math.random() < REGRAS.chanceItem) {
+    const garantido = est.itensJaTidos.length === 0 && est.cena + 1 >= est.cenaItemGarantido;
+    if (est.itens.length < REGRAS.maxItens && (garantido || Math.random() < REGRAS.chanceItem)) {
       const livres = ITENS.filter((i) => !est.itens.includes(i.id));
       item = sortear(livres);
     }
