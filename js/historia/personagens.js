@@ -17,7 +17,7 @@
 // ---------------------------------------------------------------------
 CHEFES.push({
   id: "modelo-quiz", tipo: "quiz", ativo: false, nome: "Professor Pergunta", genero: "o",
-  img: "", emoji: "🤐",
+  img: "", emoji: "🧐",
   entrada: "Um homem de beca bloqueia o caminho, batendo uma régua na palma da mão. É o PROFESSOR PERGUNTA! Ninguém passa sem responder às suas perguntas!",
   perguntas: [
     { p: "Quantas fatias de pão tem um misto quente de respeito?", respostas: ["Uma", "Duas", "Sete"], certa: 2 },
