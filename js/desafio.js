@@ -213,7 +213,7 @@ async function irPara(destino, textoAnterior) {
     await trocarFundo(destino);
     mostrarPlaca(destino);
   }
-  cara(c.adversidade ? "assustado" : c.chefe ? "determinado" : "neutro", "pulo");
+  cara(c.adversidade ? "assustado" : c.chefe ? "determinado" : c.npc || c.vendedor ? "feliz" : "neutro", "pulo");
   atualizarHud(c.tags.length > 0, c.item ? c.item.id : null);
   if (c.item) setTimeout(() => mostrarAchado(c.item), 600);
   if (c.adversidade) setTimeout(() => mostrarAlerta(c.adversidade), c.item ? 4300 : 600);
@@ -229,6 +229,8 @@ async function irPara(destino, textoAnterior) {
     return;
   }
   if (c.chefe) return iniciarDuelo(c.chefe);
+  if (c.vendedor) { await esperar(700); return iniciarVendedor(c.vendedor); }
+  if (c.npc) { await esperar(700); return iniciarNpc(c.npc); }
   mostrarOpcoes();
 }
 
@@ -264,20 +266,69 @@ async function rolarDado(risco) {
   return valor;
 }
 
-// ---------- chefe: duelo de pedra, papel e tesoura ----------
+// ---------- encontros: painel comum (chefes, NPCs e vendedor) ----------
 let duelo = null;
-async function iniciarDuelo(chefe) {
-  duelo = { chefe, pontosIrving: 0, pontosChefe: 0, jogada: 0, travado: false };
-  await esperar(900);
-  $("chefe-img").src = chefe.img;
-  $("chefe-img").alt = chefe.nome;
-  $("duelo-nome").textContent = chefe.nome;
-  $("placar-nome").textContent = chefe.nome;
+function abrirPainel({ img, emoji, titulo, nome, amigo, placar }) {
+  const el = $("chefe-img"), em = $("chefe-emoji");
+  em.hidden = true;
+  if (img) {
+    el.hidden = false;
+    el.onerror = () => { el.hidden = true; em.textContent = emoji || "❓"; em.hidden = false; };
+    el.src = img;
+  } else {
+    el.hidden = true;
+    em.textContent = emoji || "❓";
+    em.hidden = false;
+  }
+  el.alt = nome;
+  $("duelo-titulo").textContent = titulo;
+  $("duelo-nome").textContent = nome;
+  $("duelo-placar").hidden = !placar;
   $("duelo-fim").hidden = true;
+  $("baloes").hidden = true;
+  $("respostas").hidden = true;
+  $("respostas").className = "respostas";
+  $("duelo").classList.toggle("amigo", !!amigo);
+  $("placa").hidden = true; // a placa do lugar ficava atrás do personagem
+  $("duelo").hidden = false;
+}
+function botoesResposta(lista, classe, aoClicar) {
+  const box = $("respostas");
+  box.className = "respostas" + (classe ? " " + classe : "");
+  box.innerHTML = "";
+  lista.forEach((item, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "resposta" + (item.cls ? " " + item.cls : "");
+    b.innerHTML = item.html;
+    b.addEventListener("click", () => aoClicar(i, b));
+    box.appendChild(b);
+  });
+  box.hidden = false;
+}
+function travarRespostas() { document.querySelectorAll("#respostas .resposta").forEach((b) => (b.disabled = true)); }
+function mostrarFimPainel(bom, selo, premio, resultado) {
+  $("baloes").hidden = true;
+  $("respostas").hidden = true;
+  const s = $("duelo-selo");
+  s.className = "dado-selo " + (bom ? "bom" : "ruim");
+  s.textContent = selo;
+  $("duelo-premio").innerHTML = premio;
+  $("duelo-fim").hidden = false;
+  $("btn-duelo-ok").focus({ preventScroll: true });
+  duelo.resultado = resultado;
+}
+
+// ---------- chefe ----------
+async function iniciarDuelo(chefe) {
+  await esperar(900);
+  if (chefe.tipo === "quiz") return iniciarQuiz(chefe);
+  duelo = { chefe, pontosIrving: 0, pontosChefe: 0, jogada: 0, travado: false };
+  abrirPainel({ img: chefe.img, emoji: chefe.emoji, titulo: "DUELO!", nome: chefe.nome, placar: true });
+  $("placar-nome").textContent = chefe.nome;
   $("baloes").hidden = false;
   $("duelo-jogada").innerHTML = "Escolha sua jogada. Quem fizer <b>2 pontos</b> vence!";
   atualizarPlacar();
-  $("duelo").hidden = false;
   cara("determinado", "pulo");
 }
 function atualizarPlacar() {
@@ -285,7 +336,7 @@ function atualizarPlacar() {
   $("placar-ch").textContent = duelo.pontosChefe;
 }
 async function jogarDuelo(escolha) {
-  if (!duelo || duelo.travado) return;
+  if (!duelo || duelo.travado || !duelo.chefe || duelo.chefe.tipo === "quiz") return;
   duelo.travado = true;
   document.querySelectorAll(".balao").forEach((b) => b.classList.toggle("escolhido", b.dataset.j === escolha));
   const vil = duelo.chefe.sequencia[duelo.jogada % duelo.chefe.sequencia.length];
@@ -302,12 +353,46 @@ async function jogarDuelo(escolha) {
   if (duelo.pontosIrving >= 2 || duelo.pontosChefe >= 2) return fimDuelo(duelo.pontosIrving >= 2);
   duelo.travado = false;
 }
+
+// chefe de quiz: 3 perguntas, acertou 2 vence
+function iniciarQuiz(chefe) {
+  const quiz = montarQuiz(chefe.perguntas, Math.min(REGRAS.perguntasQuiz, chefe.perguntas.length));
+  duelo = { chefe, quiz, i: 0, pontosIrving: 0, pontosChefe: 0, travado: false };
+  abrirPainel({ img: chefe.img, emoji: chefe.emoji, titulo: "QUIZ!", nome: chefe.nome, placar: true });
+  $("placar-nome").textContent = chefe.nome;
+  cara("determinado", "pulo");
+  perguntaQuiz();
+}
+function perguntaQuiz() {
+  const q = duelo.quiz[duelo.i];
+  atualizarPlacar();
+  $("duelo-jogada").innerHTML = `<small>Pergunta ${duelo.i + 1} de ${duelo.quiz.length} · acerte ${REGRAS.acertosQuiz} pra vencer</small><div class="duelo-pergunta">${escaparHtml(q.p)}</div>`;
+  botoesResposta(q.respostas.map((r) => ({ html: escaparHtml(r.txt) })), "", responderQuiz);
+  duelo.travado = false;
+}
+async function responderQuiz(i, botao) {
+  if (!duelo || duelo.travado) return;
+  duelo.travado = true;
+  const q = duelo.quiz[duelo.i];
+  travarRespostas();
+  const botoes = [...document.querySelectorAll("#respostas .resposta")];
+  q.respostas.forEach((r, k) => { if (r.certa) botoes[k].classList.add("certa"); });
+  if (q.respostas[i].certa) { duelo.pontosIrving++; cara("feliz", "pulo"); }
+  else { duelo.pontosChefe++; botao.classList.add("errada"); cara("assustado", "tremor"); }
+  atualizarPlacar();
+  const atual = duelo;
+  await esperar(1500);
+  if (duelo !== atual) return;
+  const precisa = REGRAS.acertosQuiz;
+  const total = duelo.quiz.length;
+  if (duelo.pontosIrving >= precisa) return fimDuelo(true);
+  if (duelo.pontosChefe > total - precisa) return fimDuelo(false);
+  duelo.i++;
+  perguntaQuiz();
+}
+
 function fimDuelo(venceu) {
   const chefe = duelo.chefe;
-  $("baloes").hidden = true;
-  const selo = $("duelo-selo");
-  selo.className = "dado-selo " + (venceu ? "bom" : "ruim");
-  selo.textContent = venceu ? "VITÓRIA!" : "DERROTA!";
   const res = resultadoDuelo(est, venceu);
   let premio, resumo;
   const tags = [];
@@ -327,17 +412,140 @@ function fimDuelo(venceu) {
     tags.push({ txt: `-${res.dano} Vida`, cls: "menos" });
     cara("triste", "tremor");
   }
-  $("duelo-premio").innerHTML = premio;
-  $("duelo-fim").hidden = false;
-  $("btn-duelo-ok").focus({ preventScroll: true });
-  duelo.resultado = { venceu, resumo, tags, item: res.item };
+  mostrarFimPainel(venceu, venceu ? "VITÓRIA!" : "DERROTA!", premio, { resumo, tags, item: res.item, bater: !venceu });
 }
+
+// ---------- NPC com desafio ----------
+function iniciarNpc(npc) {
+  duelo = { npc, travado: false };
+  abrirPainel({ img: npc.img, emoji: npc.emoji, titulo: "DESAFIO!", nome: npc.nome, amigo: true });
+  cara("determinado", "pulo");
+  const d = npc.desafios ? sortear(npc.desafios) : npc.desafio; // cada NPC pode ter vários desafios (sorteia 1)
+  if (d.tipo === "adivinha") {
+    const max = d.max || 10;
+    duelo.segredo = 1 + Math.floor(Math.random() * max);
+    duelo.chutes = d.tentativas || 3;
+    $("duelo-jogada").innerHTML = `<div class="duelo-pergunta">${escaparHtml(d.p || `Adivinhe o número de 1 a ${max}!`)}</div><small id="npc-dica">Chutes restantes: ${duelo.chutes}</small>`;
+    const nums = Array.from({ length: max }, (_, k) => ({ html: String(k + 1) }));
+    botoesResposta(nums, "numeros", chutarNumero);
+  } else {
+    const q = montarQuiz([d], 1)[0];
+    duelo.q = q;
+    $("duelo-jogada").innerHTML = `<div class="duelo-pergunta">${escaparHtml(q.p)}</div>`;
+    botoesResposta(q.respostas.map((r) => ({ html: escaparHtml(r.txt) })), "", responderNpc);
+  }
+}
+async function responderNpc(i, botao) {
+  if (!duelo || duelo.travado) return;
+  duelo.travado = true;
+  travarRespostas();
+  const botoes = [...document.querySelectorAll("#respostas .resposta")];
+  duelo.q.respostas.forEach((r, k) => { if (r.certa) botoes[k].classList.add("certa"); });
+  const ok = duelo.q.respostas[i].certa;
+  if (!ok) botao.classList.add("errada");
+  cara(ok ? "feliz" : "confuso", ok ? "pulo" : "tremor");
+  const atual = duelo;
+  await esperar(1300);
+  if (duelo !== atual) return;
+  fimNpc(ok);
+}
+async function chutarNumero(i, botao) {
+  if (!duelo || duelo.travado) return;
+  const n = i + 1;
+  botao.disabled = true;
+  duelo.chutes--;
+  if (n === duelo.segredo) {
+    duelo.travado = true;
+    travarRespostas();
+    botao.classList.add("certa");
+    cara("feliz", "pulo");
+    await esperar(1100);
+    return fimNpc(true);
+  }
+  botao.classList.add("errada");
+  if (duelo.chutes <= 0) {
+    duelo.travado = true;
+    travarRespostas();
+    document.querySelectorAll("#respostas .resposta")[duelo.segredo - 1].classList.add("certa");
+    $("npc-dica").textContent = `Era o ${duelo.segredo}!`;
+    cara("confuso", "tremor");
+    await esperar(1500);
+    return fimNpc(false);
+  }
+  $("npc-dica").textContent = `É ${duelo.segredo > n ? "MAIOR" : "MENOR"} que ${n}! Chutes restantes: ${duelo.chutes}`;
+}
+function fimNpc(venceu) {
+  const npc = duelo.npc;
+  const res = resultadoNpc(est, npc, venceu);
+  const tags = [];
+  let premio, resumo;
+  if (venceu && res.item) {
+    premio = `${escaparHtml(npc.acertou || "")} O Irving ganhou: <b>${res.item.nome}</b>!`;
+    resumo = `${npc.acertou || ""} O Irving ganhou: ${res.item.nome}.`.trim();
+    tags.push({ txt: `ganhou: ${res.item.nome}`, cls: "mais" });
+    cara("feliz", "pulo");
+  } else if (venceu) {
+    premio = `${escaparHtml(npc.acertou || "")} Mas a mochila está cheia e o prêmio ficou pra trás.`;
+    resumo = `${npc.acertou || ""} Mas a mochila estava cheia e o prêmio ficou pra trás.`.trim();
+  } else {
+    premio = escaparHtml(npc.errou || "Não foi dessa vez.") + (res.dano ? ` O Irving perdeu <b>${res.dano} de Vida</b>.` : "");
+    resumo = npc.errou || "Não foi dessa vez.";
+    if (res.dano) tags.push({ txt: `-${res.dano} Vida`, cls: "menos" });
+    cara("triste", "tremor");
+  }
+  mostrarFimPainel(venceu, venceu ? "CONSEGUIU!" : "NÃO DEU!", premio, { resumo, tags, item: res.item, bater: !!res.dano });
+}
+
+// ---------- vendedor da Casa do Norte: escolha 1 de 3 itens ----------
+function iniciarVendedor(v) {
+  duelo = { vendedor: v, travado: false };
+  abrirPainel({ img: v.img, emoji: v.emoji, titulo: "PRESENTE!", nome: v.nome, amigo: true });
+  cara("feliz", "pulo");
+  $("duelo-jogada").innerHTML = `<div class="duelo-pergunta">Escolha um presente:</div>`;
+  const lista = v.oferta.map((it) => ({ cls: "presente", html: `<img src="assets/desafio/itens/${it.arq}.webp" alt="">${escaparHtml(it.nome)}` }));
+  lista.push({ cls: "nada", html: "Não quero nada" });
+  botoesResposta(lista, "presentes", (i) => escolherPresente(i < v.oferta.length ? v.oferta[i] : null));
+}
+function escolherPresente(item) {
+  if (!duelo || duelo.travado) return;
+  const v = duelo.vendedor;
+  if (!item) return fimVendedor(null);
+  if (est.itens.length < REGRAS.maxItens) { pegarPresente(est, item.id); return fimVendedor(item); }
+  // mochila cheia: escolher o que deixar
+  $("duelo-jogada").innerHTML = `<div class="duelo-pergunta">A mochila está cheia! Deixar o quê pra levar ${escaparHtml(item.nome)}?</div>`;
+  const atuais = est.itens.map((id) => ITENS.find((x) => x.id === id));
+  const lista = atuais.map((it) => ({ cls: "presente", html: `<img src="assets/desafio/itens/${it.arq}.webp" alt="">${escaparHtml(it.nome)}` }));
+  lista.push({ cls: "nada", html: "Deixa pra lá, não quero trocar" });
+  botoesResposta(lista, "presentes", (i) => {
+    if (i >= atuais.length) return fimVendedor(null);
+    pegarPresente(est, item.id, atuais[i].id);
+    fimVendedor(item, atuais[i]);
+  });
+}
+function fimVendedor(item, deixou) {
+  const v = duelo.vendedor;
+  duelo.travado = true;
+  const tags = [];
+  let premio, resumo;
+  if (item) {
+    premio = `${escaparHtml(v.escolheu || "")} O Irving levou: <b>${escaparHtml(item.nome)}</b>!`;
+    resumo = `${v.escolheu || ""} O Irving levou: ${item.nome}${deixou ? ` (e deixou ${deixou.nome} no balcão)` : ""}.`.trim();
+    tags.push({ txt: `ganhou: ${item.nome}`, cls: "mais" });
+    if (deixou) tags.push({ txt: `deixou: ${deixou.nome}`, cls: "neutra" });
+    cara("feliz", "pulo");
+  } else {
+    premio = escaparHtml(v.recusou || "Fica pra próxima.");
+    resumo = v.recusou || "O Irving agradece e não leva nada.";
+  }
+  mostrarFimPainel(!!item, item ? "PRESENTE!" : "TUDO BEM!", premio, { resumo, tags, item: item || null, bater: false });
+}
+
 async function sairDuelo() {
   if (!duelo || !duelo.resultado) return;
-  const { resumo, tags, venceu, item } = duelo.resultado;
+  const { resumo, tags, item, bater } = duelo.resultado;
   $("duelo").hidden = true;
   duelo = null;
-  atualizarHud(!venceu, item ? item.id : null);
+  atualizarHud(bater, item ? item.id : null);
   if (item) setTimeout(() => mostrarAchado(item), 300);
   mostrarDelta(tags);
   if (est.vida <= 0) return mostrarFinal("morte");
