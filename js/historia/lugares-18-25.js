@@ -11,6 +11,10 @@ CENAS["feira"] = {
     "Caixotes de laranja, pilhas de chuchu e um exército de carrinhos de compras. É hora da xepa, e as vovós avançam com a fúria de uma cavalaria.",
   ],
   opcoes: [
+    { t: "Entrar na Casa do Norte da esquina",
+      r: "Entre as barracas, uma porta de madeira azul exala cheiro de queijo coalho e café coado. O Irving entra como quem encontra um templo.",
+      vai: "casa-do-norte", p: { "quase-feliz": 1, filosofico: 1 }, cara: "feliz" },
+
     { t: "Perguntar ao feirante da padaria",
       r: "\"Padaria? Segue o cheiro do pão, freguês!\" O Irving fareja o ar como um cão de caça, e o aroma o conduz até uma loja cheia de fornos.",
       vai: "loja-eletro-padaria", p: { feliz: 2, "quase-feliz": 1 }, cara: "determinado" },
