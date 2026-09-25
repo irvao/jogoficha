@@ -283,8 +283,8 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 }
 @keyframes dueloEntra { from { opacity: 0; } }
 .chefe-img {
-  position: absolute; right: 1vw; top: 8dvh;
-  width: min(62vw, 900px); max-height: 62dvh; object-fit: contain; object-position: top right;
+  position: absolute; right: 4vw; top: 7dvh;
+  width: min(44vw, 760px); height: 64dvh; object-fit: contain; object-position: center bottom;
   filter: drop-shadow(0 0 3px rgba(0,0,0,.7)) drop-shadow(-10px 14px 18px rgba(0,0,0,.6));
   -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
@@ -325,6 +325,30 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .balao:active { transform: translateY(3px); }
 .balao.escolhido { background: var(--mostarda); transform: scale(1.08); }
 .duelo-fim p { font-size: 17px; margin: 10px 0 12px; }
+/* respostas do quiz, do desafio do NPC e presentes do vendedor */
+.respostas { display: grid; gap: 8px; margin-top: 10px; }
+.respostas.numeros { grid-template-columns: repeat(5, 1fr); }
+.respostas.presentes { grid-template-columns: repeat(3, 1fr); }
+.resposta {
+  font-weight: 800; font-size: 16px; line-height: 1.25; color: var(--tinta); text-align: center;
+  background: #fff; border: var(--borda); border-radius: 14px; padding: 9px 12px;
+  box-shadow: 0 4px 0 var(--tinta); transition: transform .08s, background .15s;
+}
+.resposta:hover { background: #fff1c9; }
+.resposta:active { transform: translateY(3px); }
+.resposta:disabled { cursor: default; opacity: .55; }
+.resposta.certa { background: #c9f0d4; opacity: 1; }
+.resposta.errada { background: #ffd0d0; opacity: 1; }
+.resposta.presente { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 14px; }
+.resposta.presente img { width: 56px; height: 56px; object-fit: contain; }
+.resposta.nada { grid-column: 1 / -1; font-size: 14px; background: #eee3cf; box-shadow: 0 3px 0 var(--tinta); }
+.duelo-pergunta { font-size: 18px; font-weight: 900; line-height: 1.35; margin-top: 4px; }
+.duelo.amigo { background: radial-gradient(circle at 65% 45%, rgba(40,110,60,.3), rgba(0,0,0,.7)); }
+.duelo.amigo .duelo-titulo { color: var(--mostarda); }
+.chefe-emoji {
+  position: absolute; right: 12vw; top: 14dvh; font-size: min(34vh, 40vw); line-height: 1;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,.6)); animation: chefeEntra .7s cubic-bezier(.2,1.5,.4,1);
+}
 .duelo-fim .dado-selo { display: inline-block; font-size: 42px; }
 
 /* ---------- item encontrado ---------- */
@@ -441,11 +465,14 @@ body.com-teclado .alerta { display: none; }
   .final-cartao { padding: 18px 16px; max-height: 66dvh; }
   .achado { top: 64px; }
   .duelo { background: radial-gradient(circle at 60% 30%, rgba(120,20,20,.45), rgba(0,0,0,.85)); }
-  .chefe-img { width: 100vw; max-height: 46dvh; right: 0; top: 8dvh; object-position: top center; }
+  .chefe-img { width: 100vw; height: 44dvh; right: 0; top: 8dvh; object-position: center bottom; }
   .duelo-titulo { font-size: 32px; }
   .balao { width: 92px; height: 80px; }
   .balao span { font-size: 32px; }
   .baloes { gap: 10px; }
+  .resposta { font-size: 14.5px; padding: 8px 10px; }
+  .duelo-pergunta { font-size: 16px; }
+  .chefe-emoji { right: 50%; transform: translateX(50%); top: 10dvh; font-size: 22dvh; }
   .achado b { font-size: 22px; }
   .achado img { width: 48px; height: 48px; }
 }
