@@ -64,12 +64,13 @@ async function perguntarNarrador(pedido, tentativas = 2) {
       const resp = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sistema: NARRADOR_SISTEMA, conversa: [{ papel: "jogador", texto: pedido }], json: true }),
+        body: JSON.stringify({ sistema: NARRADOR_SISTEMA, conversa: [{ papel: "jogador", texto: pedido }], json: true, partida: (typeof est !== "undefined" && est && est.partida) || "" }),
       });
       const dados = await resp.json().catch(() => ({}));
       if (!resp.ok) {
         const e = new Error(dados.erro || `Erro ${resp.status}`);
         e.status = resp.status;
+        e.limite = dados.limite === true; // bloqueio do controle de uso (partidas por dia)
         throw e;
       }
       return lerJson(dados.texto);

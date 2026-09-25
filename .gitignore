@@ -1,4 +1,15 @@
+# Sistema
 .DS_Store
 Thumbs.db
 *.log
 node_modules/
+
+# Segredos: nunca subir chaves, senhas ou tokens
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+.dev.vars
+.wrangler/

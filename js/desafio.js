@@ -134,7 +134,8 @@ function mostrarDelta(tags) {
 }
 function mostrarErro(e, repetir) {
   let msg = "O narrador tropeçou. ";
-  if (e && e.status === 429) msg = "O narrador cansou de tanto falar (limite de uso da IA). Espere um pouquinho e tente de novo. ";
+  if (e && e.limite) msg = (e.message || "Limite de partidas por hoje atingido.") + " ";
+  else if (e && e.status === 429) msg = "O narrador cansou de tanto falar (limite de uso da IA). Espere um pouquinho e tente de novo. ";
   else if (e && e.status === 403) msg = "Este endereço não tem permissão pra falar com o narrador. ";
   else if (!navigator.onLine) msg = "Parece que a internet caiu. ";
   $("erro-txt").textContent = msg;
@@ -173,6 +174,8 @@ function comecar() {
     chapeuNaCabeca: false,
     historico: [],
     itemNovo: null,
+    // identificação desta partida (o Worker conta partidas por pessoa por dia)
+    partida: (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)).slice(0, 36),
   };
   // toda partida tem pelo menos 1 item: se até esta cena (2ª a 4ª) nada apareceu, um item aparece com certeza
   est.cenaItemGarantido = 2 + Math.floor(Math.random() * 3);
