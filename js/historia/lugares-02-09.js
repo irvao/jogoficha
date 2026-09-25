@@ -10,6 +10,10 @@ CENAS["rua-irving"] = {
     "Eis a rua arborizada, primeiro campo de batalha de todo herói. A vizinha espia pela janela. Um caminhão de mudança ronca na esquina.",
   ],
   opcoes: [
+    { t: "Passar na Casa do Norte do bairro",
+      r: "Na esquina, a velha Casa do Norte abre as portas de madeira. \"Vai que eles têm misto\", pensa o herói, com a fé de quem nunca perguntou.",
+      vai: "casa-do-norte", p: { feliz: 1, "quase-feliz": 1 }, cara: "determinado" },
+
     { t: "Seguir o cheiro de pão no ar",
       r: "O nariz do Irving vira bússola. O cheiro é forte, promissor, e termina numa loja que vende fornos. Pão, nenhum.",
       vai: "loja-eletro-padaria", p: { feliz: 2 }, cara: "determinado" },
@@ -137,6 +141,10 @@ CENAS["osasco"] = {
     "Eis Osasco, a cidade que nunca para. Sacolas, pastel, panfletos e um mar de gente. Em algum lugar desse labirinto, deve haver um misto quente.",
   ],
   opcoes: [
+    { t: "Seguir a placa \"Produtos do Norte\"",
+      r: "Uma placa pintada à mão aponta para uma portinha. Lá dentro, fubá, rapadura e um balcão azul que parece esperar pelo Irving há anos.",
+      vai: "casa-do-norte", p: { "quase-feliz": 1, "onde-estou": 1 }, cara: "confuso" },
+
     { t: "Pegar o panfleto do homem-placa",
       r: "No verso, um mapa desenhado à mão da \"melhor padaria da região\". O Irving segue à risca. Três ônibus depois, está em Xique-Xique, Bahia.",
       vai: "xique-xique", marca: "mapa", p: { "onde-estou": 2 }, cara: "confuso" },
