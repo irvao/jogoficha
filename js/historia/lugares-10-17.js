@@ -19,7 +19,7 @@ CENAS["beco-perigoso"] = {
       vai: "encapuzado-carro", p: { prisao: 3 }, cara: "assustado" },
 
     { t: "Fotografar a lata de lixo que se mexe",
-      r: "Flash! A lata solta um miado ofendido. O gato caolho sai de dentro e, com desprezo, deixa pra trás uma caixa de fósforos.",
+      r: "Flash! A lata solta um miado ofendido. O gato caolho sai de dentro e, com despreço, deixa pra trás uma caixa de fósforos.",
       vai: "fica", ganha: "fosforos", p: { "quase-feliz": 2 }, cara: "confuso" },
 
     { t: "Correr pelo beco sem olhar pra trás",
@@ -46,7 +46,7 @@ CENAS["beco-perigoso"] = {
 
     { t: "Pagar a taxa do valentão",
       precisa: "100-reais", perde: "100-reais",
-      r: "O valentão conta o dinheiro, faz uma reverência e entrega um apito: 'Se precisar, apita.' Depois leva o Irving ao ringue onde luta aos domingos.",
+      r: "O valentão conta o dinheiro, faz uma reverencia e entrega um apito: 'Se precisar, apita.' Depois leva o Irving ao ringue onde luta aos domingos.",
       vai: "luta-boxe", ganha: "apito", p: { "rei-misto": 1, famoso: 1 } },
 
     { t: "Ameaçar os bandidos com a banana",
@@ -66,6 +66,14 @@ CENAS["beco-perigoso"] = {
       cenaMin: 5,
       r: "Sem ter feito nada, o Irving marcha até a delegacia e confessa tudo o que não fez. O delegado, confuso, aceita. Pelo menos lá dentro é seguro.",
       fim: "prisao", cara: "triste" },
+
+    { t: "Aceitar o disfarce de uma sombra",
+      r: "Uma sombra cochicha: \"Psiu, precisa sumir?\" E entrega ao Irving um kit de óculos, nariz, bigode e sobrancelhas. Some antes de ouvir o obrigado.",
+      vai: "fica", ganha: "disfarce", p: { prisao: 1, matrix: 1 }, cara: "assustado" },
+
+    { t: "Pegar o nunchaku da lata de lixo",
+      r: "A lata de lixo que se mexe sozinha cospe um nunchaku aos pés do Irving. O gato de um olho só acena, aprovando. O destino escolheu seu guerreiro.",
+      vai: "fica", ganha: "nunchaku", p: { "rei-misto": 1, matrix: 1 }, cara: "determinado" },
   ],
 };
 
@@ -130,6 +138,10 @@ CENAS["oficina-mecanica"] = {
     { t: "Pedir pra calibrar os tênis",
       r: "Seu Zé calibra os tênis com 40 libras. Cada passo vira um pulo gigante. O último arremessa o Irving tão alto que ele pousa numa estação espacial.",
       vai: "estacao-espacial", vida: -5, p: { "alem-tempo": 3 }, cara: "assustado" },
+
+    { t: "Ganhar uma chave de fenda do Seu Zé",
+      r: "Seu Zé entrega uma chave de fenda ao Irving com solenidade: \"Essa já abriu motor de caminhão, de avião e de máquina de lavar.\" Honra máxima.",
+      vai: "fica", ganha: "chave-de-fenda", p: { filosofico: 1, feliz: 1 }, cara: "feliz" },
   ],
 };
 
@@ -326,6 +338,14 @@ CENAS["carro-irving"] = {
     { t: "Buzinar sem motivo",
       r: "Bi-bi! Outros 200 carros buzinam junto. Nasce um buzinaço. Em minutos, o Irving lidera um protesto que nem sabe do que se trata.",
       vai: "protesto", p: { "dia-errado": 2, "rei-misto": 1 }, cara: "confuso" },
+
+    { t: "Achar um CD no porta-luvas",
+      r: "No porta-luvas, entre notas fiscais de 2014, surge um CD do Tihuana. O Irving não lembra de ter comprado. Mas ali está ele, brilhando, esperando seu momento.",
+      vai: "fica", ganha: "cd-tihuana", p: { matrix: 1 }, cara: "confuso" },
+
+    { t: "Pegar a chave de fenda do porta-malas",
+      r: "Sob um guarda-chuva quebrado repousa uma chave de fenda. O Irving a empunha como Excalibur. Nenhum parafuso deste mundo está seguro agora.",
+      vai: "fica", ganha: "chave-de-fenda", p: { feliz: 1, "rei-misto": 1 }, cara: "determinado" },
   ],
 };
 
@@ -389,6 +409,14 @@ CENAS["novela-mexicana"] = {
       vai: "quermesse", p: { feliz: 1, famoso: 1 }, cara: "determinado",
       falha: { r: "O cavalo era cenográfico, de papelão. O Irving despenca da janela. \"Continuará...\" Ele acorda dentro de uma caixa.",
                vida: -15, vai: "caixa-papelao", p: { amnesia: 1, sono: 1 } } },
+
+    { t: "Pegar o disfarce do vilão",
+      r: "Atrás de uma cortina, o Irving acha o disfarce oficial dos vilões de novela: óculos, nariz, bigode e sobrancelhas. Agora ele pode ser o Carlos Eduardo. Ou não.",
+      vai: "fica", ganha: "disfarce", p: { matrix: 2 }, cara: "confuso" },
+
+    { t: "Pegar a Tekpix dos bastidores",
+      r: "Nos bastidores, uma Tekpix esquecida grava tudo sozinha. O diretor grita: \"¡Llévatela, es tuya!\" Em câmera lenta, o Irving a coloca no ombro.",
+      vai: "fica", ganha: "tekpix", p: { famoso: 1, matrix: 1 }, cara: "feliz" },
   ],
 };
 
@@ -525,5 +553,9 @@ CENAS["lugar-escuro"] = {
     { t: "Segurar a mão que encostou nele",
       r: "Aperto firme. \"Somos uma excursão de peruanos, também perdidos.\" De mãos dadas, cantando, o grupo encontra a saída. O Irving ganhou amigos pra vida.",
       vai: "excursao-peruanos", marca: "amigo-peruanos", p: { filosofico: 2 }, cara: "feliz" },
+
+    { t: "Girar o nunchaku no escuro", precisa: "nunchaku",
+      r: "O Irving gira o nunchaku no breu. Algo invisível foge assustado. Lá longe, uma lâmpada acende. Ele segue a luz como um herói de lenda e sai em outro lugar.",
+      vai: ["rua-irving", "bairro-desconhecido", "feira", "trem"], p: { matrix: 1, feliz: 1, "rei-misto": 1 }, cara: "determinado" },
   ],
 };
