@@ -194,6 +194,13 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .tag.mais { background: #c9f0d4; }
 .tag.menos { background: #ffd0d0; }
 
+/* ---------- tapa-olho duplo: cena no escuro ---------- */
+body.vendado .fundo, body.vendado .irving, body.vendado .fundo-veu { opacity: 0 !important; transition: opacity .6s; }
+body.vendado { background: #000; }
+/* vida subindo (itens que curam) */
+.vida.curou { animation: curou .8s ease; }
+@keyframes curou { 0%,100% { transform: scale(1); } 40% { transform: scale(1.12); box-shadow: 0 0 0 6px rgba(47,158,85,.5), var(--sombra); } }
+
 /* ---------- as 6 opções ---------- */
 .opcoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 .opcao {
@@ -497,3 +504,11 @@ body.com-teclado .achado { display: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* opções de desfecho (última cena) */
+.opcao-fim { background: #fff3c4; border-color: var(--crosta); }
+.opcao-fim:hover { background: #ffe69a; }
+.opcao-estrela { display: grid; place-items: center; font-size: 20px; }
+.quiz-fala { margin-top: 6px; font-weight: 900; font-size: 15px; }
+.quiz-fala.bom { color: var(--verde); }
+.quiz-fala.ruim { color: var(--vermelho); }
