@@ -66,6 +66,14 @@ CENAS["conferencia-dermatologia"] = {
       vai: "carro-irving", p: { feliz: 2 }, cara: "determinado",
       falha: { r: "A porta dá numa escada que desce, desce e desce. O Irving tropeça no último degrau e surge num bairro que nenhum mapa conhece.",
                vida: -12, vai: "bairro-desconhecido", p: { "onde-estou": 2 }, cara: "confuso" } },
+
+    { t: "Pegar amostra grátis de antialérgico",
+      r: "Num estande reluzente, um representante empurra amostras grátis. O Irving sai com uma cartela de antialérgico e três canetas. O saque do século.",
+      vai: "fica", ganha: "antialergico", p: { feliz: 1, "rei-misto": 1 }, cara: "feliz" },
+
+    { t: "Ganhar um livro no sorteio",
+      r: "O palestrante sorteia o livro de autoajuda \"Sua pele, sua alma\". O número é o do Irving. Ele sobe ao palco e recebe o prêmio sob aplausos.",
+      vai: "fica", ganha: "livro-autoajuda", p: { famoso: 1, filosofico: 1 }, cara: "feliz" },
   ],
 };
 
@@ -134,6 +142,10 @@ CENAS["cantina-escola"] = {
     { t: "Entrar na aula de História",
       r: "A professora fala da Idade Média com tanta paixão que o Irving fecha os olhos pra imaginar. Quando abre, há cavaleiros, lama e um rei desconfiado.",
       vai: "inglaterra-medieval", p: { "antes-tempo": 3 }, cara: "confuso" },
+
+    { t: "Trocar um aperto de mão por um Yakult",
+      r: "Um menino de óculos propõe um acordo: figurinha por Yakult. O Irving não tem figurinha, mas o menino aceita um aperto de mão solene. Negócio fechado.",
+      vai: "fica", ganha: "yakult", p: { filosofico: 2 }, cara: "feliz" },
   ],
 };
 
@@ -203,6 +215,10 @@ CENAS["encapuzado-carro"] = {
       cenaMin: 5,
       r: "Confuso, o Irving confessa tudo, até ter roubado uma merenda em 2001. Os sequestradores, chocados, o entregam na delegacia mais próxima.",
       fim: "prisao", cara: "triste" },
+
+    { t: "Pôr o disfarce por baixo do capuz", precisa: "disfarce",
+      r: "Quando tiram o capuz, os dois veem um senhor de bigode. \"Pegamos o cara errado, Wanderley!\" Pedem mil desculpas e largam o Irving no primeiro ponto de ônibus.",
+      vai: ["rua-irving", "bairro-desconhecido", "osasco", "feira"], p: { feliz: 1, prisao: 1, matrix: 1 }, cara: "feliz" },
   ],
 };
 
@@ -397,6 +413,14 @@ CENAS["trem"] = {
       vai: "rua-irving", p: { feliz: 3 }, cara: "determinado",
       falha: { r: "O outro trem era de carga. O Irving cai dentro de uma caixa enorme, e a tampa se fecha sobre ele.",
                vida: -15, vai: "caixa-papelao", p: { sono: 2 }, cara: "assustado" } },
+
+    { t: "Aceitar o livro do vendedor ambulante",
+      r: "\"Hoje é de graça pra quem tem cara de herói!\", anuncia o vendedor, e larga um livro de autoajuda no colo do Irving. Título: \"O misto que há em você\".",
+      vai: "fica", ganha: "livro-autoajuda", p: { filosofico: 1, matrix: 1 }, cara: "confuso" },
+
+    { t: "Aceitar o tapa-olho do senhor",
+      r: "O senhor que dormia no ombro do Irving acorda, tira o tapa-olho duplo e o entrega: \"Fica. Você precisa mais do que eu.\" E volta a dormir.",
+      vai: "fica", ganha: "tapa-olho", p: { sono: 2 }, cara: "cansado" },
   ],
 };
 
@@ -535,5 +559,9 @@ CENAS["pedagio"] = {
       cenaMin: 5,
       r: "O Irving espera. E espera. A fila anda um carro por hora. Quando enfim atravessa, o sol está a pino e o relógio marca 13h.",
       fim: "hora-errada", cara: "triste" },
+
+    { t: "Aceitar o CD do vendedor ambulante",
+      r: "Entre os carros parados, um vendedor oferece pano de prato, carregador e um CD do Tihuana. \"Esse é brinde, patrão.\" O Irving aceita, por educação.",
+      vai: "fica", ganha: "cd-tihuana", p: { "hora-errada": 1 }, cara: "neutro" },
   ],
 };
