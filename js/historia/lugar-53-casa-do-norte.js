@@ -67,5 +67,13 @@ CENAS["casa-do-norte"] = {
     { t: "Tirar um cochilo na rede do fundo",
       r: "No fundo da loja, uma rede balança sozinha. O Irving deita só pra testar. O ventilador canta uma cantiga, e o mundo some.",
       vai: ["cama-irving", "lugar-escuro"], p: { sono: 3 }, cara: "cansado" },
+
+    { t: "Aceitar a pinga oferecida pelo dono",
+      r: "O dono, de chapéu de couro, embrulha uma garrafinha de pinga em jornal: \"Pra emergência, meu fio. Só um golinho.\" O Irving guarda como relíquia.",
+      vai: "fica", ganha: "pinga", p: { filosofico: 1, feliz: 1 }, cara: "feliz" },
+
+    { t: "Pedir uma lasca de queijo curado",
+      r: "A senhora do balcão corta um queijo curado do tamanho de um tijolo: \"Leva, que tá magrinho.\" O Irving o recebe como quem recebe uma espada lendária.",
+      vai: "fica", ganha: "queijo", p: { feliz: 1, "quase-feliz": 1 }, cara: "feliz" },
   ],
 };
