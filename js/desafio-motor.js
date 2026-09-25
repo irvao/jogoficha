@@ -56,9 +56,11 @@ function novaPartida() {
   est.cenaItemGarantido = 2 + Math.floor(Math.random() * 3);
   est.temAdversidade = Math.random() < REGRAS.chancePartidaComAdversidade;
   est.cenaAdvGarantida = 2 + Math.floor(Math.random() * 4);
-  est.chefe = sortear(CHEFES);
+  est.chefe = sortear(CHEFES.filter((c) => c.ativo !== false));
   est.cenaChefe = 2 + Math.floor(Math.random() * (est.totalCenas - 1));
   est.chefeFeito = false;
+  est.npcsFeitos = [];          // NPCs que já apareceram nesta partida
+  est.vendedorFeito = false;    // o NPC da Casa do Norte só aparece uma vez por partida
   return est;
 }
 
@@ -260,11 +262,31 @@ function avancarCena(est, destino) {
     } else {
       chefe = est.chefe;
       est.chefeFeito = true;
-      partes.push(ENTRADA_CHEFE[chefe.id] || `${oChefe(chefe)} surge e desafia o Irving para um duelo de pedra, papel e tesoura!`);
+      partes.push(chefe.entrada || ENTRADA_CHEFE[chefe.id] || `${oChefe(chefe)} surge e desafia o Irving para um duelo!`);
     }
   }
 
-  return { texto: partes.join("\n\n"), mesmo, item, adversidade, chefe, tags, morreu: est.vida <= 0 };
+  // Casa do Norte: o vendedor oferece 1 de 3 itens (uma vez por partida)
+  let vendedor = null;
+  if (!chefe && destino === "casa-do-norte" && !est.vendedorFeito && typeof VENDEDOR_NORTE !== "undefined") {
+    est.vendedorFeito = true;
+    const livres = embaralhar(ITENS.filter((i) => !est.itens.includes(i.id)));
+    vendedor = { ...VENDEDOR_NORTE, oferta: livres.slice(0, 3) };
+    partes.push(VENDEDOR_NORTE.fala);
+  }
+
+  // NPC com desafio (nunca junto com chefe ou vendedor)
+  let npc = null;
+  if (!chefe && !vendedor && est.cena >= 2 && est.npcsFeitos.length < REGRAS.maxNpcs && Math.random() < REGRAS.chanceNpc) {
+    const possiveis = NPCS.filter((n) => n.ativo !== false && !est.npcsFeitos.includes(n.id) && (!n.lugares || n.lugares.includes(destino)));
+    if (possiveis.length) {
+      npc = sortear(possiveis);
+      est.npcsFeitos.push(npc.id);
+      partes.push(npc.fala);
+    }
+  }
+
+  return { texto: partes.join("\n\n"), mesmo, item, adversidade, chefe, npc, vendedor, tags, morreu: est.vida <= 0 };
 }
 
 // ---------- duelo contra o chefe ----------
@@ -281,6 +303,39 @@ function resultadoDuelo(est, venceu) {
   }
   est.vida = limitar(est.vida - REGRAS_CHEFE.danoDerrota, 0, 100);
   return { dano: REGRAS_CHEFE.danoDerrota };
+}
+
+// ---------- NPC: venceu o desafio, ganha item ----------
+function resultadoNpc(est, npc, venceu) {
+  if (!venceu) {
+    const dano = npc.dano || 0;
+    if (dano) est.vida = limitar(est.vida - dano, 0, 100);
+    return { item: null, dano };
+  }
+  if (est.itens.length >= REGRAS.maxItens) return { item: null, cheia: true };
+  let item = npc.premio && !est.itens.includes(npc.premio) ? ITENS.find((i) => i.id === npc.premio) : null;
+  if (!item) item = sortear(ITENS.filter((i) => !est.itens.includes(i.id)));
+  est.itens.push(item.id);
+  if (!est.itensJaTidos.includes(item.id)) est.itensJaTidos.push(item.id);
+  return { item };
+}
+
+// ---------- Casa do Norte: pegar o presente (deixar = item que sai da mochila cheia) ----------
+function pegarPresente(est, itemId, deixar) {
+  if (deixar) est.itens = est.itens.filter((x) => x !== deixar);
+  if (deixar === "chapeu") est.marcas = est.marcas.filter((m) => m !== "chapeu");
+  if (est.itens.length >= REGRAS.maxItens) return false;
+  est.itens.push(itemId);
+  if (!est.itensJaTidos.includes(itemId)) est.itensJaTidos.push(itemId);
+  return true;
+}
+
+// ---------- quiz: sorteia 3 perguntas e embaralha as respostas ----------
+function montarQuiz(perguntas, quantas) {
+  return embaralhar(perguntas).slice(0, quantas).map((q) => {
+    const ordem = embaralhar(q.respostas.map((txt, i) => ({ txt, certa: i === q.certa - 1 })));
+    return { p: q.p, respostas: ordem };
+  });
 }
 
 // ---------- o final ----------
