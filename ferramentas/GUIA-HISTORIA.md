@@ -36,7 +36,7 @@ O texto de chegada deve funcionar venha o Irving de onde vier (não cite o lugar
 | `r` | sim | resultado narrado. 1 a 3 frases, máx. 40 palavras. DEVE narrar a transição até o próximo lugar quando `vai` muda de lugar (ex.: "...e quando abre os olhos, está num trem."). |
 | `vai` | sim (menos quando tem `fim`) | pra onde o Irving vai: `"id-do-lugar"`, ou uma lista `["id1","id2"]` (o jogo escolhe um que ele ainda não visitou), ou `"fica"` (continua no mesmo lugar, o resultado vira a nova situação). Com lista, o `r` precisa servir pra todos os destinos (ex.: "...e acorda em algum lugar muito diferente."). |
 | `p` | quase sempre | pontos pros finais, ex. `{ feliz: 2, sono: 1 }`. Total de 1 a 3 por opção (4 só em momentos decisivos). |
-| `vida` | não | mudança de Vida, sempre NEGATIVA ou 0 (a Vida nunca sobe). Opções normais: 0 a -10. Perigosas: -10 a -20. |
+| `vida` | não | mudança de Vida, sempre NEGATIVA ou 0 (a Vida só sobe com `cura`). Opções normais: 0 a -10. Perigosas: -10 a -20. |
 | `ganha` | não | id de item que o Irving pega (ele guarda na mochila). |
 | `perde` | não | id de item que é gasto/perdido. |
 | `precisa` | não | id de item que o Irving PRECISA ter pra essa opção aparecer (ex.: pagar algo precisa de `"100-reais"`). |
@@ -48,6 +48,8 @@ O texto de chegada deve funcionar venha o Irving de onde vier (não cite o lugar
 | `fim` | não | ENCERRA o dia na hora com esse final (use com `cenaMin: 4` ou mais). Máximo 1 por lugar, e só quando fizer muito sentido. |
 | `risco` | não | opção arriscada: o jogador rola um d20 e precisa tirar `risco` ou mais (ex.: 9 = 60%, 11 = 50%, 14 = 35%). O botão mostra a chance. Quando tem `risco`, os campos normais são o SUCESSO e é obrigatório o campo `falha`. |
 | `falha` | com `risco` | o que acontece se falhar: `{ r, vida, vai, p, ... }` (mesmos campos). Falha tira -12 a -25 de Vida. |
+| `cura` | não | Vida que RECUPERA (só em opções de itens de comer/beber: pinga 30, queijo 15, yakult 10, antialérgico 10). |
+| `efeito` | não | `"vendado"`: a próxima cena fica toda escura (tapa-olho duplo). |
 | `cara` | não | expressão do Irving: neutro, feliz, determinado, assustado, confuso, bravo, triste, cansado. |
 
 ## Regras de cada lugar (12 opções)
@@ -88,7 +90,7 @@ casa-irving, rua-irving, uber, osasco, cristo-redentor, massachusetts, campo-fut
 (`tunel-do-tempo` só deve ser destino de opções que usam a máquina do tempo. A padaria NÃO é destino: ela só aparece nos finais.)
 
 ## Itens (ids)
-garfo (inútil), 100-reais (sem ele o Irving não paga nada), banana (o Irving ODEIA banana), skate (ajuda a se locomover, quebra ao usar), fosforos, fita-crepe, pedra, peruca (peruca linda), misto-quente (comer fora da padaria = final Misto triste, NÃO crie opção de comer o misto), maquina-do-tempo (tem cara de máquina de lavar, funciona de verdade), corda, chapeu (chapéu maneiro), alpiste, hidratante, cortador-unha, bouquet (bouquet de flores), apito
+garfo (inútil), 100-reais (sem ele o Irving não paga nada), banana (o Irving ODEIA banana), skate (ajuda a se locomover, quebra ao usar), fosforos, fita-crepe, pedra, peruca (peruca linda), misto-quente (comer fora da padaria = final Misto triste, NÃO crie opção de comer o misto), maquina-do-tempo (tem cara de máquina de lavar, funciona de verdade), corda, chapeu (chapéu maneiro), alpiste, hidratante, cortador-unha, bouquet (bouquet de flores), apito, antialergico (cura 10), livro-autoajuda (sorri e nada acontece), caixa-de-som, cd-tihuana (inútil), chave-de-fenda, disfarce, floral (sorri e nada acontece), nunchaku, pinga (cura 30), queijo (cura 15), tapa-olho (tela preta por uma cena), tekpix, yakult (cura 10)
 
 ## Adversidades (ids)
 pacote (homem suspeito passa um pacote), cachorro (cachorro branco pede ajuda pra comprar refri), mesario (chamado pra ser mesário), policia (polícia para pra questionar), chuva (chuva forte), sem-calcas (esqueceu as calças), cobra (cobra no caminho), desmaio (perdeu a consciência 30 min), tropeco (tropeçou em alguém sentado na rua), alienigena (alienígena tenta abduzir), camarao (descobriu alergia a camarão), banheiro (vontade de ir ao banheiro), rifa (ganhou a rifa da firma)

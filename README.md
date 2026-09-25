@@ -1,6 +1,6 @@
 # Desafio do Irving
 
-Um dia na vida do Irving, que só quer tomar café da manhã na padaria. Em cada cena o jogador escolhe entre 6 opções, e as escolhas levam o Irving por um emaranhado de 50 lugares até um dos 19 finais. São 17 itens, 13 adversidades, chefes (duelo de pedra, papel e tesoura ou quiz), NPCs com desafios que dão itens e a Casa do Norte, onde um vendedor oferece 1 de 3 itens. Não usa IA: todos os textos estão escritos nos arquivos do jogo.
+Um dia na vida do Irving, que só quer tomar café da manhã na padaria. Em cada cena o jogador escolhe entre 6 opções, e as escolhas levam o Irving por um emaranhado de 50 lugares até um dos 19 finais. São 30 itens (alguns recuperam Vida), 13 adversidades, chefes (duelo de pedra, papel e tesoura ou quiz de perguntas), NPCs com desafios que dão itens e a Casa do Norte, onde um vendedor oferece 1 de 3 itens. Não usa IA: todos os textos estão escritos nos arquivos do jogo.
 
 Jogue em `https://irvao.github.io/jogoficha/`. Feito em HTML, CSS e JavaScript puros, sem instalar nada.
 

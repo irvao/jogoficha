@@ -55,6 +55,8 @@ if (require.main === module) {
       if (typeof n !== "number" || n < 0) erros.push(`${onde}: pontos inválidos em ${k}`);
     }
     if (o.vida !== undefined && (typeof o.vida !== "number" || o.vida > 0)) erros.push(`${onde}: vida deve ser número <= 0`);
+    if (o.cura !== undefined && (typeof o.cura !== "number" || o.cura <= 0)) erros.push(`${onde}: cura deve ser número > 0`);
+    if (o.efeito !== undefined && o.efeito !== "vendado") erros.push(`${onde}: efeito desconhecido "${o.efeito}"`);
     for (const campo of ["ganha", "perde", "precisa"]) if (o[campo] && !itensIds.has(o[campo])) erros.push(`${onde}: item "${o[campo]}" não existe (${campo})`);
     for (const campo of ["resolve", "precisaAdv"]) if (o[campo] && !advIds.has(o[campo])) erros.push(`${onde}: adversidade "${o[campo]}" não existe (${campo})`);
     if (o.cara && !exprs.has(o.cara)) erros.push(`${onde}: cara "${o.cara}" não existe`);
