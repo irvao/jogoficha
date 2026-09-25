@@ -1,18 +1,15 @@
 // =====================================================================
-//  DESAFIO DO IRVING - O JOGO (telas, dado, regras)
-//  Usa: desafio-dados.js (conteúdo) e desafio-ia.js (narrador)
+//  DESAFIO DO IRVING - A TELA (cenário, botões, dado, duelo, final)
+//  As regras ficam em desafio-motor.js e o conteúdo em js/historia/.
 // =====================================================================
 
 const $ = (id) => document.getElementById(id);
-const sortear = (lista) => lista[Math.floor(Math.random() * lista.length)];
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
-const limitar = (v, min, max) => Math.max(min, Math.min(max, v));
 
-let est = null;          // estado da partida
-let passoPendente = null; // pra botão "tentar de novo"
+let est = null;           // estado da partida
 let digitando = null;     // efeito de máquina de escrever
-
-const INTRO = "Bom dia! O Irving acorda em casa com uma ideia brilhante: tomar café da manhã na padaria. O estômago ronca alto, a cama ainda chama, e o dia parece tranquilo. Parece.\n\nO que o Irving faz?";
+let proximoPasso = null;  // o que o botão "Continuar" faz
+let travado = false;      // evita clique duplo nas opções
 
 // ---------- memória do navegador (finais descobertos) ----------
 function finaisDescobertos() {
@@ -62,7 +59,7 @@ function mostrarPlaca(id) {
 }
 
 // ---------- HUD ----------
-function atualizarHud(bater) {
+function atualizarHud(bater, itemNovo) {
   $("vida-num").textContent = est.vida;
   $("vida-barra").style.width = est.vida + "%";
   $("vida").classList.toggle("baixa", est.vida <= 30);
@@ -75,7 +72,7 @@ function atualizarHud(bater) {
     const s = document.createElement("div");
     if (id) {
       const it = ITENS.find((x) => x.id === id);
-      s.className = "slot" + (id === est.itemNovo ? " novo" : "");
+      s.className = "slot" + (id === itemNovo ? " novo" : "");
       s.dataset.nome = it.nome;
       s.tabIndex = 0;
       s.title = it.nome;
@@ -85,36 +82,29 @@ function atualizarHud(bater) {
     }
     m.appendChild(s);
   }
-  est.itemNovo = null;
 }
 
 // ---------- caixa de texto ----------
 function estadoCaixa(modo) {
-  // modo: "acao" (esperando o jogador), "pensando", "continuar", "erro", "nada"
-  $("form-acao").hidden = modo !== "acao";
-  $("pensando").hidden = modo !== "pensando";
+  // modo: "opcoes" (esperando o jogador escolher), "continuar", "nada"
+  $("opcoes").hidden = modo !== "opcoes";
   $("caixa-botoes").hidden = modo !== "continuar";
-  $("erro").hidden = modo !== "erro";
 }
-function pensando(txt) {
-  $("pensando-txt").textContent = txt;
-  estadoCaixa("pensando");
-  rolarCaixa();
-}
-function rolarCaixa() {
+function rolarCaixa(topo) {
   const c = $("caixa");
-  requestAnimationFrame(() => { c.scrollTop = c.scrollHeight; });
+  requestAnimationFrame(() => { c.scrollTop = topo ? 0 : c.scrollHeight; });
 }
 async function escrever(partes) {
-  // partes: [{txt, cls}] ; a última parte é "digitada"
+  // partes: [{txt, cls, digitar}] ; só as partes com digitar=true aparecem letra por letra
   const el = $("caixa-texto");
   el.innerHTML = "";
   if (digitando) digitando.pular = true;
   const ctrl = { pular: false };
   digitando = ctrl;
   for (const p of partes) {
+    if (!p.txt) continue;
     const span = document.createElement("span");
-    if (p.cls) span.className = p.cls;
+    span.className = "parte" + (p.cls ? " " + p.cls : "");
     el.appendChild(span);
     if (!p.digitar) { span.textContent = p.txt; continue; }
     const txt = p.txt;
@@ -130,18 +120,7 @@ async function escrever(partes) {
   rolarCaixa();
 }
 function mostrarDelta(tags) {
-  $("caixa-delta").innerHTML = tags.map((t) => `<span class="tag ${t.cls || ""}">${t.txt}</span>`).join("");
-}
-function mostrarErro(e, repetir) {
-  let msg = "O narrador tropeçou. ";
-  if (e && e.limite) msg = (e.message || "Limite de partidas por hoje atingido.") + " ";
-  else if (e && e.status === 429) msg = "O narrador cansou de tanto falar (limite de uso da IA). Espere um pouquinho e tente de novo. ";
-  else if (e && e.status === 403) msg = "Este endereço não tem permissão pra falar com o narrador. ";
-  else if (!navigator.onLine) msg = "Parece que a internet caiu. ";
-  $("erro-txt").textContent = msg;
-  passoPendente = repetir;
-  estadoCaixa("erro");
-  rolarCaixa();
+  $("caixa-delta").innerHTML = (tags || []).map((t) => `<span class="tag ${t.cls || ""}">${escaparHtml(t.txt)}</span>`).join("");
 }
 
 // ---------- início ----------
@@ -158,67 +137,136 @@ function telaInicio() {
   $("inicio-finais").textContent = n ? `Finais descobertos: ${n} de ${Object.keys(FINAIS).length}` : "";
 }
 
-function comecar() {
-  est = {
-    vida: REGRAS.vidaInicial,
-    cena: 1,
-    totalCenas: REGRAS.cenasMin + Math.floor(Math.random() * (REGRAS.cenasMax - REGRAS.cenasMin + 1)),
-    lugar: "casa-irving",
-    situacao: INTRO,
-    itens: [],
-    itensJaTidos: [],
-    adversidades: [],
-    advAparecidas: [],
-    visitados: ["casa-irving"],
-    cenasNoLugar: 1,
-    chapeuNaCabeca: false,
-    historico: [],
-    itemNovo: null,
-    // identificação desta partida (o Worker conta partidas por pessoa por dia)
-    partida: (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)).slice(0, 36),
-  };
-  // toda partida tem pelo menos 1 item: se até esta cena (2ª a 4ª) nada apareceu, um item aparece com certeza
-  est.cenaItemGarantido = 2 + Math.floor(Math.random() * 3);
-  // metade das partidas tem adversidade: a primeira vem com certeza numa cena entre a 2ª e a 5ª
-  est.temAdversidade = Math.random() < REGRAS.chancePartidaComAdversidade;
-  est.cenaAdvGarantida = 2 + Math.floor(Math.random() * 4);
-  // toda partida tem 1 chefe, numa cena sorteada da 2ª até a última (nunca na casa)
-  est.chefe = sortear(CHEFES);
-  est.cenaChefe = 2 + Math.floor(Math.random() * (est.totalCenas - 1));
-  est.chefeFeito = false;
+async function comecar() {
+  est = novaPartida();
   document.body.classList.remove("morte");
   $("tela-inicio").hidden = true;
   $("tela-final").hidden = true;
   $("hud").hidden = false;
   $("caixa").hidden = false;
-  atualizarHud();
-  entrarNaCena("casa-irving", INTRO, "determinado");
-}
-
-async function entrarNaCena(lugar, situacao, expr, chefe) {
-  const mesmoLugar = est.lugar === lugar && est.cena > 1;
-  est.lugar = lugar;
-  est.situacao = situacao;
   mostrarDelta([]);
   estadoCaixa("nada");
-  if (!mesmoLugar) {
-    await trocarFundo(lugar);
-    mostrarPlaca(lugar);
-  }
-  cara(expr || "neutro", "pulo");
   atualizarHud();
-  $("campo-acao").value = "";
-  await escrever([{ txt: situacao, digitar: true }]);
-  if (chefe) return iniciarDuelo(chefe);
-  estadoCaixa("acao");
-  if (window.matchMedia("(pointer: fine)").matches) $("campo-acao").focus();
+  await trocarFundo("casa-irving");
+  mostrarPlaca("casa-irving");
+  cara("determinado", "pulo");
+  await escrever([{ txt: INTRO, digitar: true }]);
+  mostrarOpcoes();
+}
+
+// ---------- as 6 opções ----------
+function mostrarOpcoes() {
+  const ops = opcoesDaCena(est);
+  est.opcoesAtuais = ops;
+  const box = $("opcoes");
+  box.innerHTML = "";
+  ops.forEach((ref, i) => {
+    const o = ref.o;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "opcao" + (ref.id.startsWith("adv:") ? " opcao-adv" : "") + (ref.id.startsWith("item:") ? " opcao-item" : "");
+    let extra = "";
+    if (ref.id.startsWith("item:")) {
+      const it = ITENS.find((x) => x.id === o.precisa);
+      if (it) extra += `<img class="opcao-ico" src="assets/desafio/itens/${it.arq}.webp" alt="">`;
+    }
+    const risco = o.risco !== undefined ? `<span class="opcao-risco" title="Opção arriscada: rola o dado">🎲 ${Math.round(((21 - o.risco) / 20) * 100)}%</span>` : "";
+    b.innerHTML = `<span class="opcao-num">${i + 1}</span>${extra}<span class="opcao-txt">${escaparHtml(o.t)}</span>${risco}`;
+    b.addEventListener("click", () => escolher(i));
+    box.appendChild(b);
+  });
+  travado = false;
+  estadoCaixa("opcoes");
+  rolarCaixa(true); // volta pro começo do texto: lê a cena e depois desce pras opções
+}
+
+async function escolher(i) {
+  if (travado || !est || !est.opcoesAtuais) return;
+  const ref = est.opcoesAtuais[i];
+  if (!ref) return;
+  travado = true;
+  estadoCaixa("nada");
+  let valor = null;
+  if (ref.o.risco !== undefined) valor = await rolarDado(ref.o.risco);
+  const r = aplicarEscolha(est, ref, valor);
+  est.opcoesAtuais = null;
+
+  cara(r.cara, r.dVida < 0 || (r.arriscada && !r.sucesso) ? "tremor" : "pulo");
+  atualizarHud(r.dVida < 0, r.itemNovo);
+  if (r.itemNovo) mostrarAchado(ITENS.find((x) => x.id === r.itemNovo));
+  mostrarDelta(r.tags);
+  await escrever([{ txt: "» " + ref.o.t, cls: "acao-jogador" }, { txt: r.texto, digitar: true }]);
+
+  if (r.fim) proximoPasso = () => mostrarFinal(r.fim);
+  else proximoPasso = () => irPara(r.destino, r.fica ? r.texto : null);
+  estadoCaixa("continuar");
+  $("btn-continuar").focus({ preventScroll: true });
   rolarCaixa();
+}
+
+// ---------- próxima cena ----------
+async function irPara(destino, textoAnterior) {
+  const c = avancarCena(est, destino);
+  mostrarDelta(c.tags);
+  estadoCaixa("nada");
+  if (!c.mesmo) {
+    await trocarFundo(destino);
+    mostrarPlaca(destino);
+  }
+  cara(c.adversidade ? "assustado" : c.chefe ? "determinado" : "neutro", "pulo");
+  atualizarHud(c.tags.length > 0, c.item ? c.item.id : null);
+  if (c.item) setTimeout(() => mostrarAchado(c.item), 600);
+  if (c.adversidade) setTimeout(() => mostrarAlerta(c.adversidade), c.item ? 4300 : 600);
+
+  const partes = [];
+  if (c.mesmo && textoAnterior) partes.push({ txt: textoAnterior, cls: "anterior" });
+  partes.push({ txt: c.texto || "O Irving respira fundo e olha em volta.", digitar: true });
+  await escrever(partes);
+
+  if (c.morreu) {
+    proximoPasso = () => mostrarFinal("morte");
+    estadoCaixa("continuar");
+    return;
+  }
+  if (c.chefe) return iniciarDuelo(c.chefe);
+  mostrarOpcoes();
+}
+
+// ---------- dado (só nas opções arriscadas) ----------
+async function rolarDado(risco) {
+  const palco = $("dado-palco"), dado = $("dado"), num = $("dado-num"), selo = $("dado-selo");
+  selo.textContent = ""; selo.className = "dado-selo";
+  dado.className = "dado";
+  num.textContent = "?";
+  const chance = Math.round(((21 - risco) / 20) * 100);
+  $("dado-dif").innerHTML = `Precisa tirar ${risco} ou mais<small>${chance}% de chance</small>`;
+  palco.hidden = false;
+  await esperar(800);
+  dado.classList.add("rolando");
+  const valor = 1 + Math.floor(Math.random() * 20);
+  const t0 = Date.now();
+  while (Date.now() - t0 < 1400) {
+    num.textContent = 1 + Math.floor(Math.random() * 20);
+    await esperar(80);
+  }
+  num.textContent = valor;
+  dado.classList.remove("rolando");
+  void dado.offsetWidth;
+  dado.classList.add("parou");
+  const deu = valor >= risco;
+  if (valor === 20) dado.classList.add("critico");
+  if (valor === 1) dado.classList.add("desastre");
+  await esperar(300);
+  selo.textContent = deu ? "DEU CERTO!" : "DEU ERRADO!";
+  selo.classList.add(deu ? "bom" : "ruim");
+  await esperar(1300);
+  palco.hidden = true;
+  return valor;
 }
 
 // ---------- chefe: duelo de pedra, papel e tesoura ----------
 let duelo = null;
 async function iniciarDuelo(chefe) {
-  est.chefeFeito = true;
   duelo = { chefe, pontosIrving: 0, pontosChefe: 0, jogada: 0, travado: false };
   await esperar(900);
   $("chefe-img").src = chefe.img;
@@ -247,7 +295,7 @@ async function jogarDuelo(escolha) {
   if (escolha === vil) { duelo.pontosIrving++; msg = "Empate! Vantagem do Irving: o ponto é dele!"; cara("feliz", "pulo"); }
   else if (eu.ganhaDe === vil) { duelo.pontosIrving++; msg = "Ponto do Irving!"; cara("feliz", "pulo"); }
   else { duelo.pontosChefe++; msg = `Ponto ${doChefe(duelo.chefe)}!`; cara("assustado", "tremor"); }
-  $("duelo-jogada").innerHTML = `<span class=\"lance\">${eu.emoji} ${eu.nome}</span> x <span class=\"lance\">${ele.emoji} ${ele.nome}</span><br><b>${msg}</b>`;
+  $("duelo-jogada").innerHTML = `<span class="lance">${eu.emoji} ${eu.nome}</span> x <span class="lance">${ele.emoji} ${ele.nome}</span><br><b>${msg}</b>`;
   atualizarPlacar();
   await esperar(1300);
   document.querySelectorAll(".balao").forEach((b) => b.classList.remove("escolhido"));
@@ -260,232 +308,46 @@ function fimDuelo(venceu) {
   const selo = $("duelo-selo");
   selo.className = "dado-selo " + (venceu ? "bom" : "ruim");
   selo.textContent = venceu ? "VITÓRIA!" : "DERROTA!";
+  const res = resultadoDuelo(est, venceu);
   let premio, resumo;
   const tags = [];
   if (venceu) {
-    const livres = ITENS.filter((i) => !est.itens.includes(i.id));
-    if (est.itens.length < REGRAS.maxItens && livres.length) {
-      const item = sortear(livres);
-      est.itens.push(item.id);
-      if (!est.itensJaTidos.includes(item.id)) est.itensJaTidos.push(item.id);
-      est.itemNovo = item.id;
-      premio = `${oChefe(chefe)} foi derrotad${chefe.genero} e deixou cair: <b>${item.nome}</b>!`;
-      resumo = `${oChefe(chefe)} foi derrotad${chefe.genero} no duelo de pedra, papel e tesoura! Como espólio, o Irving ganhou: ${item.nome}.`;
-      tags.push({ txt: `ganhou: ${item.nome}`, cls: "mais" });
+    if (res.item) {
+      premio = `${oChefe(chefe)} foi derrotad${chefe.genero} e deixou cair: <b>${res.item.nome}</b>!`;
+      resumo = `${oChefe(chefe)} foi derrotad${chefe.genero}! Como espólio, o Irving ganhou: ${res.item.nome}.`;
+      tags.push({ txt: `ganhou: ${res.item.nome}`, cls: "mais" });
     } else {
       premio = `${oChefe(chefe)} foi derrotad${chefe.genero}! Mas a mochila está cheia e o espólio ficou pra trás.`;
-      resumo = `${oChefe(chefe)} foi derrotad${chefe.genero} no duelo de pedra, papel e tesoura! Mas a mochila estava cheia e o espólio ficou pra trás.`;
+      resumo = `${oChefe(chefe)} foi derrotad${chefe.genero}! Mas a mochila estava cheia e o espólio ficou pra trás.`;
     }
     cara("feliz", "pulo");
   } else {
-    const dano = REGRAS_CHEFE.danoDerrota;
-    est.vida = limitar(est.vida - dano, 0, 100);
-    premio = `${oChefe(chefe)} venceu. O Irving perdeu <b>${dano} de Vida</b>.`;
-    resumo = `${oChefe(chefe)} venceu o duelo de pedra, papel e tesoura e o Irving saiu ferido (-${dano} de Vida).`;
-    tags.push({ txt: `-${dano} Vida`, cls: "menos" });
+    premio = `${oChefe(chefe)} venceu. O Irving perdeu <b>${res.dano} de Vida</b>.`;
+    resumo = `${oChefe(chefe)} venceu o duelo, e o Irving saiu ferido.`;
+    tags.push({ txt: `-${res.dano} Vida`, cls: "menos" });
     cara("triste", "tremor");
   }
   $("duelo-premio").innerHTML = premio;
   $("duelo-fim").hidden = false;
   $("btn-duelo-ok").focus({ preventScroll: true });
-  duelo.resultado = { venceu, resumo, tags };
+  duelo.resultado = { venceu, resumo, tags, item: res.item };
 }
 async function sairDuelo() {
-  const { resumo, tags, venceu } = duelo.resultado;
+  if (!duelo || !duelo.resultado) return;
+  const { resumo, tags, venceu, item } = duelo.resultado;
   $("duelo").hidden = true;
-  est.historico.push({ lugar: nomeLugar(est.lugar), acao: `duelo de pedra, papel e tesoura contra ${duelo.chefe.nome}`, resumo });
   duelo = null;
-  atualizarHud(!venceu);
-  if (est.itemNovo) {
-    const it = ITENS.find((i) => i.id === est.itemNovo);
-    setTimeout(() => mostrarAchado(it), 300);
-  }
+  atualizarHud(!venceu, item ? item.id : null);
+  if (item) setTimeout(() => mostrarAchado(item), 300);
+  mostrarDelta(tags);
   if (est.vida <= 0) return mostrarFinal("morte");
-  mostrarDelta(tags);
-  est.situacao = `${est.situacao}\n\n${resumo} O que o Irving faz agora?`;
-  await escrever([{ txt: `${resumo}\n\nO que o Irving faz agora?`, digitar: true }]);
-  estadoCaixa("acao");
-  if (window.matchMedia("(pointer: fine)").matches) $("campo-acao").focus();
-  rolarCaixa();
+  await escrever([{ txt: resumo, digitar: true }]);
+  mostrarOpcoes();
 }
 
-// ---------- jogada ----------
-async function agir(ev) {
-  ev.preventDefault();
-  const acao = $("campo-acao").value.trim().replace(/\s+/g, " ");
-  if (acao.length < 2) { $("campo-acao").focus(); return; }
-  $("campo-acao").blur();
-  await passoAvaliar(acao);
-}
-
-async function passoAvaliar(acao) {
-  $("caixa-texto").innerHTML = "";
-  await escrever([{ txt: "» " + acao, cls: "acao-jogador" }]);
-  pensando("o narrador está avaliando a ideia");
-  let av;
-  try {
-    av = await avaliarAcao(est, est.situacao, acao);
-  } catch (e) {
-    return mostrarErro(e, () => passoAvaliar(acao));
-  }
-  const rolagem = await rolarDado(av);
-  await passoResolver(acao, av, rolagem);
-}
-
-async function rolarDado(av) {
-  const palco = $("dado-palco"), dado = $("dado"), num = $("dado-num"), selo = $("dado-selo");
-  selo.textContent = ""; selo.className = "dado-selo";
-  dado.className = "dado";
-  num.textContent = "?";
-  const coment = av.comentario ? `<small>${escaparHtml(av.comentario)}</small>` : "";
-  $("dado-dif").innerHTML = av.impossivel ? `Isso não dá pra fazer...${coment}` : `Precisa tirar ${av.dificuldade} ou mais${coment}`;
-  palco.hidden = false;
-
-  let valor = null, tipo;
-  if (av.impossivel) {
-    await esperar(1400);
-    tipo = "impossivel";
-    selo.textContent = "IMPOSSÍVEL";
-    selo.classList.add("ruim");
-  } else {
-    await esperar(900);
-    dado.classList.add("rolando");
-    valor = 1 + Math.floor(Math.random() * 20);
-    const t0 = Date.now();
-    while (Date.now() - t0 < 1500) {
-      num.textContent = 1 + Math.floor(Math.random() * 20);
-      await esperar(80);
-    }
-    num.textContent = valor;
-    dado.classList.remove("rolando");
-    void dado.offsetWidth;
-    dado.classList.add("parou");
-    if (valor === 20) { tipo = "critico"; dado.classList.add("critico"); }
-    else if (valor === 1) { tipo = "desastre"; dado.classList.add("desastre"); }
-    else tipo = valor >= av.dificuldade ? "sucesso" : "falha";
-    await esperar(350);
-    const rot = { critico: "SUCESSO CRÍTICO!", desastre: "FALHA CRÍTICA!", sucesso: "SUCESSO!", falha: "FALHOU!" }[tipo];
-    selo.textContent = rot;
-    selo.classList.add(tipo === "critico" || tipo === "sucesso" ? "bom" : "ruim");
-  }
-  await esperar(1500);
-  palco.hidden = true;
-
-  const textos = {
-    critico: { texto: `SUCESSO CRÍTICO (tirou 20 no dado)`, explicacao: "Deu certo de um jeito espetacular, muito melhor do que o esperado." },
-    sucesso: { texto: `SUCESSO (tirou ${valor}, precisava de ${av.dificuldade})`, explicacao: "A ação dá certo." },
-    falha: { texto: `FALHA (tirou ${valor}, precisava de ${av.dificuldade})`, explicacao: "A ação dá errado, de um jeito engraçado." },
-    desastre: { texto: `FALHA CRÍTICA (tirou 1 no dado)`, explicacao: "Dá tudo errado, do pior e mais absurdo jeito possível." },
-    impossivel: { texto: "FALHA AUTOMÁTICA (a ação era impossível pelas regras)", explicacao: "Não dá certo. Explique de forma engraçada por que não rolou (ex.: sem dinheiro)." },
-  };
-  return { tipo, valor, ...textos[tipo] };
-}
-
-function sortearProxima() {
-  const ultima = est.cena >= est.totalCenas;
-  let item = null, adversidade = null;
-  if (!ultima) {
-    const garantido = est.itensJaTidos.length === 0 && est.cena + 1 >= est.cenaItemGarantido;
-    if (est.itens.length < REGRAS.maxItens && (garantido || Math.random() < REGRAS.chanceItem)) {
-      const livres = ITENS.filter((i) => !est.itens.includes(i.id));
-      item = sortear(livres);
-    }
-    const advGarantida = est.temAdversidade && est.advAparecidas.length === 0 && est.cena + 1 >= est.cenaAdvGarantida;
-    const advExtra = est.temAdversidade && est.advAparecidas.length > 0 && Math.random() < REGRAS.chanceAdversidade;
-    if (advGarantida || advExtra) {
-      const livres = ADVERSIDADES.filter((a) => !est.adversidades.includes(a.id));
-      if (livres.length) adversidade = sortear(livres);
-    }
-  }
-  const chefe = !ultima && !est.chefeFeito && est.cena + 1 === est.cenaChefe ? est.chefe : null;
-  return { ultima, item, adversidade, chefe };
-}
-
-async function passoResolver(acao, av, rolagem, proxima) {
-  proxima = proxima || sortearProxima();
-  pensando(rolagem.tipo === "falha" || rolagem.tipo === "desastre" ? "o narrador está rindo" : "o narrador está contando o que aconteceu");
-  let r;
-  try {
-    r = await resolverAcao(est, est.situacao, acao, rolagem, proxima);
-  } catch (e) {
-    return mostrarErro(e, () => passoResolver(acao, av, rolagem, proxima));
-  }
-  aplicarResultado(acao, rolagem, proxima, r);
-}
-
-function aplicarResultado(acao, rolagem, proxima, r) {
-  // vida (dentro de limites por tipo de resultado)
-  // a Vida nunca aumenta: o dia só desgasta
-  const faixas = { critico: [0, 0], sucesso: [-8, 0], falha: [-25, -12], desastre: [-45, -25], impossivel: [-15, -5] };
-  const [mn, mx] = faixas[rolagem.tipo];
-  const dVida = limitar(r.vida, mn, mx);
-  est.vida = limitar(est.vida + dVida, 0, 100);
-
-  // itens e problemas
-  const tags = [];
-  if (dVida) tags.push({ txt: `${dVida > 0 ? "+" : ""}${dVida} Vida`, cls: dVida > 0 ? "mais" : "menos" });
-  const tinhaMisto = est.itens.includes("misto-quente");
-  const tinhaMaquina = est.itens.includes("maquina-do-tempo");
-  r.itensRemovidos.forEach((id) => {
-    if (est.itens.includes(id)) {
-      est.itens = est.itens.filter((x) => x !== id);
-      tags.push({ txt: `perdeu: ${ITENS.find((i) => i.id === id).nome}`, cls: "menos" });
-    }
-  });
-  r.adversidadesResolvidas.forEach((id) => {
-    if (est.adversidades.includes(id)) est.adversidades = est.adversidades.filter((x) => x !== id);
-  });
-  if (r.colocouChapeu && est.itens.includes("chapeu")) est.chapeuNaCabeca = true;
-  if (!est.itens.includes("chapeu")) est.chapeuNaCabeca = false;
-
-  est.historico.push({ lugar: nomeLugar(est.lugar), acao, resumo: r.resultado.slice(0, 220) });
-
-  // mostra o resultado
-  const exprResultado = { critico: "feliz", sucesso: "determinado", falha: sortear(["assustado", "bravo", "confuso"]), desastre: "assustado", impossivel: "confuso" }[rolagem.tipo];
-  cara(exprResultado, rolagem.tipo === "falha" || rolagem.tipo === "desastre" ? "tremor" : "pulo");
-  atualizarHud(dVida < 0);
-  mostrarDelta(tags);
-  escrever([{ txt: "» " + acao, cls: "acao-jogador" }, { txt: r.resultado, digitar: true }]).then(() => {
-    estadoCaixa("continuar");
-    $("btn-continuar").focus({ preventScroll: true });
-    rolarCaixa();
-  });
-
-  // o que vem depois
-  if (est.vida <= 0) return (proximoPasso = () => mostrarFinal("morte"));
-  if (r.comeuMistoFora && tinhaMisto) return (proximoPasso = () => mostrarFinal("misto-triste"));
-  if (proxima.ultima) return (proximoPasso = () => mostrarFinal(sortearFinal()));
-
-  let destino = r.proximoLugar;
-  if (r.usouMaquinaTempo && tinhaMaquina) destino = "tunel-do-tempo";
-  const valido = destino === "tunel-do-tempo" ? tinhaMaquina : (LUGARES.some((l) => l.id === destino) || destino === est.lugar);
-  const podeFicar = est.cenasNoLugar < REGRAS.maxCenasMesmoLugar;
-  if (!valido || (destino === est.lugar && !podeFicar)) destino = sortear(LUGARES.filter((l) => l.id !== est.lugar && !est.visitados.includes(l.id))).id;
-  if (proxima.chefe && destino === "casa-irving") destino = sortear(LUGARES.filter((l) => l.id !== "casa-irving" && l.id !== est.lugar)).id;
-
-  proximoPasso = () => {
-    est.cena++;
-    est.cenasNoLugar = destino === est.lugar ? est.cenasNoLugar + 1 : 1;
-    if (!est.visitados.includes(destino)) est.visitados.push(destino);
-    if (proxima.item) {
-      est.itens.push(proxima.item.id);
-      if (!est.itensJaTidos.includes(proxima.item.id)) est.itensJaTidos.push(proxima.item.id);
-      est.itemNovo = proxima.item.id;
-      setTimeout(() => mostrarAchado(proxima.item), 900);
-    }
-    if (proxima.adversidade) {
-      est.adversidades.push(proxima.adversidade.id);
-      if (!est.advAparecidas.includes(proxima.adversidade.id)) est.advAparecidas.push(proxima.adversidade.id);
-      // se também achou item, o aviso da adversidade vem depois do item
-      setTimeout(() => mostrarAlerta(proxima.adversidade), proxima.item ? 4700 : 900);
-    }
-    const sit = r.situacao || "O Irving chega num lugar novo e olha em volta, confuso. O que ele faz?";
-    entrarNaCena(destino, sit, r.expressao, proxima.chefe);
-  };
-}
-let proximoPasso = null;
-
+// ---------- avisos ----------
 function mostrarAchado(item) {
+  if (!item) return;
   const a = $("achado");
   a.hidden = true; void a.offsetWidth;
   $("achado-img").src = `assets/desafio/itens/${item.arq}.webp`;
@@ -493,7 +355,6 @@ function mostrarAchado(item) {
   a.hidden = false;
   setTimeout(() => { a.hidden = true; }, 3700);
 }
-
 function mostrarAlerta(adv) {
   const a = $("alerta");
   a.hidden = true; void a.offsetWidth;
@@ -502,26 +363,7 @@ function mostrarAlerta(adv) {
   setTimeout(() => { a.hidden = true; }, 4700);
 }
 
-// ---------- finais ----------
-function sortearFinal() {
-  // chegou ao fim do dia com o misto quente na mochila: sempre Misto em dupla
-  if (est.itens.includes("misto-quente")) return "misto-dupla";
-  const marcas = new Set([
-    ...est.visitados,
-    ...est.itensJaTidos.map((i) => "item:" + i),
-    ...est.advAparecidas.map((a) => "adv:" + a),
-  ]);
-  const pesos = FINAIS_SORTEIO.map((id) => 1 + (PUXA_FINAL[id] || []).filter((m) => marcas.has(m)).length);
-  const soma = pesos.reduce((a, b) => a + b, 0);
-  let sorte = Math.random() * soma;
-  let escolhido = FINAIS_SORTEIO[0];
-  for (let i = 0; i < FINAIS_SORTEIO.length; i++) {
-    sorte -= pesos[i];
-    if (sorte <= 0) { escolhido = FINAIS_SORTEIO[i]; break; }
-  }
-  return escolhido;
-}
-
+// ---------- final ----------
 async function mostrarFinal(id) {
   const f = { id, ...FINAIS[id] };
   $("caixa").hidden = true;
@@ -536,6 +378,10 @@ async function mostrarFinal(id) {
   $("final-tipo").className = "final-tipo " + f.tipo;
   $("final-nome").textContent = f.nome;
   $("final-texto").textContent = f.texto;
+  const motivos = motivosFinal(est, id);
+  $("final-motivos").innerHTML = motivos.length
+    ? `<b>O que te trouxe até aqui:</b> ${motivos.map((m) => `«${escaparHtml(m)}»`).join(", ")}`
+    : "";
   const lugares = est.visitados.map(nomeLugar);
   $("final-resumo").textContent = `${est.cena} ${est.cena === 1 ? "cena" : "cenas"} · Vida ${est.vida} · Passou por: ${lugares.join(", ")}`;
 
@@ -548,12 +394,6 @@ async function mostrarFinal(id) {
 
   $("tela-final").hidden = false;
   $("btn-denovo").focus({ preventScroll: true });
-
-  // o narrador personaliza o final com a jornada
-  if (est.historico.length) {
-    const texto = await narrarFinal(est, f);
-    if (!$("tela-final").hidden && $("final-nome").textContent === f.nome) $("final-texto").textContent = texto;
-  }
 }
 
 function escaparHtml(s) {
@@ -564,34 +404,19 @@ function escaparHtml(s) {
 document.addEventListener("DOMContentLoaded", () => {
   $("btn-comecar").addEventListener("click", comecar);
   $("btn-denovo").addEventListener("click", comecar);
-  $("form-acao").addEventListener("submit", agir);
-  $("campo-acao").addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("form-acao").requestSubmit(); }
-  });
-  $("campo-acao").addEventListener("input", (e) => {
-    e.target.style.height = "auto";
-    e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-  });
-  $("campo-acao").addEventListener("focus", () => setTimeout(rolarCaixa, 300));
-  // teclado do celular: sobe a caixa de texto pra ficar acima do teclado
-  if (window.visualViewport) {
-    const vv = window.visualViewport;
-    const ajustarTeclado = () => {
-      const teclado = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      document.documentElement.style.setProperty("--teclado", teclado + "px");
-      document.documentElement.style.setProperty("--visivel", vv.height + "px");
-      document.body.classList.toggle("com-teclado", teclado > 80);
-      if (teclado > 80) rolarCaixa();
-    };
-    vv.addEventListener("resize", ajustarTeclado);
-    vv.addEventListener("scroll", ajustarTeclado);
-    $("campo-acao").addEventListener("blur", () => setTimeout(() => { window.scrollTo(0, 0); ajustarTeclado(); }, 100));
-  }
   document.querySelectorAll(".balao").forEach((b) => b.addEventListener("click", () => jogarDuelo(b.dataset.j)));
   $("btn-duelo-ok").addEventListener("click", sairDuelo);
   $("btn-continuar").addEventListener("click", () => { const p = proximoPasso; proximoPasso = null; if (p) p(); });
-  $("btn-tentar").addEventListener("click", () => { const p = passoPendente; passoPendente = null; if (p) p(); });
-  $("caixa").addEventListener("click", (e) => { if (digitando && !e.target.closest("form, button")) digitando.pular = true; });
+  // clicar na caixa pula o efeito de digitação
+  $("caixa").addEventListener("click", (e) => { if (digitando && !e.target.closest("button")) digitando.pular = true; });
+  // teclado do computador: 1 a 6 escolhem, Enter/Espaço continuam
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!$("opcoes").hidden && /^[1-9]$/.test(e.key)) { escolher(Number(e.key) - 1); return; }
+    if (!$("caixa-botoes").hidden && (e.key === "Enter" || e.key === " ") && document.activeElement !== $("btn-continuar")) {
+      e.preventDefault(); $("btn-continuar").click();
+    }
+  });
   // pré-carrega as caras do Irving
   EXPRESSOES.forEach((x) => carregarImagem(`assets/desafio/irving/irving-${x}.webp`));
   telaInicio();

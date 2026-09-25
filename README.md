@@ -1,6 +1,6 @@
 # Desafio do Irving
 
-Um dia na vida do Irving, que só quer tomar café da manhã na padaria. O jogador escreve o que o Irving faz, uma IA (Gemini) narra e decide a dificuldade, e um d20 decide o resto. São 49 lugares, 17 itens, 14 adversidades e 19 finais.
+Um dia na vida do Irving, que só quer tomar café da manhã na padaria. Em cada cena o jogador escolhe entre 6 opções, e as escolhas levam o Irving por um emaranhado de 49 lugares até um dos 19 finais. São 17 itens, 13 adversidades e 4 chefes (duelo de pedra, papel e tesoura). Não usa IA: todos os textos estão escritos nos arquivos do jogo.
 
 Jogue em `https://irvao.github.io/jogoficha/`. Feito em HTML, CSS e JavaScript puros, sem instalar nada.
 
@@ -8,34 +8,43 @@ Jogue em `https://irvao.github.io/jogoficha/`. Feito em HTML, CSS e JavaScript p
 
 ```
 jogoficha/
-├── index.html              # o jogo
-├── jogo.html               # endereço antigo (redireciona pro index.html)
-├── css/
-│   └── desafio.css         # visual do jogo
+├── index.html                  # o jogo
+├── jogo.html                   # endereço antigo (redireciona pro index.html)
+├── css/desafio.css             # visual do jogo
 ├── js/
-│   ├── desafio-dados.js    # CONTEÚDO do jogo: lugares, itens, adversidades, finais e regras (edite aqui)
-│   ├── desafio-ia.js       # instruções pro narrador (Gemini) e conversa com o Worker
-│   └── desafio.js          # lógica do jogo (telas, dado, sorteio de final)
-└── assets/desafio/
-    ├── fundos/             # fundo-NN-lugar.webp (1920x1080)
-    ├── irving/             # irving-<expressao>.webp (fundo transparente)
-    ├── itens/              # item-NN-nome.webp (fundo transparente)
-    └── ui/                 # d20 e coração
+│   ├── desafio-dados.js        # REGRAS, lugares, itens, adversidades, finais, chefes e o ajuste de cada final
+│   ├── historia/               # A HISTÓRIA: textos de chegada e opções de cada lugar
+│   │   ├── lugares-01.js       #   Casa do Irving (exemplo comentado)
+│   │   ├── lugares-02-09.js ... lugares-42-50.js
+│   │   └── itens-adversidades.js  # opções dos itens da mochila, das adversidades e coringas
+│   ├── desafio-motor.js        # as regras: sorteia as 6 opções, aplica escolhas, calcula o final
+│   └── desafio.js              # a tela: botões, dado, duelo, tela final
+├── ferramentas/
+│   ├── GUIA-HISTORIA.md        # como escrever/editar lugares e opções (formato e tom)
+│   ├── validar.js              # confere se a história está bem montada
+│   └── simular.js              # joga milhares de partidas e mostra a chance de cada final
+└── assets/desafio/             # fundos, caras do Irving, itens e interface
 ```
 
-## Como o jogo fala com a IA
+## Como o jogo funciona
 
-A chave do Gemini **não** fica neste repositório. O jogo chama um Cloudflare Worker (`https://jogo-irving.irvingarruda.workers.dev/`), que guarda a chave como segredo e só aceita pedidos vindos de `https://irvao.github.io`. Por isso, abrindo o `index.html` direto do computador o narrador não responde: teste pela página publicada.
+- Cada lugar tem 2 textos de chegada e 12 ou 13 opções. Em cada cena aparecem 6, sorteadas entre as do lugar, as dos itens da mochila e as das adversidades que estão acontecendo.
+- Cada opção leva a outro lugar (ou segura o Irving no mesmo), pode tirar Vida, dar ou gastar itens, resolver problemas e soma **pontos** para os finais.
+- Opções com 🎲 são arriscadas: rola um d20 e precisa tirar o número indicado. Falhar tira mais Vida.
+- O dia dura de 6 a 8 cenas (sorteado em segredo). No fim, ganha o final com mais pontos (as escolhas + 1 ponto por lugar, item ou adversidade ligados a ele na tabela `PUXA_FINAL`). Algumas opções encerram o dia na hora.
 
 ## Como mudar o jogo
 
-Tudo que é conteúdo está em `js/desafio-dados.js`:
+- Textos e opções: arquivos em `js/historia/`. O formato está explicado em `ferramentas/GUIA-HISTORIA.md`.
+- Regras (duração, dano, quantas opções, etc.): `REGRAS` em `js/desafio-dados.js`.
+- Se um final estiver saindo demais ou de menos: `AJUSTE_FINAL` em `js/desafio-dados.js`.
 
-- `REGRAS`: duração do dia (8 a 12 cenas), chance de item e de adversidade (10%), máximo de itens (3), quantas cenas seguidas o Irving pode ficar no mesmo lugar (3).
-- `LUGARES`, `ITENS` (com o efeito secreto que só o narrador conhece), `ADVERSIDADES` e `FINAIS`.
-- `PUXA_FINAL`: o que soma +1 de peso em cada final no sorteio do fim do dia.
+Depois de mexer, dá pra conferir (precisa do Node instalado):
 
-O jeito de narrar (tom, humor, regras pro narrador) fica no topo de `js/desafio-ia.js`. Quanto de Vida cada resultado tira fica em `aplicarResultado`, no `js/desafio.js`.
+```
+node ferramentas/validar.js
+node ferramentas/simular.js
+```
 
 ## Como publicar
 

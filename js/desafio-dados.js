@@ -4,18 +4,29 @@
 //  finais e o que puxa cada final. Pra mudar o jogo, mexa aqui.
 // =====================================================================
 
-const WORKER_URL = "https://jogo-irving.irvingarruda.workers.dev/";
-
 const REGRAS = {
   vidaInicial: 100,
   cenasMin: 6,             // o dia dura entre 6 e 8 cenas (sorteado em segredo)
   cenasMax: 8,
-  chanceItem: 0.10,        // 10% de achar item em cada lugar
+  chanceItem: 0,           // chance de achar item por sorte em cada cena (0 = itens só vêm das escolhas, do chefe ou do item garantido)
   chancePartidaComAdversidade: 0.50, // metade das partidas tem adversidade; a outra metade não tem nenhuma
   chanceAdversidade: 0.10, // nas partidas com adversidade: depois da primeira, 10% de vir outra em cada cena
   maxItens: 3,
-  maxCenasMesmoLugar: 2,   // o narrador pode segurar o Irving no mesmo lugar por até 2 cenas seguidas
+  maxCenasMesmoLugar: 2,   // uma escolha pode segurar o Irving no mesmo lugar por até 2 cenas seguidas
+  opcoesPorCena: 6,        // quantos botões aparecem em cada cena
+  maxOpcoesItem: 2,        // no máximo 2 dos 6 botões são de itens da mochila
+  cenaMinFim: 4,           // escolhas que encerram o dia na hora só aparecem a partir desta cena
+  danoFalha: 2.5,          // multiplica o dano escrito nas falhas das opções arriscadas
+  danoAdversidade: 10,     // cada cena com um problema sem resolver tira essa Vida (resolver compensa!)
 };
+
+// ---------- A HISTÓRIA (o emaranhado) ----------
+// Cada lugar tem textos de chegada e um monte de opções; o jogo mostra 6 por cena.
+// O conteúdo fica nos arquivos da pasta js/historia/ (um arquivo por grupo de lugares).
+const CENAS = {};         // CENAS["lugar"] = { chegadas: [...], opcoes: [...] }
+const OPCOES_ITENS = {};  // OPCOES_ITENS["item"] = [...] (aparecem em qualquer lugar quando o item está na mochila)
+const OPCOES_ADV = {};    // OPCOES_ADV["adversidade"] = { chegada, lembretes: [...], opcoes: [...] }
+const OPCOES_GERAIS = []; // coringas: completam a cena quando o lugar não tem opções suficientes
 
 // ---------- LUGARES ----------
 // id = nome do arquivo sem "fundo-NN-"; foco = parte da foto que aparece no celular em pé (0% esquerda, 100% direita)
@@ -187,11 +198,19 @@ const PUXA_FINAL = {
   "matrix":      ["lugar-escuro", "novela-mexicana", "programa-auditorio", "adv:alienigena"],
   "filosofico":  ["excursao-peruanos", "casamento", "hidroginastica", "cantina-escola", "item:bouquet"],
   "antes-tempo": ["inglaterra-medieval", "tunel-do-tempo", "item:maquina-do-tempo"],
-  "alem-tempo":  ["estacao-espacial", "tunel-do-tempo", "item:maquina-do-tempo"],
+  "alem-tempo": ["estacao-espacial", "tunel-do-tempo", "item:maquina-do-tempo"],
   "famoso":      ["karaoke", "quermesse", "cristo-redentor", "item:apito"],
   "prisao":      ["prisao", "beco-perigoso", "encapuzado-carro", "adv:policia", "adv:pacote"],
   "milagre":     ["carregado-passaros", "cristo-redentor", "hospital", "item:alpiste"],
   "amnesia":     ["hospital", "luta-boxe", "dentro-baleia", "aviao", "adv:desmaio"],
+};
+
+// Ajuste fino de cada final: multiplica os pontos na hora de decidir o final.
+// Maior que 1 = final mais fácil de sair; menor que 1 = mais difícil. (Calibrado com o simulador.)
+const AJUSTE_FINAL = {
+  "feliz": 1.0, "quase-feliz": 2.24, "hora-errada": 1.34, "dia-errado": 1.62, "banana": 1.24, "sono": 0.96,
+  "onde-estou": 1.09, "rei-misto": 1.66, "matrix": 1.06, "filosofico": 1.09, "antes-tempo": 1.49, "alem-tempo": 1.49,
+  "famoso": 1.37, "prisao": 1.29, "milagre": 1.55, "amnesia": 1.72,
 };
 
 // ---------- CHEFES ----------

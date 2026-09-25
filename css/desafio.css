@@ -133,7 +133,7 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .botao:hover { background: #ffc53d; }
 .botao:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--tinta); }
 .botao:disabled { background: #d9cfbd; cursor: default; transform: none; box-shadow: 0 5px 0 var(--tinta); }
-.botao:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid #4aa3ff; outline-offset: 3px; }
+.botao:focus-visible, a:focus-visible { outline: 3px solid #4aa3ff; outline-offset: 3px; }
 .botao-pequeno { font-size: 18px; padding: 5px 14px 3px; }
 
 /* ---------- início ---------- */
@@ -194,27 +194,45 @@ body.morte .fundo { filter: blur(3px) grayscale(1) brightness(.55); }
 .tag.mais { background: #c9f0d4; }
 .tag.menos { background: #ffd0d0; }
 
-.acao { display: flex; gap: 10px; margin-top: 14px; align-items: flex-end; }
-.acao textarea {
-  flex: 1; resize: none; min-height: 50px; max-height: 120px;
-  font: 700 18px/1.35 var(--texto); color: var(--tinta);
-  background: #fff; border: var(--borda); border-radius: 14px; padding: 11px 14px;
+/* ---------- as 6 opções ---------- */
+.opcoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.opcao {
+  display: flex; align-items: center; gap: 9px; text-align: left;
+  font-weight: 800; font-size: 16px; line-height: 1.25; color: var(--tinta);
+  background: #fff; border: var(--borda); border-radius: 14px; padding: 9px 12px 9px 9px;
+  box-shadow: 0 4px 0 var(--tinta); transition: transform .08s, box-shadow .08s, background .15s;
+  animation: opcaoEntra .35s cubic-bezier(.2,1.4,.4,1) both;
 }
-.acao textarea::placeholder { color: #9a92a0; }
-.botao-agir { align-self: stretch; }
-
-.pensando { margin-top: 14px; color: var(--crosta); font-weight: 800; }
-.pensando span {
-  display: inline-block; width: 10px; height: 10px; margin-right: 3px; border-radius: 50%;
-  background: var(--mostarda); border: 2px solid var(--tinta); animation: pula 1s infinite;
+.opcao:nth-child(2) { animation-delay: .04s; } .opcao:nth-child(3) { animation-delay: .08s; }
+.opcao:nth-child(4) { animation-delay: .12s; } .opcao:nth-child(5) { animation-delay: .16s; }
+.opcao:nth-child(6) { animation-delay: .2s; }
+@keyframes opcaoEntra { from { transform: translateY(10px); opacity: 0; } }
+.opcao:hover { background: #fff1c9; }
+.opcao:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--tinta); }
+.opcao:focus-visible { outline: 3px solid #4aa3ff; outline-offset: 3px; }
+.opcao-num {
+  flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  font-family: var(--titulo); font-size: 16px; background: var(--mostarda); border: 2px solid var(--tinta);
 }
-.pensando span:nth-child(2) { animation-delay: .15s; }
-.pensando span:nth-child(3) { animation-delay: .3s; }
-@keyframes pula { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-7px)} }
-.pensando em { font-style: normal; margin-left: 6px; }
+.opcao-txt { flex: 1; }
+.opcao-ico { flex: none; width: 28px; height: 28px; object-fit: contain; }
+.opcao-risco {
+  flex: none; font-size: 13px; font-weight: 900; white-space: nowrap;
+  background: #ffe39a; border: 2px solid var(--tinta); border-radius: 999px; padding: 1px 7px;
+}
+.opcao-adv { background: #ffe9e9; }
+.opcao-adv:hover { background: #ffd6d6; }
+.opcao-adv .opcao-num { background: #ff8b8b; }
+.opcao-item { background: #eef7ff; }
+.opcao-item:hover { background: #dcefff; }
+.caixa-texto .parte { display: block; }
+.caixa-texto .parte + .parte { margin-top: 8px; }
+.caixa-texto .anterior { color: var(--cinza); font-size: .92em; }
+.tag.neutra { background: #eee3cf; }
+.final-motivos { font-size: 14px; line-height: 1.4; margin: -4px 0 10px; color: var(--crosta); }
+.final-motivos:empty { display: none; }
 
 .caixa-botoes { display: flex; justify-content: flex-end; margin-top: 14px; }
-.erro { margin-top: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; color: var(--vermelho); }
 
 /* ---------- dado ---------- */
 .dado-palco {
@@ -409,10 +427,13 @@ body.com-teclado .alerta { display: none; }
   .slot img { width: 34px; height: 34px; }
   .mochila { gap: 5px; }
   .placa { top: 64px; right: 10px; font-size: 20px; }
-  .caixa { width: calc(100% - 20px); bottom: calc(max(10px, env(safe-area-inset-bottom)) + var(--teclado, 0px)); max-height: 52dvh; padding: 22px 16px 14px; }
+  .caixa { width: calc(100% - 20px); bottom: calc(max(10px, env(safe-area-inset-bottom)) + var(--teclado, 0px)); max-height: 62dvh; padding: 22px 16px 14px; }
   .caixa-nome { top: -22px; margin-top: -22px; font-size: 18px; }
   .caixa-texto { font-size: 16.5px; }
-  .acao textarea { font-size: 16px; min-height: 46px; }
+  .opcoes { grid-template-columns: 1fr; gap: 7px; margin-top: 10px; }
+  .opcao { font-size: 14.5px; padding: 7px 10px 7px 7px; box-shadow: 0 3px 0 var(--tinta); border-radius: 12px; }
+  .opcao-num { width: 22px; height: 22px; font-size: 14px; }
+  .opcao-ico { width: 24px; height: 24px; }
   .botao { font-size: 21px; padding: 7px 16px 5px; }
   .inicio, .final { place-items: end center; padding: 16px 10px; }
   .inicio-caixa { padding: 20px 18px 16px; }

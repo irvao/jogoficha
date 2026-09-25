@@ -43,9 +43,9 @@
       <h1 class="logo">Desafio do Irving</h1>
       <p class="inicio-texto">O Irving acordou com uma ideia brilhante: <b>tomar café da manhã na padaria</b>. O que pode dar errado?</p>
       <ul class="inicio-regras">
-        <li><b>Escreva</b> o que o Irving faz. Qualquer coisa.</li>
-        <li>O narrador decide a <b>dificuldade</b>. O <b>d20</b> decide o resto.</li>
-        <li>Cuide da <b>Vida</b>. Ache itens. Descubra os <b>19 finais</b>.</li>
+        <li>Em cada cena, <b>escolha</b> o que o Irving faz. Nenhum dia é igual ao outro.</li>
+        <li>Opções com <b>🎲</b> são arriscadas: o <b>d20</b> decide se dá certo.</li>
+        <li>Suas <b>escolhas</b> decidem o final. Cuide da <b>Vida</b> e descubra os <b>19 finais</b>.</li>
       </ul>
       <button class="botao" id="btn-comecar">Começar o dia</button>
       <div class="inicio-finais" id="inicio-finais"></div>
@@ -99,20 +99,10 @@
     <div class="caixa-texto" id="caixa-texto"></div>
     <div class="caixa-delta" id="caixa-delta"></div>
 
-    <form class="acao" id="form-acao" autocomplete="off">
-      <textarea id="campo-acao" rows="1" maxlength="220" placeholder="O que o Irving faz?" enterkeyhint="send"></textarea>
-      <button class="botao botao-agir" id="btn-agir" type="submit">Agir</button>
-    </form>
-
-    <div class="pensando" id="pensando" hidden><span></span><span></span><span></span> <em id="pensando-txt">o narrador está pensando</em></div>
+    <div class="opcoes" id="opcoes" hidden aria-label="O que o Irving faz?"></div>
 
     <div class="caixa-botoes" id="caixa-botoes" hidden>
       <button class="botao" id="btn-continuar" type="button">Continuar</button>
-    </div>
-
-    <div class="erro" id="erro" hidden>
-      <span id="erro-txt"></span>
-      <button class="botao botao-pequeno" id="btn-tentar" type="button">Tentar de novo</button>
     </div>
   </section>
 
@@ -123,6 +113,7 @@
       <div class="final-tipo" id="final-tipo"></div>
       <h2 class="final-nome" id="final-nome"></h2>
       <p class="final-texto" id="final-texto"></p>
+      <p class="final-motivos" id="final-motivos"></p>
       <div class="final-resumo" id="final-resumo"></div>
       <div class="galeria-titulo" id="galeria-titulo"></div>
       <div class="galeria" id="galeria"></div>
@@ -133,7 +124,16 @@
   </section>
 
   <script src="js/desafio-dados.js"></script>
-  <script src="js/desafio-ia.js"></script>
+  <!-- a história (o emaranhado de escolhas) -->
+  <script src="js/historia/lugares-01.js"></script>
+  <script src="js/historia/lugares-02-09.js"></script>
+  <script src="js/historia/lugares-10-17.js"></script>
+  <script src="js/historia/lugares-18-25.js"></script>
+  <script src="js/historia/lugares-26-33.js"></script>
+  <script src="js/historia/lugares-34-41.js"></script>
+  <script src="js/historia/lugares-42-50.js"></script>
+  <script src="js/historia/itens-adversidades.js"></script>
+  <script src="js/desafio-motor.js"></script>
   <script src="js/desafio.js"></script>
 </body>
 </html>
