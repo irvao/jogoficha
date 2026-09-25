@@ -8,12 +8,13 @@ const WORKER_URL = "https://jogo-irving.irvingarruda.workers.dev/";
 
 const REGRAS = {
   vidaInicial: 100,
-  cenasMin: 8,             // o dia dura entre 8 e 12 cenas (sorteado em segredo)
-  cenasMax: 12,
+  cenasMin: 6,             // o dia dura entre 6 e 8 cenas (sorteado em segredo)
+  cenasMax: 8,
   chanceItem: 0.10,        // 10% de achar item em cada lugar
-  chanceAdversidade: 0.10, // 10% de acontecer adversidade em cada lugar
+  chancePartidaComAdversidade: 0.50, // metade das partidas tem adversidade; a outra metade não tem nenhuma
+  chanceAdversidade: 0.10, // nas partidas com adversidade: depois da primeira, 10% de vir outra em cada cena
   maxItens: 3,
-  maxCenasMesmoLugar: 3,   // o narrador pode segurar o Irving no mesmo lugar por até 3 cenas seguidas
+  maxCenasMesmoLugar: 2,   // o narrador pode segurar o Irving no mesmo lugar por até 2 cenas seguidas
 };
 
 // ---------- LUGARES ----------
@@ -113,7 +114,6 @@ const ADVERSIDADES = [
   { id: "pacote", texto: "Um homem suspeito passa um pacote para o Irving" },
   { id: "cachorro", texto: "Um cachorro branco pede ajuda ao Irving para comprar um refri" },
   { id: "mesario", texto: "O Irving é chamado para ser mesário" },
-  { id: "estrondo", texto: "O Irving ouve um estrondo forte" },
   { id: "policia", texto: "A polícia para o Irving para fazer questionamentos" },
   { id: "chuva", texto: "Começa a chover forte" },
   { id: "sem-calcas", texto: "O Irving percebe que esqueceu de colocar as calças antes de sair de casa" },
@@ -169,7 +169,8 @@ const FINAIS = {
     texto: "A Vida do Irving chegou a zero. O misto quente vai ter que esperar outra vida." },
 };
 
-// Finais que entram no sorteio do fim do dia (os outros são automáticos)
+// Finais que entram no sorteio do fim do dia (os outros são automáticos:
+// Morte, Misto triste, e Misto em dupla sempre que o Irving termina o dia com o misto quente na mochila)
 const FINAIS_SORTEIO = ["feliz", "quase-feliz", "hora-errada", "dia-errado", "banana", "sono", "onde-estou",
   "rei-misto", "matrix", "filosofico", "antes-tempo", "alem-tempo", "famoso", "prisao", "milagre", "amnesia"];
 
@@ -191,6 +192,36 @@ const PUXA_FINAL = {
   "prisao":      ["prisao", "beco-perigoso", "encapuzado-carro", "adv:policia", "adv:pacote"],
   "milagre":     ["carregado-passaros", "cristo-redentor", "hospital", "item:alpiste"],
   "amnesia":     ["hospital", "luta-boxe", "dentro-baleia", "aviao", "adv:desmaio"],
+};
+
+// ---------- CHEFES ----------
+// Toda partida tem 1 chefe, sorteado, numa cena aleatória (nunca na Casa do Irving).
+// Duelo de pedra, papel e tesoura: quem fizer 2 pontos primeiro vence. Empate conta ponto pro Irving (vantagem do jogador).
+// O chefe repete sempre a mesma sequência de jogadas (quem prestar atenção aprende).
+const CHEFES = [
+  { id: "rei-do-dog", nome: "Rei do Dog", genero: "o", img: "assets/desafio/chefes/rei-do-dog.webp",
+    sequencia: ["tesoura", "papel", "pedra"],
+    desc: "um homem descabelado e de olhos arregalados, fantasiado de cachorro-quente gigante, de avental sujo, disparando jatos de ketchup e mostarda" },
+  { id: "pedra", nome: "Pedra", genero: "o", img: "assets/desafio/chefes/chefe-pedra.webp",
+    sequencia: ["pedra", "pedra", "pedra"],
+    desc: "uma pedra gigante, fofa e sorridente, com bracinhos, um broto na cabeça e um lacinho vermelho, que acena alegremente (e é assustadoramente determinada)" },
+  { id: "crossfitera", nome: "Crossfitera", genero: "a", img: "assets/desafio/chefes/chefe-academia.webp",
+    sequencia: ["tesoura", "pedra", "tesoura"],
+    desc: "uma crossfiteira descabelada e suada, de olhos arregalados, regata rosa 'POWER GYM', calça de moletom azul e tênis coloridos, com energia insana de treino" },
+  { id: "veia-bumerang", nome: "Veia Bumerang", genero: "a", img: "assets/desafio/chefes/chefe-vovo.webp",
+    sequencia: ["papel", "tesoura", "pedra"],
+    desc: "uma vovó de óculos redondos e sorriso maligno, boina, cachecol e suéter de tricô, armada com bumerangues entalhados" },
+];
+function doChefe(c) { return (c.genero === "a" ? "da " : "do ") + c.nome; }
+function oChefe(c) { return (c.genero === "a" ? "A " : "O ") + c.nome; }
+const REGRAS_CHEFE = {
+  danoDerrota: 20,   // perdeu o duelo: -20 de Vida
+  // venceu o duelo: ganha 1 item aleatório (se a mochila tiver espaço)
+};
+const JOGADAS = {
+  pedra:   { nome: "Pedra",   emoji: "✊", ganhaDe: "tesoura" },
+  papel:   { nome: "Papel",   emoji: "✋", ganhaDe: "pedra" },
+  tesoura: { nome: "Tesoura", emoji: "✌️", ganhaDe: "papel" },
 };
 
 const EXPRESSOES = ["neutro", "feliz", "determinado", "assustado", "confuso", "bravo", "triste", "cansado"];

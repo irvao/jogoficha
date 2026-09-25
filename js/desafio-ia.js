@@ -136,6 +136,7 @@ async function resolverAcao(est, situacao, acao, rolagem, proxima) {
   } else {
     const extras = [];
     if (proxima.item) extras.push(`Na próxima cena o Irving ENCONTRA e pega este item: "${proxima.item.nome}". Mostre isso de um jeito divertido na "situacao" (não revele o efeito secreto).`);
+    if (proxima.chefe) extras.push(`ATENÇÃO: na próxima cena surge um CHEFE: "${proxima.chefe.nome}" (${proxima.chefe.desc}). Use o artigo "${proxima.chefe.genero}" (${oChefe(proxima.chefe)}). Na "situacao", descreva a entrada épica dele bloqueando o caminho e desafiando o Irving para um duelo lendário de pedra, papel e tesoura. Termine com o desafio (ex.: "O duelo vai começar!"), SEM perguntar o que o Irving faz. O lugar NÃO pode ser casa-irving.`);
     if (proxima.adversidade) extras.push(`Na próxima cena ACONTECE isto: "${proxima.adversidade.texto}". Coloque isso na "situacao".`);
     const regraFicar = podeFicar
       ? `O Irving PODE continuar no mesmo lugar se a história pedir: a situação ainda não se resolveu, ele está preso ou cercado, a conversa continua, a falha deixou ele ali, ou o jogador quis ficar. Nesse caso use o id do lugar atual (${est.lugar}) e mostre a situação evoluindo ali (algo novo acontece, nunca repita a mesma cena). Se a ação levou ele pra outro canto, troque de lugar. Ele já está há ${est.cenasNoLugar || 1} cena(s) seguida(s) neste lugar.`
@@ -159,7 +160,7 @@ RESULTADO DO DADO (já decidido, respeite): ${rolagem.texto}.
 ${rolagem.explicacao}
 
 TAREFA 1: narre o que aconteceu em "resultado" (1 a 2 frases, no máximo 35 palavras, em tom épico e heroico, engraçado pelo exagero, coerente com o resultado do dado).
-TAREFA 2: decida a mudança de Vida em "vida" (número inteiro, NUNCA positivo: a Vida não se recupera). Sucesso crítico: 0. Sucesso: 0 a -5 (só se algo pequeno deu errado no caminho). Falha: -8 a -18. Falha crítica: -20 a -35. Coisas perigosas tiram mais.
+TAREFA 2: decida a mudança de Vida em "vida" (número inteiro, NUNCA positivo: a Vida não se recupera). Sucesso crítico: 0. Sucesso: 0 a -5 (só se algo pequeno deu errado no caminho). Falha: -12 a -22. Falha crítica: -25 a -40. Coisas perigosas tiram mais.
 TAREFA 3: efeitos:
 - "itens_removidos": ids de itens que foram gastos, comidos, quebrados ou perdidos nessa ação (ex.: skate usado pra se locomover, banana comida). Senão, [].
 - "adversidades_resolvidas": ids dos problemas que foram resolvidos nessa ação. Senão, [].

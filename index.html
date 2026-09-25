@@ -62,7 +62,32 @@
     <div class="dado-selo" id="dado-selo"></div>
   </div>
 
-  <!-- Aviso de item encontrado -->
+  <!-- Duelo contra chefe (pedra, papel e tesoura) -->
+  <section class="duelo" id="duelo" hidden>
+    <img class="chefe-img" id="chefe-img" alt="">
+    <div class="duelo-painel">
+      <div class="duelo-titulo">DUELO!</div>
+      <div class="duelo-nome" id="duelo-nome"></div>
+      <div class="duelo-placar">Irving <b id="placar-ir">0</b> <span>x</span> <b id="placar-ch">0</b> <em id="placar-nome"></em></div>
+      <div class="duelo-jogada" id="duelo-jogada"></div>
+      <div class="baloes" id="baloes">
+        <button class="balao" type="button" data-j="pedra"><span>✊</span><small>Pedra</small></button>
+        <button class="balao" type="button" data-j="papel"><span>✋</span><small>Papel</small></button>
+        <button class="balao" type="button" data-j="tesoura"><span>✌️</span><small>Tesoura</small></button>
+      </div>
+      <div class="duelo-fim" id="duelo-fim" hidden>
+        <div class="dado-selo" id="duelo-selo"></div>
+        <p id="duelo-premio"></p>
+        <button class="botao" id="btn-duelo-ok" type="button">Continuar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Avisos: adversidade e item encontrado -->
+  <div class="alerta" id="alerta" hidden>
+    <span class="alerta-icone">⚠️</span>
+    <div><small>Adversidade!</small><b id="alerta-texto"></b></div>
+  </div>
   <div class="achado" id="achado" hidden>
     <img id="achado-img" alt="">
     <div><small>O Irving encontrou</small><b id="achado-nome"></b></div>
