@@ -198,7 +198,7 @@ const PUXA_FINAL = {
   "matrix":      ["lugar-escuro", "novela-mexicana", "programa-auditorio", "adv:alienigena"],
   "filosofico":  ["excursao-peruanos", "casamento", "hidroginastica", "cantina-escola", "item:bouquet"],
   "antes-tempo": ["inglaterra-medieval", "tunel-do-tempo", "item:maquina-do-tempo"],
-  "alem-tempo": ["estacao-espacial", "tunel-do-tempo", "item:maquina-do-tempo"],
+  "alem-tempo":  ["estacao-espacial", "tunel-do-tempo", "item:maquina-do-tempo"],
   "famoso":      ["karaoke", "quermesse", "cristo-redentor", "item:apito"],
   "prisao":      ["prisao", "beco-perigoso", "encapuzado-carro", "adv:policia", "adv:pacote"],
   "milagre":     ["carregado-passaros", "cristo-redentor", "hospital", "item:alpiste"],
