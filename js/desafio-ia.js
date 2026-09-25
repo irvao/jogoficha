@@ -13,7 +13,7 @@ COMO O JOGO FUNCIONA: o jogador escreve o que o Irving faz. Você avalia a dific
 ESTILO:
 - Humor absurdo, situações que escalam, reviravoltas inesperadas. Pense em comédia pastelão.
 - TOM ÉPICO E HEROICO: você é o narrador de uma saga lendária, como um bardo medieval ou a voz de um trailer de filme épico. Trate cada passo do Irving rumo à padaria como uma jornada heroica: vocabulário grandioso, metáforas de batalha, destino e glória, frases de impacto ("E assim, o bravo Irving..."). O humor nasce do contraste entre a narração solene e as situações absurdas e banais. Quando ele falha, é uma tragédia digna de canções; quando vence, é um feito que será lembrado por gerações. Sem sarcasmo contra o jogador e sem palavrão.
-- Narre em terceira pessoa ("O Irving..."). Frases curtas e diretas, fáceis de ler no celular.
+- Narre em terceira pessoa ("O Irving..."). SEJA BREVE: frases curtas e diretas, fáceis de ler no celular. Grandioso no tom, econômico nas palavras. Nada de encher linguiça.
 - Nunca use travessão (—). Use vírgula, ponto ou parênteses.
 - A casa do Irving é uma CASA. Nunca chame de chácara.
 - Nada de palavrão pesado, nada de violência explícita ou sangue. Se o jogador tentar algo violento ou ofensivo, transforme em algo bobo e engraçado que não dá certo.
@@ -112,7 +112,7 @@ TAREFA: avalie a DIFICULDADE dessa ação, de 2 a 20 (o jogo rola um d20 e preci
 - "impossivel": true SÓ quando a ação quebra uma regra (ex.: pagar algo sem ter o item 100 reais, usar um item que ele não tem). Aí ela falha sem rolar dado.
 
 Responda só com este JSON:
-{"dificuldade": numero, "impossivel": true ou false, "comentario": "uma frase curta e épica de suspense sobre a tentativa, SEM dizer se vai dar certo"}`;
+{"dificuldade": numero, "impossivel": true ou false, "comentario": "uma frase curta e épica de suspense sobre a tentativa (no máximo 12 palavras), SEM dizer se vai dar certo"}`;
   const r = await perguntarNarrador(pedido);
   let d = Math.round(Number(r.dificuldade));
   if (!Number.isFinite(d)) d = 10;
@@ -144,7 +144,7 @@ async function resolverAcao(est, situacao, acao, rolagem, proxima) {
 Escolha o que faz mais sentido (ou o mais absurdo e engraçado) pelo que aconteceu. Lugares possíveis (use o id exato):
 ${permitidos}
 ${extras.join("\n")}
-Na "situacao", descreva o lugar e o que está acontecendo lá agora, e termine com um gancho do tipo "O que o Irving faz?". A padaria NÃO é um lugar possível ainda: o Irving está sempre a caminho.`;
+Na "situacao" (2 a 3 frases, no máximo 45 palavras), descreva o lugar e o que está acontecendo lá agora, e termine com um gancho curto do tipo "O que o Irving faz?". A padaria NÃO é um lugar possível ainda: o Irving está sempre a caminho.`;
   }
 
   const pedido = `${descreverEstado(est)}
@@ -158,7 +158,7 @@ O jogador escreveu que o Irving faz isto:
 RESULTADO DO DADO (já decidido, respeite): ${rolagem.texto}.
 ${rolagem.explicacao}
 
-TAREFA 1: narre o que aconteceu em "resultado" (2 a 4 frases, em tom épico e heroico, engraçado pelo exagero, coerente com o resultado do dado).
+TAREFA 1: narre o que aconteceu em "resultado" (1 a 2 frases, no máximo 35 palavras, em tom épico e heroico, engraçado pelo exagero, coerente com o resultado do dado).
 TAREFA 2: decida a mudança de Vida em "vida" (número inteiro, NUNCA positivo: a Vida não se recupera). Sucesso crítico: 0. Sucesso: 0 a -5 (só se algo pequeno deu errado no caminho). Falha: -8 a -18. Falha crítica: -20 a -35. Coisas perigosas tiram mais.
 TAREFA 3: efeitos:
 - "itens_removidos": ids de itens que foram gastos, comidos, quebrados ou perdidos nessa ação (ex.: skate usado pra se locomover, banana comida). Senão, [].
@@ -198,7 +198,7 @@ O DIA ACABOU. O final sorteado foi: "${final.nome}".
 Texto base desse final (escrito pelo criador do jogo, mantenha a ideia central e o desfecho exatamente assim):
 "${final.texto}"
 
-TAREFA: escreva o epílogo em 3 a 5 frases curtas, épicas e engraçadas, como o fim de uma lenda, amarrando 1 ou 2 momentos marcantes da jornada de hoje com esse final. ${final.id === "famoso" ? "O Naldo é uma pessoa real: mostre só o encontro e o autógrafo, sem inventar falas dele." : ""}
+TAREFA: escreva o epílogo em 2 a 3 frases curtas (no máximo 50 palavras), épicas e engraçadas, como o fim de uma lenda, amarrando 1 ou 2 momentos marcantes da jornada de hoje com esse final. ${final.id === "famoso" ? "O Naldo é uma pessoa real: mostre só o encontro e o autógrafo, sem inventar falas dele." : ""}
 
 Responda só com este JSON:
 {"epilogo": "..."}`;
