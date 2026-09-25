@@ -6,8 +6,8 @@
 
 const REGRAS = {
   vidaInicial: 100,
-  cenasMin: 6,             // o dia dura entre 6 e 8 cenas (sorteado em segredo)
-  cenasMax: 8,
+  cenasMin: 10,            // o dia dura entre 10 e 12 cenas (sorteado em segredo)
+  cenasMax: 12,
   chanceItem: 0,           // chance de achar item por sorte em cada cena (0 = itens só vêm das escolhas, do chefe ou do item garantido)
   chancePartidaComAdversidade: 0.50, // metade das partidas tem adversidade; a outra metade não tem nenhuma
   chanceAdversidade: 0.10, // nas partidas com adversidade: depois da primeira, 10% de vir outra em cada cena
@@ -15,9 +15,13 @@ const REGRAS = {
   maxCenasMesmoLugar: 2,   // uma escolha pode segurar o Irving no mesmo lugar por até 2 cenas seguidas
   opcoesPorCena: 6,        // quantos botões aparecem em cada cena
   maxOpcoesItem: 2,        // no máximo 2 dos 6 botões são de itens da mochila
-  cenaMinFim: 4,           // escolhas que encerram o dia na hora só aparecem a partir desta cena
-  danoFalha: 2.5,          // multiplica o dano escrito nas falhas das opções arriscadas
-  danoAdversidade: 10,     // cada cena com um problema sem resolver tira essa Vida (resolver compensa!)
+  cenaMinFim: 6,           // escolhas que encerram o dia na hora só aparecem a partir desta cena
+  danoFalha: 2,            // multiplica o dano escrito nas falhas das opções arriscadas
+  danoAdversidade: 6,      // cada cena com um problema sem resolver tira essa Vida (resolver compensa!)
+  chanceNpc: 0.2,          // chance de aparecer um NPC com desafio em cada cena (a partir da 2ª)
+  maxNpcs: 2,              // no máximo 2 NPCs por partida
+  perguntasQuiz: 3,        // chefe de quiz: faz 3 perguntas...
+  acertosQuiz: 2,          // ...e o Irving vence acertando 2
 };
 
 // ---------- A HISTÓRIA (o emaranhado) ----------
@@ -80,6 +84,7 @@ const LUGARES = [
   { n: 47, id: "estacao-espacial", nome: "Estação Espacial Internacional", desc: "a Estação Espacial Internacional, café em gravidade zero" },
   { n: 48, id: "casamento", nome: "Casamento de desconhecidos", desc: "um casamento de desconhecidos, onde acham que o Irving é o padrinho" },
   { n: 49, id: "prisao", nome: "Prisão", desc: "uma cela de prisão" },
+  { n: 53, id: "casa-do-norte", nome: "Casa do Norte", desc: "uma Casa do Norte, venda de produtos do Nordeste e do interior" },
 ];
 // cenas especiais (não sorteáveis)
 const CENAS_EXTRAS = {
@@ -188,7 +193,7 @@ const FINAIS_SORTEIO = ["feliz", "quase-feliz", "hora-errada", "dia-errado", "ba
 // O que soma +1 de peso em cada final (lugares visitados, itens na mochila, adversidades que apareceram)
 const PUXA_FINAL = {
   "feliz":       ["comercial-margarina", "fabrica-chocolate", "loja-eletro-padaria", "forno-gigante"],
-  "quase-feliz": ["feira", "quermesse", "adv:cachorro"],
+  "quase-feliz": ["feira", "quermesse", "casa-do-norte", "adv:cachorro"],
   "hora-errada": ["fila-banco", "pedagio", "trem", "balsa", "adv:desmaio"],
   "dia-errado":  ["protesto", "reuniao-onu", "conferencia-dermatologia", "adv:mesario"],
   "banana":      ["xique-xique", "sorveteria", "elefante", "item:banana"],
@@ -196,7 +201,7 @@ const PUXA_FINAL = {
   "onde-estou":  ["bairro-desconhecido", "canavial", "massachusetts", "osasco"],
   "rei-misto":   ["reuniao-onu", "inglaterra-medieval", "luta-boxe", "adv:rifa"],
   "matrix":      ["lugar-escuro", "novela-mexicana", "programa-auditorio", "adv:alienigena"],
-  "filosofico":  ["excursao-peruanos", "casamento", "hidroginastica", "cantina-escola", "item:bouquet"],
+  "filosofico":  ["excursao-peruanos", "casamento", "hidroginastica", "cantina-escola", "casa-do-norte", "item:bouquet"],
   "antes-tempo": ["inglaterra-medieval", "tunel-do-tempo", "item:maquina-do-tempo"],
   "alem-tempo":  ["estacao-espacial", "tunel-do-tempo", "item:maquina-do-tempo"],
   "famoso":      ["karaoke", "quermesse", "cristo-redentor", "item:apito"],
@@ -208,26 +213,29 @@ const PUXA_FINAL = {
 // Ajuste fino de cada final: multiplica os pontos na hora de decidir o final.
 // Maior que 1 = final mais fácil de sair; menor que 1 = mais difícil. (Calibrado com o simulador.)
 const AJUSTE_FINAL = {
-  "feliz": 1.0, "quase-feliz": 2.24, "hora-errada": 1.34, "dia-errado": 1.62, "banana": 1.24, "sono": 0.96,
-  "onde-estou": 1.09, "rei-misto": 1.66, "matrix": 1.06, "filosofico": 1.09, "antes-tempo": 1.49, "alem-tempo": 1.49,
-  "famoso": 1.37, "prisao": 1.29, "milagre": 1.55, "amnesia": 1.72,
+  "feliz": 1.0, "quase-feliz": 2.1, "hora-errada": 1.41, "dia-errado": 1.79, "banana": 1.42, "sono": 1.01,
+  "onde-estou": 1.1, "rei-misto": 1.63, "matrix": 1.2, "filosofico": 1.01, "antes-tempo": 1.48, "alem-tempo": 1.46,
+  "famoso": 1.24, "prisao": 1.39, "milagre": 1.48, "amnesia": 1.83,
 };
+
+// NPCs com desafio (o conteúdo fica em js/historia/personagens.js)
+const NPCS = [];
 
 // ---------- CHEFES ----------
 // Toda partida tem 1 chefe, sorteado, numa cena aleatória (nunca na Casa do Irving).
 // Duelo de pedra, papel e tesoura: quem fizer 2 pontos primeiro vence. Empate conta ponto pro Irving (vantagem do jogador).
 // O chefe repete sempre a mesma sequência de jogadas (quem prestar atenção aprende).
 const CHEFES = [
-  { id: "rei-do-dog", nome: "Rei do Dog", genero: "o", img: "rei-do-dog.webp",
+  { id: "rei-do-dog", tipo: "ppt", nome: "Rei do Dog", genero: "o", img: "rei-do-dog.webp",
     sequencia: ["tesoura", "papel", "pedra"],
     desc: "um homem descabelado e de olhos arregalados, fantasiado de cachorro-quente gigante, de avental sujo, disparando jatos de ketchup e mostarda" },
-  { id: "pedra", nome: "Pedra", genero: "o", img: "chefe-pedra.webp",
+  { id: "pedra", tipo: "ppt", nome: "Pedra", genero: "o", img: "chefe-pedra.webp",
     sequencia: ["pedra", "pedra", "pedra"],
     desc: "uma pedra gigante, fofa e sorridente, com bracinhos, um broto na cabeça e um lacinho vermelho, que acena alegremente (e é assustadoramente determinada)" },
-  { id: "crossfitera", nome: "Crossfitera", genero: "a", img: "chefe-academia.webp",
+  { id: "crossfitera", tipo: "ppt", nome: "Crossfitera", genero: "a", img: "chefe-academia.webp",
     sequencia: ["tesoura", "pedra", "tesoura"],
     desc: "uma crossfiteira descabelada e suada, de olhos arregalados, regata rosa 'POWER GYM', calça de moletom azul e tênis coloridos, com energia insana de treino" },
-  { id: "veia-bumerang", nome: "Veia Bumerang", genero: "a", img: "chefe-vovo.webp",
+  { id: "veia-bumerang", tipo: "ppt", nome: "Veia Bumerang", genero: "a", img: "chefe-vovo.webp",
     sequencia: ["papel", "tesoura", "pedra"],
     desc: "uma vovó de óculos redondos e sorriso maligno, boina, cachecol e suéter de tricô, armada com bumerangues entalhados" },
 ];
