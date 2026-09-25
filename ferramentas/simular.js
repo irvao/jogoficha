@@ -7,7 +7,7 @@ const raiz = path.join(__dirname, "..");
 const ctx = { console, Math };
 vm.createContext(ctx);
 const arquivos = ["js/desafio-dados.js", ...fs.readdirSync(path.join(raiz, "js/historia")).sort().map((f) => "js/historia/" + f), "js/desafio-motor.js"];
-vm.runInContext(arquivos.map((a) => fs.readFileSync(path.join(raiz, a), "utf8")).join("\n") + "\n;globalThis.J = {novaPartida, opcoesDaCena, aplicarEscolha, avancarCena, resultadoDuelo, calcularFinal, FINAIS, FINAIS_SORTEIO, CENAS};", ctx);
+vm.runInContext(arquivos.map((a) => fs.readFileSync(path.join(raiz, a), "utf8")).join("\n") + "\n;globalThis.J = {novaPartida, opcoesDaCena, aplicarEscolha, avancarCena, resultadoDuelo, resultadoNpc, pegarPresente, calcularFinal, FINAIS, FINAIS_SORTEIO, CENAS};", ctx);
 const J = ctx.J;
 // teste de regras sem mexer nos arquivos: REGRAS='{"danoFalha":2}' node ferramentas/simular.js
 if (process.env.REGRAS) vm.runInContext(`Object.assign(REGRAS, ${process.env.REGRAS})`, ctx);
@@ -26,6 +26,8 @@ function jogar(estrategia) {
     if (r.fim) return { fim: r.fim, est };
     const c = J.avancarCena(est, r.destino);
     if (c.morreu) return { fim: "morte", est };
+    if (c.npc) J.resultadoNpc(est, c.npc, Math.random() < 0.5);
+    if (c.vendedor && c.vendedor.oferta.length && est.itens.length < 3) J.pegarPresente(est, c.vendedor.oferta[0].id);
     if (c.chefe) {
       const p = 2 / 3; let a = 0, b = 0;
       while (a < 2 && b < 2) Math.random() < p ? a++ : b++;
