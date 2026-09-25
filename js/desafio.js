@@ -453,6 +453,20 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
   });
   $("campo-acao").addEventListener("focus", () => setTimeout(rolarCaixa, 300));
+  // teclado do celular: sobe a caixa de texto pra ficar acima do teclado
+  if (window.visualViewport) {
+    const vv = window.visualViewport;
+    const ajustarTeclado = () => {
+      const teclado = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      document.documentElement.style.setProperty("--teclado", teclado + "px");
+      document.documentElement.style.setProperty("--visivel", vv.height + "px");
+      document.body.classList.toggle("com-teclado", teclado > 80);
+      if (teclado > 80) rolarCaixa();
+    };
+    vv.addEventListener("resize", ajustarTeclado);
+    vv.addEventListener("scroll", ajustarTeclado);
+    $("campo-acao").addEventListener("blur", () => setTimeout(() => { window.scrollTo(0, 0); ajustarTeclado(); }, 100));
+  }
   $("btn-continuar").addEventListener("click", () => { const p = proximoPasso; proximoPasso = null; if (p) p(); });
   $("btn-tentar").addEventListener("click", () => { const p = passoPendente; passoPendente = null; if (p) p(); });
   $("caixa").addEventListener("click", (e) => { if (digitando && !e.target.closest("form, button")) digitando.pular = true; });
