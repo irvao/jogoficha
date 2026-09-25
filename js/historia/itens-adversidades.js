@@ -126,17 +126,9 @@ OPCOES_ITENS["peruca"] = [
 ];
 
 OPCOES_ITENS["misto-quente"] = [
-  { t: "Comer o misto quente agora", precisa: "misto-quente", cenaMin: 4,
+  { t: "Comer o misto antes da padaria", precisa: "misto-quente", cenaMin: 4,
     r: "O Irving ergue o misto. O queijo brilha. Uma voz interior grita \"NÃO! NA PADARIA!\". O estômago grita mais alto. A mordida ecoa pelos séculos.",
     fim: "misto-triste", cara: "triste" },
-
-  { t: "Guardar o misto com carinho", precisa: "misto-quente", mantem: true,
-    r: "O Irving embrulha o misto num guardanapo, como quem guarda uma relíquia sagrada, e promete: \"Você vai conhecer a padaria.\"",
-    vai: "fica", p: { feliz: 1, filosofico: 1 }, cara: "determinado" },
-
-  { t: "Proteger o misto de olhares famintos", precisa: "misto-quente", mantem: true,
-    r: "O Irving abraça a mochila e encara cada ser vivo ao redor. Um cachorro passa. O Irving rosna primeiro. O misto está a salvo.",
-    vai: "fica", p: { "quase-feliz": 2 }, cara: "bravo" },
 ];
 
 OPCOES_ITENS["maquina-do-tempo"] = [
