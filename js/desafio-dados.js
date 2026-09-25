@@ -199,16 +199,16 @@ const PUXA_FINAL = {
 // Duelo de pedra, papel e tesoura: quem fizer 2 pontos primeiro vence. Empate conta ponto pro Irving (vantagem do jogador).
 // O chefe repete sempre a mesma sequência de jogadas (quem prestar atenção aprende).
 const CHEFES = [
-  { id: "rei-do-dog", nome: "Rei do Dog", genero: "o", img: "assets/desafio/chefes/rei-do-dog.webp",
+  { id: "rei-do-dog", nome: "Rei do Dog", genero: "o", img: "rei-do-dog.webp",
     sequencia: ["tesoura", "papel", "pedra"],
     desc: "um homem descabelado e de olhos arregalados, fantasiado de cachorro-quente gigante, de avental sujo, disparando jatos de ketchup e mostarda" },
-  { id: "pedra", nome: "Pedra", genero: "o", img: "assets/desafio/chefes/chefe-pedra.webp",
+  { id: "pedra", nome: "Pedra", genero: "o", img: "chefe-pedra.webp",
     sequencia: ["pedra", "pedra", "pedra"],
     desc: "uma pedra gigante, fofa e sorridente, com bracinhos, um broto na cabeça e um lacinho vermelho, que acena alegremente (e é assustadoramente determinada)" },
-  { id: "crossfitera", nome: "Crossfitera", genero: "a", img: "assets/desafio/chefes/chefe-academia.webp",
+  { id: "crossfitera", nome: "Crossfitera", genero: "a", img: "chefe-academia.webp",
     sequencia: ["tesoura", "pedra", "tesoura"],
     desc: "uma crossfiteira descabelada e suada, de olhos arregalados, regata rosa 'POWER GYM', calça de moletom azul e tênis coloridos, com energia insana de treino" },
-  { id: "veia-bumerang", nome: "Veia Bumerang", genero: "a", img: "assets/desafio/chefes/chefe-vovo.webp",
+  { id: "veia-bumerang", nome: "Veia Bumerang", genero: "a", img: "chefe-vovo.webp",
     sequencia: ["papel", "tesoura", "pedra"],
     desc: "uma vovó de óculos redondos e sorriso maligno, boina, cachecol e suéter de tricô, armada com bumerangues entalhados" },
 ];
