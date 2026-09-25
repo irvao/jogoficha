@@ -398,6 +398,10 @@ CENAS["xique-xique"] = {
     "Xique-Xique, Bahia! Quarenta graus à sombra, e não há sombra. Um bode observa o Irving com ar de sábio. Ao longe, alguém grita o nome da cidade só pelo prazer de falar.",
   ],
   opcoes: [
+    { t: "Visitar a Casa do Norte da cidade",
+      r: "Em Xique-Xique, toda casa é do Norte, mas uma tem placa. O Irving entra, reverente, atraído pelo cheiro de carne de sol.",
+      vai: "casa-do-norte", p: { filosofico: 1, feliz: 1 }, cara: "feliz" },
+
     { t: "Tirar foto na placa da cidade",
       r: "Clique! A foto viraliza em quatro segundos. Um milhão de curtidas. O povo já aponta na rua: \"Olha o moço do meme!\"",
       vai: "fica", marca: "famoso-tv", p: { famoso: 2 }, cara: "feliz" },
