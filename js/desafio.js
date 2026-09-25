@@ -232,9 +232,15 @@ async function irPara(destino, textoAnterior) {
     estadoCaixa("continuar");
     return;
   }
-  if (c.chefe) return iniciarDuelo(c.chefe);
-  if (c.vendedor) { await esperar(700); return iniciarVendedor(c.vendedor); }
-  if (c.npc) { await esperar(700); return iniciarNpc(c.npc); }
+  // encontros (chefe, vendedor, NPC): espera o jogador clicar em Continuar, pra dar tempo de ler a cena
+  const encontro = c.chefe ? () => iniciarDuelo(c.chefe) : c.vendedor ? () => iniciarVendedor(c.vendedor) : c.npc ? () => iniciarNpc(c.npc) : null;
+  if (encontro) {
+    proximoPasso = encontro;
+    estadoCaixa("continuar");
+    $("btn-continuar").focus({ preventScroll: true });
+    rolarCaixa();
+    return;
+  }
   mostrarOpcoes();
 }
 
@@ -325,7 +331,7 @@ function mostrarFimPainel(bom, selo, premio, resultado) {
 
 // ---------- chefe ----------
 async function iniciarDuelo(chefe) {
-  await esperar(900);
+  await esperar(200);
   if (chefe.tipo === "quiz") return iniciarQuiz(chefe);
   duelo = { chefe, pontosIrving: 0, pontosChefe: 0, jogada: 0, travado: false };
   abrirPainel({ img: chefe.img, emoji: chefe.emoji, titulo: "DUELO!", nome: chefe.nome, placar: true });
@@ -636,7 +642,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("btn-denovo").addEventListener("click", comecar);
   document.querySelectorAll(".balao").forEach((b) => b.addEventListener("click", () => jogarDuelo(b.dataset.j)));
   $("btn-duelo-ok").addEventListener("click", sairDuelo);
-  $("btn-continuar").addEventListener("click", () => { const p = proximoPasso; proximoPasso = null; if (p) p(); });
+  $("btn-continuar").addEventListener("click", () => { const p = proximoPasso; proximoPasso = null; if (p) { estadoCaixa("nada"); p(); } });
   // clicar na caixa pula o efeito de digitação
   $("caixa").addEventListener("click", (e) => { if (digitando && !e.target.closest("button")) digitando.pular = true; });
   // teclado do computador: 1 a 6 escolhem, Enter/Espaço continuam
