@@ -309,7 +309,7 @@ OPCOES_ITENS["disfarce"] = [
 ];
 
 OPCOES_ITENS["floral"] = [
-  { t: "Tomar o floral de Bach", precisa: "floral",
+  { t: "Tomar o floral", precisa: "floral",
     r: "O Irving toma o floral, sorri... e nada acontece!",
     vai: "fica", cara: "feliz" },
 ];

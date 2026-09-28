@@ -134,7 +134,7 @@ CENAS["uber"] = {
       vai: "novela-mexicana", p: { matrix: 2 }, cara: "assustado" },
 
     { t: "Aceitar o floral do motorista",
-      r: "O motorista abre o porta-luvas: dezenas de vidrinhos. \"Floral de Bach, fórmula Urgências. Pra passageiro apressado.\" Entrega um ao Irving com sorriso nota 5.",
+      r: "O motorista abre o porta-luvas: dezenas de vidrinhos. \"Floral, fórmula Urgências. Pra passageiro apressado.\" Entrega um ao Irving com sorriso nota 5.",
       vai: "fica", ganha: "floral", p: { filosofico: 1, "hora-errada": 1 }, cara: "confuso" },
   ],
 };
