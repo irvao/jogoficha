@@ -144,7 +144,7 @@ CENAS["hidroginastica"] = {
       vai: "fica", ganha: "yakult", p: { filosofico: 2 }, cara: "feliz" },
 
     { t: "Ganhar o floral da professora",
-      r: "A professora, serena como um lago, entrega ao Irving um vidrinho de floral de Bach: \"Urgências. Pra quem tem pressa de viver.\" Ele agradece com uma reverência molhada.",
+      r: "A professora, serena como um lago, entrega ao Irving um vidrinho de floral: \"Urgências. Pra quem tem pressa de viver.\" Ele agradece com uma reverência molhada.",
       vai: "fica", ganha: "floral", p: { sono: 1, filosofico: 1 }, cara: "neutro" },
   ],
 };

@@ -80,7 +80,7 @@ CENAS["feira"] = {
       vai: "fica", ganha: "queijo", p: { "quase-feliz": 2 }, cara: "feliz" },
 
     { t: "Aceitar um floral da barraca natural",
-      r: "Uma moça de turbante entrega ao Irving um vidrinho de floral de Bach, fórmula Urgências. \"Três gotinhas e o universo se alinha\", promete. Ele guarda com fé.",
+      r: "Uma moça de turbante entrega ao Irving um vidrinho de floral, fórmula Urgências. \"Três gotinhas e o universo se alinha\", promete. Ele guarda com fé.",
       vai: "fica", ganha: "floral", p: { milagre: 1, filosofico: 1 }, cara: "neutro" },
   ],
 };
