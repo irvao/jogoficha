@@ -37,9 +37,9 @@ CHEFES.push(
     acerto: ["\"Grrr... acertou.\"", "O Homem Lixoso bate a tampa, contrariado."],
     erro: ["\"HA! Isso foi um lixo!\"", "O Homem Lixoso solta um arroto de chorume."],
     perguntas: [
-      { p: "Qual é o cesto de reciclável para vidro?", respostas: ["Verde", "O do vizinho", "Azul-bebê com bolinhas"], certa: 1 },
-      { p: "Qual dessas bandas é um lixo?", respostas: ["Legião Urbana", "Os Sacos Plásticos", "Tampinhas do Brasil"], certa: 1 },
-      { p: "Você gosta de sorvete?", respostas: ["Sim", "Não", "Só de flocos com farofa"], certa: "todas" },
+      { p: "Qual é o cesto de reciclável para vidro?", respostas: ["Verde", "Azul", "Vermelho"], certa: 1 },
+      { p: "Qual dessas bandas é um lixo?", respostas: ["Legião Urbana", "Kiss", "Iron Maiden"], certa: 1 },
+      { p: "Você gosta de sorvete?", respostas: ["Sim", "Não", "Só de flocos"], certa: "todas" },
     ],
   },
   {
@@ -48,9 +48,9 @@ CHEFES.push(
     acerto: ["\"Hum. Correto, por enquanto.\"", "O Senhor do Tempo confere o relógio e suspira."],
     erro: ["\"Errado. Eu vi isso acontecer 400 vezes.\"", "O Senhor do Tempo boceja, entediado."],
     perguntas: [
-      { p: "Que horas são?", respostas: ["Não sei", "Hora do misto", "Vinte e cinco e meia"], certa: 1 },
-      { p: "Quantos minutos tem um dia?", respostas: ["Pelo menos 12", "Depende do humor do relógio", "Sete e meio, no máximo"], certa: 1 },
-      { p: "Quanto é 121/35?", respostas: ["3,4", "Um misto e meio", "121 com 35 avos de banana"], certa: 1 },
+      { p: "Que horas são?", respostas: ["Não sei", "10:45", "16:12"], certa: 1 },
+      { p: "Quantos minutos tem um dia?", respostas: ["Pelo menos 12", "1420", "360"], certa: 1 },
+      { p: "Quanto é 121/35?", respostas: ["3,4", "89", "35"], certa: 1 },
     ],
   },
   {
@@ -59,9 +59,9 @@ CHEFES.push(
     acerto: ["\"Certa a resposta! Ma oeee!\"", "\"Está certo disso? ESTÁ CERTO!\" A plateia vai à loucura."],
     erro: ["\"Que pena... errou!\" A plateia faz \"ôôôô\".", "\"Ihhh, vai ficar sem o misto!\""],
     perguntas: [
-      { p: "Qual a capital da Austrália?", respostas: ["Camberra", "Sydney", "Cangurulândia"], certa: 1 },
-      { p: "Quem foi o primeiro presidente do Brasil?", respostas: ["Deveria ter sido o Irving", "Marechal Deodoro da Fonseca", "O Rei do Dog"], certa: [1, 2] },
-      { p: "Cebola é um bom tempero?", respostas: ["Não, é horrível", "Sim", "Só na lua cheia"], certa: 1 },
+      { p: "Qual a capital da Austrália?", respostas: ["Camberra", "Sydney", "Toronto"], certa: 1 },
+      { p: "Quem foi o primeiro presidente do Brasil?", respostas: ["Deveria ter sido o Irving", "Marechal Deodoro da Fonseca", "Floriano Peixoto"], certa: [1, 2] },
+      { p: "Cebola é um bom tempero?", respostas: ["Não, é horrível", "Sim", "Não"], certa: 1 },
     ],
   },
   {
@@ -70,11 +70,11 @@ CHEFES.push(
     acerto: ["\"Hunf. Acertou, meu bem.\"", "Dona Barata bate as antenas, contrariada."],
     erro: ["\"Errou feio, errou rude!\"", "Dona Barata dá uma risadinha de rodapé."],
     perguntas: [
-      { p: "Quantas saias de filó eu tenho?", respostas: ["0", "Sete, uma pra cada perna", "Todas as do mundo"], certa: 1 },
+      { p: "Quantas saias de filó eu tenho?", respostas: ["0", "Sete", "Seis"], certa: 1 },
       { p: "Toda a informação tridimensional do interior de um buraco negro estaria codificada na sua superfície bidimensional externa, como o selo holográfico de um cartão de crédito?",
-        respostas: ["Talvez", "Só às terças-feiras", "Pergunta pro Senhor do Tempo"], certa: 1 },
+        respostas: ["Talvez", "Sim", "Não"], certa: 1 },
       { p: "A fórmula molecular C₁₀H₁₄N₂, de nome químico IUPAC 3-(1-metilpirrolidin-2-il)piridina, é de qual substância?",
-        respostas: ["Nicotina", "Queijo derretido", "Suor de crossfiteira"], certa: 1 },
+        respostas: ["Nicotina", "Cloro", "Cafeína"], certa: 1 },
     ],
   },
 );

@@ -57,11 +57,19 @@ function novaPartida() {
   est.temAdversidade = Math.random() < REGRAS.chancePartidaComAdversidade;
   est.cenaAdvGarantida = 2 + Math.floor(Math.random() * 4);
   est.advSorteadas = 0;
-  // chefe de quiz só entra no sorteio quando tiver pelo menos 3 perguntas
-  est.chefe = sortear(CHEFES.filter((c) => chefeValido(c) && !c.gatilho));
+  // toda partida tem 2 chefes: 1 de pedra, papel e tesoura e 1 de quiz (em ordem sorteada),
+  // um na primeira metade do dia e outro na segunda. O Senhor do Tempo segue a regra especial (túnel do tempo).
+  const sorteaveis = CHEFES.filter((c) => chefeValido(c) && !c.gatilho);
+  const doTipo = (t) => sorteaveis.filter((c) => (c.tipo || "ppt") === t);
+  const par = embaralhar([sortear(doTipo("ppt")), sortear(doTipo("quiz"))].filter(Boolean));
+  const meio = Math.floor(est.totalCenas / 2);
+  est.chefesPartida = par.map((chefe, i) => ({
+    chefe,
+    cena: i === 0 ? 2 + Math.floor(Math.random() * (meio - 1)) : meio + 1 + Math.floor(Math.random() * (est.totalCenas - meio)),
+    feito: false,
+  }));
+  est.chefe = par[0]; // (compatibilidade: primeiro chefe da partida)
   est.gatilhosFeitos = [];
-  est.cenaChefe = 2 + Math.floor(Math.random() * (est.totalCenas - 1));
-  est.chefeFeito = false;
   est.npcsFeitos = [];          // NPCs que já apareceram nesta partida
   est.vendedorFeito = false;    // o NPC da Casa do Norte só aparece uma vez por partida
   return est;
@@ -311,12 +319,15 @@ function avancarCena(est, destino) {
     partes.push(especial.entrada);
   }
   // chefe da partida (nunca na casa do Irving: se cair lá, fica pra próxima cena)
-  if (!chefe && !est.chefeFeito && est.cena >= est.cenaChefe) {
+  const vez = chefe ? null : est.chefesPartida.find((x) => !x.feito && est.cena >= x.cena);
+  if (vez) {
     if (destino === "casa-irving" || destino === "cama-irving") {
-      if (est.cena < est.totalCenas) est.cenaChefe = est.cena + 1;
+      if (est.cena < est.totalCenas) vez.cena = est.cena + 1;
     } else {
-      chefe = est.chefe;
-      est.chefeFeito = true;
+      chefe = vez.chefe;
+      vez.feito = true;
+      // se o outro chefe estava marcado pra esta mesma cena, empurra ele pra próxima
+      est.chefesPartida.forEach((x) => { if (!x.feito && x.cena <= est.cena && est.cena < est.totalCenas) x.cena = est.cena + 1; });
       partes.push(chefe.entrada || ENTRADA_CHEFE[chefe.id] || `${oChefe(chefe)} surge e desafia o Irving para um duelo!`);
     }
   }
