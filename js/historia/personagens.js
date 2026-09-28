@@ -111,13 +111,13 @@ NPCS.push(
   },
   {
     id: "pomba", nome: "Pomba", img: "npc-pomba.webp", emoji: "🕊️",
-    fala: "Um bater de asas, uma bolsinha de carteiro e um lencinho no pescoço. Uma POMBA pousa bem na frente do Irving e o encara com muita seriedade.",
+    fala: "Um bater de asas e um arrulho grave. Uma POMBA de olhos laranja e pescoço furta-cor pousa bem na frente do Irving e o encara com muita seriedade.",
     desafios: [
       { tipo: "pergunta", p: "\"Pru. Pru pru? Pruuu. PRU!\"", respostas: [
         { txt: "\"Pru.\"", ok: true, vai: "carregado-passaros",
-          fala: "Os olhos da Pomba brilham: finalmente alguém que fala a língua dela! Ela assobia, um bando inteiro desce do céu, e o Irving é erguido pelos ares. De presente, a Pomba ainda tira algo da bolsinha." },
+          fala: "Os olhos da Pomba brilham: finalmente alguém que fala a língua dela! Ela assobia, um bando inteiro desce do céu, e o Irving é erguido pelos ares. De presente, a Pomba ainda deixa cair algo aos pés dele." },
         { txt: "\"Oi, dona pomba!\"", ok: false, fala: "A Pomba suspira, decepcionada com a falta de cultura do Irving, e vai embora a pé." },
-        { txt: "\"Xô! Xô!\"", ok: false, fala: "A Pomba anota alguma coisa num bloquinho e levanta voo, ofendidíssima." },
+        { txt: "\"Xô! Xô!\"", ok: false, fala: "A Pomba solta um arrulho indignado e levanta voo, ofendidíssima." },
       ] },
       { tipo: "pergunta", p: "\"Pru pru pru. Pru? PRU PRU.\" (Ela parece esperar uma resposta muito importante.)", respostas: [
         { txt: "\"Pru pru!\"", ok: true, vai: "carregado-passaros",
